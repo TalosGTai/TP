@@ -1,0 +1,74 @@
+﻿<Window x:Name="SignWindow" x:Class="TP.AuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TP"
+        mc:Ignorable="d"
+        Title="Выбор организации" Height="300" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="15, 5, 15, 5"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="20, 5, 20, 5"/>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="20, 5, 20, 5"/>
+        </Style>
+    </Window.Resources>    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" BorderThickness="2" BorderBrush="Black">
+            <MenuItem Header="_Файл">
+                <MenuItem x:Name="Exit" Header="_Выход" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="About" Header="_О программе" Click="About_Click"/>
+        </Menu>
+        <StackPanel>
+            <Label Margin="20, 30, 20, 0" 
+                   Content="Выберите организацию для дальнейшей работы"/>
+            <ComboBox x:Name="ComboBoxChoiceOrganisation"
+                      Margin="70, 35, 70, 0"
+                      SelectedIndex="0">
+                <ComboBoxItem x:Name="Organisation1"
+                              Content="Организация 1"/>
+                <ComboBoxItem x:Name="Organisation2"
+                              Content="Организация 2"/>
+            </ComboBox>
+            <Button Margin="230, 55, 230, 0" 
+                    x:Name="ButtonSendChoice"
+                    Content="Выбрать"
+                    Click="ButtonSendChoice_Click"/>
+        </StackPanel>
+    </DockPanel>
+</Window>

@@ -1,0 +1,56 @@
+﻿<Window x:Name="TPWindow" x:Class="TP.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TP"
+        mc:Ignorable="d"
+        Title="Лаборатория " Height="800" Width="1200" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="15, 5, 15, 5"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" BorderThickness="2" BorderBrush="Black">
+            <MenuItem Header="_Файл">
+                <MenuItem x:Name="ChoiceLab" Header="_Выберите лабораторию" Click="ChoiceLab_Click"/>
+                <MenuItem x:Name="Exit" Header="_Выход" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="About" Header="_О программе" Click="About_Click"/>
+        </Menu>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Left">
+                <Button Content="ij" Width="120"/>
+                <Button Content="ij" Width="120"/>
+                <Button Content="ij" Width="120"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom">
+                <Button Content="ij"/>
+                <Button Content="ij"/>
+            </StackPanel>
+            <StackPanel>
+                <Button Content="ij"/>
+                <Button Content="ij"/>
+                <Button Content="ij"/>
+            </StackPanel>
+        </DockPanel>
+    </DockPanel>
+</Window>
