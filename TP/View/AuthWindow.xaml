@@ -22,13 +22,19 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Padding" Value="15, 5, 15, 5"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style TargetType="Menu">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
         <Style TargetType="MenuItem">
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Times New Roman"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="FontSize" Value="20"/>
@@ -36,6 +42,8 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Padding" Value="20, 5, 20, 5"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="White"/>
         </Style>
         <Style TargetType="ComboBoxItem">
             <Setter Property="FontSize" Value="20"/>
@@ -45,21 +53,28 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="20, 5, 20, 5"/>
+            <Setter Property="Background" Value="White"/>
         </Style>
     </Window.Resources>    
     <DockPanel>
-        <Menu DockPanel.Dock="Top" BorderThickness="2" BorderBrush="Black">
+        <Menu DockPanel.Dock="Top"
+              BorderThickness="2" 
+              BorderBrush="Black">
             <MenuItem Header="_Файл">
-                <MenuItem x:Name="Exit" Header="_Выход" Click="Exit_Click"/>
+                <MenuItem x:Name="Exit" Header="_Выход"
+                          Click="Exit_Click"/>
             </MenuItem>
-            <MenuItem x:Name="About" Header="_О программе" Click="About_Click"/>
+            <MenuItem x:Name="About" Header="_О программе"
+                      Click="About_Click" />
         </Menu>
         <StackPanel>
             <Label Margin="20, 30, 20, 0" 
                    Content="Выберите организацию для дальнейшей работы"/>
-            <ComboBox x:Name="ComboBoxChoiceOrganisation"
+            <ComboBox Template="{DynamicResource ComboBoxTemplateAll}" 
+                      x:Name="ComboBoxChoiceOrganisation"
                       Margin="70, 35, 70, 0"
-                      SelectedIndex="0">
+                      SelectedIndex="0" 
+                      >
                 <ComboBoxItem x:Name="Organisation1"
                               Content="Организация 1"/>
                 <ComboBoxItem x:Name="Organisation2"
