@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,48 @@ namespace TP.View
             InitializeComponent();
         }
 
-        private void SaveChanges_Click(object sender, RoutedEventArgs e)
+        private void ChoiceJournal1_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                LabelJournal1.Visibility = Visibility.Visible;
+                // Org
+            }
+        }
 
+        private void ChoiceJournal2_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                LabelJournal2.Visibility = Visibility.Visible;
+                // Org
+            }
+        }
+
+        private void DirectionJournal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                LabelDirection.Visibility = Visibility.Visible;
+                // Org
+            }
+        }
+
+        private void SignatureFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                LabelSignature.Visibility = Visibility.Visible;
+                // Org
+            }
         }
     }
 }

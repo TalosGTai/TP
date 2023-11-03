@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TP.Model;
 
 namespace TP.View
 {
@@ -23,6 +24,10 @@ namespace TP.View
         public Journal2()
         {
             InitializeComponent();
+            DataContext = this;
+
+            List<Model.Journal2> journal1 = new List<Model.Journal2>();
+            TableJournal2.ItemsSource = journal1;
         }
 
         private void BtnJournal1_Click(object sender, RoutedEventArgs e)
@@ -35,6 +40,11 @@ namespace TP.View
                     current.ViewPages.Content = new Journal1();
                 }
             }
+        }
+
+        private void TableJournal2_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+
         }
     }
 }

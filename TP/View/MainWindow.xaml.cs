@@ -54,17 +54,32 @@ namespace TP
 
         private void NewProtocol_Click(object sender, RoutedEventArgs e)
         {
-            ViewPages.Content = new NewProtocol();
+            if (idOrg == 1)
+                ViewPages.Content = new NewProtocol();
+            else if (idOrg == 2)
+                ViewPages.Content = new NewProtocol();
+            else
+                MessageBox.Show("Ошибка загрузки контента!");
         }
 
         private void Journals_Click(object sender, RoutedEventArgs e)
         {
-            ViewPages.Content = new Journal1();
+            if (idOrg == 1)
+                ViewPages.Content = new Journal1();
+            else if (idOrg == 2)
+                ViewPages.Content = new Journal2();
+            else
+                MessageBox.Show("Ошибка загрузки журналов!");
         }
 
         private void Protocols_Click(object sender, RoutedEventArgs e)
         {
-            ViewPages.Content = new Protocols();
+            if (idOrg == 1)
+                ViewPages.Content = new Protocols();
+            else if (idOrg == 2)
+                ViewPages.Content = new Protocols();
+            else
+                MessageBox.Show("Ошибка загрузки протоколов!");
         }
 
         private void ChoiceOrganization_Click(object sender, RoutedEventArgs e)
@@ -81,7 +96,12 @@ namespace TP
 
         private void Files_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ViewPages.Content = new FilesPage();
+            if (idOrg == 1)
+                ViewPages.Content = new FilesPage();
+            else if (idOrg == 2)
+                ViewPages.Content = new FilesPage();
+            else
+                MessageBox.Show("Ошибка загрузки файлов!");
         }
     }
 }
