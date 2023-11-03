@@ -56,11 +56,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Org1Journal1.cs" />
+    <Compile Include="Model\NotifyPropertyChanged.cs" />
+    <Compile Include="Model\Journal2.cs" />
     <Compile Include="View\FilesPage.xaml.cs">
       <DependentUpon>FilesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NewProtocol.xaml.cs">
       <DependentUpon>NewProtocol.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Org2\Org2Journal1.xaml.cs">
+      <DependentUpon>Org2Journal1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Org2\Org2Journal2.xaml.cs">
+      <DependentUpon>Org2Journal2.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Protocols.xaml.cs">
       <DependentUpon>Protocols.xaml</DependentUpon>
@@ -106,6 +115,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Org2\Org2Journal1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Org2\Org2Journal2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Protocols.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -138,7 +155,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
+    <Folder Include="View\Org1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

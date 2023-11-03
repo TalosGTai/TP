@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TP.Model;
 
 namespace TP.View
 {
@@ -23,6 +25,10 @@ namespace TP.View
         public Journal1()
         {
             InitializeComponent();
+            DataContext = this;
+
+            List<Org1Journal1> journal1 = new List<Org1Journal1>();
+            TableJournal1.ItemsSource = journal1;
         }
 
         private void BtnJournal2_Click(object sender, RoutedEventArgs e)
@@ -35,6 +41,11 @@ namespace TP.View
                     current.ViewPages.Content = new Journal2();
                 }
             }
+        }
+
+        private void TableJournal1_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+
         }
     }
 }
