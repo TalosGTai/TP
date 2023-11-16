@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TP.Model
 {
-    internal class Journal2 : NotifyPropertyChanged
+    internal class Org2List2 : NotifyPropertyChanged
     {
         // № п/п
         private string _numberProduct;

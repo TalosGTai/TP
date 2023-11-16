@@ -26,7 +26,7 @@ namespace TP.View
             InitializeComponent();
             DataContext = this;
 
-            List<Model.Journal2> journal1 = new List<Model.Journal2>();
+            List<Model.Org1List2> journal1 = new List<Model.Org1List2>();
             TableJournal2.ItemsSource = journal1;
         }
 

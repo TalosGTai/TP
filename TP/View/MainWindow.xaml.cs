@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TP.View;
+using TP.View.Org2;
 
 namespace TP
 {
@@ -52,22 +53,12 @@ namespace TP
             SwitchOrganisation();
         }
 
-        private void NewProtocol_Click(object sender, RoutedEventArgs e)
-        {
-            if (idOrg == 1)
-                ViewPages.Content = new NewProtocol();
-            else if (idOrg == 2)
-                ViewPages.Content = new NewProtocol();
-            else
-                MessageBox.Show("Ошибка загрузки контента!");
-        }
-
         private void Journals_Click(object sender, RoutedEventArgs e)
         {
             if (idOrg == 1)
                 ViewPages.Content = new Journal1();
             else if (idOrg == 2)
-                ViewPages.Content = new Journal2();
+                ViewPages.Content = new Org2Journals();
             else
                 MessageBox.Show("Ошибка загрузки журналов!");
         }
