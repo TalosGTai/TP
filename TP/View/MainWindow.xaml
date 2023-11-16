@@ -84,12 +84,6 @@
                             HorizontalAlignment="Center"
                             Margin="0,50,0,0" Width="206">
                     <Border Style="{StaticResource BorderSlideMenu}">
-                        <Label  Content="Новый протокол" 
-                            x:Name="NewProtocol" 
-                            MouseLeftButtonDown="NewProtocol_Click"
-                            Style="{StaticResource SlideMenu}"/>
-                    </Border>
-                    <Border Style="{StaticResource BorderSlideMenu}">
                         <Label Content="Журналы" 
                             x:Name="Journals"
                             MouseLeftButtonDown="Journals_Click"

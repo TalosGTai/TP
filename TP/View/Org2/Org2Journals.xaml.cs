@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,49 +12,34 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TP.Control;
 using TP.Model;
-using System.Data;
 
-namespace TP.View
+namespace TP.View.Org2
 {
     /// <summary>
-    /// Логика взаимодействия для Journal1.xaml
+    /// Логика взаимодействия для Org2Journals.xaml
     /// </summary>
-    public partial class Journal1 : Page
+    public partial class Org2Journals : Page
     {
-        private List<(List<Org1List1>, List<Org1List2>)> _journalsList;
-        private List<Org1List1> _journalsList1;
-        private List<Org1List2> _journalsList2;
-
-        public Journal1()
+        private List<(List<Org2List1>, List<Org2List2>)> _journalsList;
+        private List<Org2List1> _journalsList1;
+        private List<Org2List2> _journalsList2;
+        public Org2Journals()
         {
             InitializeComponent();
+
             DataContext = this;
 
-            _journalsList1 = new List<Org1List1>();
-            _journalsList2 = new List<Org1List2>();
-            _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
+            _journalsList1 = new List<Org2List1>();
+            _journalsList2 = new List<Org2List2>();
+            _journalsList = new List<(List<Org2List1>, List<Org2List2>)>();
 
             _journalsList.Add((_journalsList1, _journalsList2));
             _journalsList.Add((_journalsList1, _journalsList2));
             TableJournals.ItemsSource = _journalsList[0].Item1;
         }
 
-        private void BtnCreateJournal_Click(object sender, RoutedEventArgs e)
-        {
-            int idJournal = CmbBoxChoiceJournal.Items.Count + 1;
-            CmbBoxChoiceJournal.Items.Add("Журнал " + idJournal.ToString());
-            List<Org1List1> list1 = new List<Org1List1>();
-            List<Org1List2> list2 = new List<Org1List2>();
-            _journalsList.Add((list1, list2));
-            ChangeSourceTable(idJournal - 1, 1);
-            CmbBoxChoiceJournal.SelectedItem = CmbBoxChoiceJournal.Items[idJournal - 1];
-            CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[0];
-            
-        }
-
-        private void ChoiceJournal_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CmbBoxChoiceJournal_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int idJournal = CmbBoxChoiceJournal.SelectedIndex;
             LabelJournalNumber.Content = "Журнал " + (Convert.ToInt32(idJournal.ToString()) + 1).ToString();
@@ -68,9 +51,29 @@ namespace TP.View
             }
         }
 
+        private void CmbBoxChoiceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int idList = CmbBoxChoiceList.SelectedIndex;
+            int idJournal = CmbBoxChoiceJournal.SelectedIndex;
+
+            if (!(CmbBoxChoiceList is null) && CmbBoxChoiceList.Items.Count > 0)
+            {
+                CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[idList];
+                ChangeSourceTable(idJournal, idList + 1);
+            }
+        }
+
+        private void BtnCreateJournal_Click(object sender, RoutedEventArgs e)
+        {
+            //int idJournal = CmbBoxChoiceJournal.Items.Count + 1;
+            //CmbBoxChoiceJournal.Items.Add("Журнал " + idJournal.ToString());
+            //CmbBoxChoiceJournal.SelectedItem = CmbBoxChoiceJournal.Items[idJournal - 1];
+            //CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[0];
+        }
+
         private void ChangeSourceTable(int idJournal, int idList)
         {
-            if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null)) 
+            if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null))
             {
                 switch (idList)
                 {
@@ -91,23 +94,6 @@ namespace TP.View
                         break;
                 }
             }
-        }
-
-        private void CmbBoxChoiceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int idList = CmbBoxChoiceList.SelectedIndex;
-            int idJournal = CmbBoxChoiceJournal.SelectedIndex;
-
-            if (!(CmbBoxChoiceList is null) && CmbBoxChoiceList.Items.Count > 0)
-            {
-                CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[idList];
-                ChangeSourceTable(idJournal, idList + 1);
-            }
-        }
-
-        private void CreateProtocol_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

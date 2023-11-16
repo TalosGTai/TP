@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TP.Model
 {
-    internal class Org1Journal1 : NotifyPropertyChanged
+    internal class Org2List1 : NotifyPropertyChanged
     {
         // № п/п
         private string _numberProduct;
@@ -22,7 +22,7 @@ namespace TP.Model
         private string _numberSampleWeightCapacity;
         // Номер и дата акта о непригодности образцов (при наличии)
         private string _numberDateUnsuitabilitySamples;
-        // Дата поступления образцов (вручную)
+        // Дата поступления образцов в лабораторию (вручную)
         private string _dateReceiptSample;
         // Регистрационный номер образца
         private string _numberRegSample;
@@ -45,13 +45,14 @@ namespace TP.Model
         // Изготовитель
         private string _manufacturer;
 
-        public string numberProduct { 
-            get=> _numberProduct;
+        public string numberProduct
+        {
+            get => _numberProduct;
             set
-            { 
+            {
                 _numberProduct = value;
                 OnPropertyChanged();
-            } 
+            }
         }
 
         public string numberDateDirection
@@ -123,7 +124,7 @@ namespace TP.Model
                 OnPropertyChanged();
             }
         }
-        
+
         public string numberRegSample
         {
             get => _numberRegSample;
@@ -133,7 +134,7 @@ namespace TP.Model
                 OnPropertyChanged();
             }
         }
-        
+
         public string fioResponsiblePersonTest
         {
             get => _fioResponsiblePersonTest;
@@ -153,7 +154,7 @@ namespace TP.Model
                 OnPropertyChanged();
             }
         }
-        
+
         public string dateReturnSampleAfterTest
         {
             get => _dateReturnSampleAfterTest;
