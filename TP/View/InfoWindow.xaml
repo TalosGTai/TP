@@ -8,7 +8,7 @@
     x:Name="InformationWindow"
     Title="О программе"
     Width="700"
-    Height="600"
+    Height="460"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -31,29 +31,32 @@
     </Style>
   </Window.Resources>
   <DockPanel>
-    <StackPanel>
+    <StackPanel Height="532">
       <TextBlock
                 x:Name="TextInformation"
                 Width="Auto"
-                Margin="10,20,10,0"
+                Margin="30,30,30,0"
                 TextWrapping="Wrap">
+        Данная программа разработана в целях...<LineBreak/>
+        С помощью данного приложения можно:...<LineBreak/>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
                 laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
                 esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                officia deserunt mollit anim id est laborum.
+                officia deserunt mollit anim id est laborum.<LineBreak/>
+                Выполнено по заказу ООО...
       </TextBlock>
       <TextBlock
                 Width="Auto"
-                Margin="10,290,10,0"
+                Margin="30,100,30,0"
                 TextWrapping="Wrap">
-            Created by GTai <LineBreak/>
+            Разработано Дмитрием Солодовниковым <LineBreak/>
             Telegram:
       </TextBlock>
       <TextBlock
                 x:Name="Author"
                 Width="Auto"
-                Margin="100,-25,10,0"
+                Margin="120,-25,10,0"
                 Foreground="Blue"
                 TextWrapping="Wrap"
                 PreviewMouseDown="ButtonTelegramUrl_Click"
@@ -61,10 +64,10 @@
          @GTai_IT
       </TextBlock>
       <Button
-            Margin="0,20,10,0"
+            Margin="0,-50,30,0"
                 x:Name="ButtonExit"
                 Click="ButtonExit_Click"
-                Content="OK" />
+                Content="OK" Width="129" />
     </StackPanel>
     <StackPanel>
     </StackPanel>
