@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TP.View;
+using TP.View.Org1;
 using TP.View.Org2;
 
 namespace TP
@@ -56,7 +57,7 @@ namespace TP
         private void Journals_Click(object sender, RoutedEventArgs e)
         {
             if (idOrg == 1)
-                ViewPages.Content = new Journal1();
+                ViewPages.Content = new Org1Journals();
             else if (idOrg == 2)
                 ViewPages.Content = new Org2Journals();
             else
@@ -93,6 +94,16 @@ namespace TP
                 ViewPages.Content = new FilesPage();
             else
                 MessageBox.Show("Ошибка загрузки файлов!");
+        }
+
+        private void EditJournalsTitul_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (idOrg == 1)
+                ViewPages.Content = new EditJournal();
+            else if (idOrg == 2)
+                ViewPages.Content = new EditJournal();
+            else
+                MessageBox.Show("Ошибка загрузки страницы изменения журнала!");
         }
     }
 }

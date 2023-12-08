@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,9 +112,90 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="List1A" xml:space="preserve">
+    <value>№ п/п</value>
+  </data>
+  <data name="List1B" xml:space="preserve">
+    <value>№  и дата направления</value>
+  </data>
+  <data name="List1C" xml:space="preserve">
+    <value>Акт отбора образцов (номер, дата)</value>
+  </data>
+  <data name="List1D" xml:space="preserve">
+    <value>Наименование продукции (образца)</value>
+  </data>
+  <data name="List1E" xml:space="preserve">
+    <value>Наименование организации заказчика</value>
+  </data>
+  <data name="List1F" xml:space="preserve">
+    <value>Количество образцов/масса/обьем</value>
+  </data>
+  <data name="List1G" xml:space="preserve">
+    <value>Номер и дата акта о непригодности образцов (при наличии)</value>
+  </data>
+  <data name="List1H" xml:space="preserve">
+    <value>Дата поступления образцов</value>
+  </data>
+  <data name="List1I" xml:space="preserve">
+    <value>Регистрационный номер образца</value>
+  </data>
+  <data name="List1J" xml:space="preserve">
+    <value>ФИО ответственного исполнителя, осуществляющего проведение испытаний</value>
+  </data>
+  <data name="List1K" xml:space="preserve">
+    <value>Дата выдачи образца ответственному исполнителю осуществляющего проведение испытаний</value>
+  </data>
+  <data name="List1L" xml:space="preserve">
+    <value>Дата возврата образца после испытаний</value>
+  </data>
+  <data name="List1M" xml:space="preserve">
+    <value>Ф.И.О. сотрудника, внесшего запись</value>
+  </data>
+  <data name="List1N" xml:space="preserve">
+    <value>Примечание</value>
+  </data>
+  <data name="List1O" xml:space="preserve">
+    <value>Номер протокола</value>
+  </data>
+  <data name="List1P" xml:space="preserve">
+    <value>Вид продукции</value>
+  </data>
+  <data name="List1Q" xml:space="preserve">
+    <value>Заявитель</value>
+  </data>
+  <data name="List1R" xml:space="preserve">
+    <value>Изготовитель</value>
+  </data>
+  <data name="List2A" xml:space="preserve">
+    <value>№ п/п</value>
+  </data>
+  <data name="List2B" xml:space="preserve">
+    <value>Номер протокола испытаний</value>
+  </data>
+  <data name="List2C" xml:space="preserve">
+    <value>Дата протокола испытаний</value>
+  </data>
+  <data name="List2D" xml:space="preserve">
+    <value>№ и дата направления</value>
+  </data>
+  <data name="List2E" xml:space="preserve">
+    <value>Регистрационный номер образца</value>
+  </data>
+  <data name="List2F" xml:space="preserve">
+    <value>Номер акта на списание (утилизацию)/возврата образцов</value>
+  </data>
+  <data name="List2G" xml:space="preserve">
+    <value>Дата акта на списание (утилизацию)/возврата образцов</value>
+  </data>
+  <data name="List2H" xml:space="preserve">
+    <value>Дата выдачи протокола испытаний</value>
+  </data>
+  <data name="List2I" xml:space="preserve">
+    <value>Ф.И.О. сотрудника, внесшего запись</value>
+  </data>
 </root>

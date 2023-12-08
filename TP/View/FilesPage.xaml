@@ -62,37 +62,21 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
         </Grid.RowDefinitions>
         <Label Content="Выбор файлов"  Style="{StaticResource TitleLbl}"
                Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <Label Content="Выбор файла Журнал 1: " Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-        <Label Content="Выбор файла Журнал 2: " Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-        <Label Content="Выбор файла Направление: " Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"/>
-        <Label Content="Выбор файла подписи: " Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"/>
-        <Button x:Name="ChoiceJournal1" Content="Выбрать" 
-                Grid.Column="2" Grid.Row="1" Click="ChoiceJournal1_Click"/>
-        <Button x:Name="ChoiceJournal2" Content="Выбрать"
-                Grid.Column="2" Grid.Row="2" Click="ChoiceJournal2_Click"/>
+        <Label Content="Выбор файла Направление: " Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
+        <Label Content="Выбор файла подписи: " Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
         <Button x:Name="DirectionJournal" Content="Выбрать" 
-                Grid.Column="2" Grid.Row="3" Click="DirectionJournal_Click"/>
+                Grid.Column="2" Grid.Row="1" Click="DirectionJournal_Click"/>
         <Button x:Name="SignatureFile" Content="Выбрать" 
-                Grid.Column="2" Grid.Row="4" Click="SignatureFile_Click"/>
-        <Label x:Name="LabelJournal1" Content="Журнал успешно загружен"
-               Visibility="Hidden" Grid.Row="1" Grid.Column="3"
-               Grid.ColumnSpan="2"
-               Style="{StaticResource OpenFile}"/>
-        <Label x:Name="LabelJournal2" Content="Журнал успешно загружен"
-               Visibility="Hidden" Grid.Row="1" Grid.Column="3"
-               Grid.ColumnSpan="2"
-               Style="{StaticResource OpenFile}"/>
+                Grid.Column="2" Grid.Row="2" Click="SignatureFile_Click"/>
         <Label x:Name="LabelDirection" Content="Направление успешно загружено"
                Visibility="Hidden" Grid.Row="1" Grid.Column="3"
                Grid.ColumnSpan="2"
                Style="{StaticResource OpenFile}"/>
         <Label x:Name="LabelSignature" Content="Подпись успешно загружена"
-               Visibility="Hidden" Grid.Row="1" Grid.Column="3"
+               Visibility="Hidden" Grid.Row="2" Grid.Column="3"
                Grid.ColumnSpan="2"
                Style="{StaticResource OpenFile}"/>
     </Grid>
