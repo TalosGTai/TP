@@ -1,4 +1,4 @@
-﻿<Page x:Class="TP.View.Journal1"
+﻿<Page x:Class="TP.View.Org1Journals"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -131,8 +131,12 @@
                 Content="Создать новый протокол"
                 Grid.Row="8" Grid.Column="1"
                 Grid.ColumnSpan="2"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Right"
                 Click="CreateProtocol_Click"/>
+        <Button x:Name="OpenCurrentJournal"
+                Content="Открыть Журнал"
+                Grid.Row="8" Grid.Column="0"
+                Click="OpenCurrentJournal_Click"/>
         <DataGrid x:Name="TableJournals" Grid.Row="3" Grid.Column="0"
                   Grid.ColumnSpan="3" Grid.RowSpan="5">
                 <DataGrid.Columns>

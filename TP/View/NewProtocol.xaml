@@ -88,11 +88,21 @@
         <Label Content="Протокол № 1" x:Name="LabelProtocolNumber"
                Grid.Row="1"/>
         <Label Content="Выбор приложений:"
+               Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"/>
+        <Label Content="Выбор Направления:"
                Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                HorizontalAlignment="Right"
                VerticalAlignment="Top"/>
         <Button x:Name="BtnAdditionals" Content="Выбрать"
+                Grid.Row="4" Grid.Column="2"
+                VerticalAlignment="Center"
+                Style="{StaticResource Choice}"
+                Click="BtnAdditionals_Click"/>
+        <Button x:Name="BtnDirection" Content="Выбрать"
                 Grid.Row="3" Grid.Column="2"
-                Style="{StaticResource Choice}"/>
+                Style="{StaticResource Choice}"
+                Click="BtnDirection_Click"/>
     </Grid>
 </Page>

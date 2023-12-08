@@ -102,6 +102,12 @@
                              Style="{StaticResource SlideMenu}"/>       
                     </Border>
                     <Border Style="{StaticResource BorderSlideMenu}">
+                        <Label Content="Изменения"
+                                x:Name="EditJournalsTitul"
+                                MouseLeftButtonDown="EditJournalsTitul_MouseLeftButtonDown"
+                                Style="{StaticResource SlideMenu}"/>
+                    </Border>
+                    <Border Style="{StaticResource BorderSlideMenu}">
                         <Label Content="Выбор организации"
                             x:Name="ChoiceOrganization"
                             MouseLeftButtonDown="ChoiceOrganization_Click"

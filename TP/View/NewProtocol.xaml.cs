@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TP.Control;
+using TP.Model;
+using TP.Model.Scripts;
 
 namespace TP.View
 {
@@ -20,12 +23,34 @@ namespace TP.View
     /// </summary>
     public partial class NewProtocol : Page
     {
+        private int _idProtocol;
+
         public NewProtocol()
         {
             InitializeComponent();
         }
 
+        public NewProtocol(int idProtocol)
+        {
+            InitializeComponent();
+            _idProtocol = idProtocol;
+        }
+
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
+        {
+            // Создание Протокола
+            //DocParser docParser = new DocParser();
+            //FunctionsPrint functionsPrint = new FunctionsPrint();
+            //functionsPrint.PrintTupleDictionary(docParser.JournalParse);
+            CreateNewJournal createNewJournal = new CreateNewJournal();
+        }
+
+        private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnDirection_Click(object sender, RoutedEventArgs e)
         {
 
         }

@@ -17,19 +17,27 @@ using System.Windows.Shapes;
 using TP.Control;
 using TP.Model;
 using System.Data;
+using Res = TP.Properties.Resources;
+using TP.View.Org1;
+using System.Runtime.InteropServices;
+using Excel = Microsoft.Office.Interop.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.IO;
+using Microsoft.Office.Interop.Excel;
+using System.Windows.Interop;
 
 namespace TP.View
 {
     /// <summary>
     /// Логика взаимодействия для Journal1.xaml
     /// </summary>
-    public partial class Journal1 : Page
+    public partial class Org1Journals : System.Windows.Controls.Page
     {
         private List<(List<Org1List1>, List<Org1List2>)> _journalsList;
         private List<Org1List1> _journalsList1;
         private List<Org1List2> _journalsList2;
 
-        public Journal1()
+        public Org1Journals()
         {
             InitializeComponent();
             DataContext = this;
@@ -41,6 +49,15 @@ namespace TP.View
             _journalsList.Add((_journalsList1, _journalsList2));
             _journalsList.Add((_journalsList1, _journalsList2));
             TableJournals.ItemsSource = _journalsList[0].Item1;
+
+            if (!File.Exists("Организация1\\Журнал1.xlsx"))
+            {
+                CreateNewJournal createNewJournal = new CreateNewJournal();
+            }
+            if (!File.Exists("Организация1\\Журнал2.xlsx"))
+            {
+                CreateNewJournal createNewJournal = new CreateNewJournal(1, 2);
+            }
         }
 
         private void BtnCreateJournal_Click(object sender, RoutedEventArgs e)
@@ -53,7 +70,7 @@ namespace TP.View
             ChangeSourceTable(idJournal - 1, 1);
             CmbBoxChoiceJournal.SelectedItem = CmbBoxChoiceJournal.Items[idJournal - 1];
             CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[0];
-            
+            CreateNewJournal createNewJournal = new CreateNewJournal(1, idJournal);
         }
 
         private void ChoiceJournal_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -107,7 +124,30 @@ namespace TP.View
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
+            Functions functions = new Functions();
+            functions.Frame.Content = new NewProtocol();
+        }
 
+        private void OpenCurrentJournal_Click(object sender, RoutedEventArgs e)
+        {
+            string currentJournal = CmbBoxChoiceJournal.SelectedItem.ToString();
+            Excel.Application application = null;
+            string currentDirectory = Environment.CurrentDirectory;
+            int idJournal = CmbBoxChoiceJournal.SelectedIndex + 1;
+            try
+            {
+                application = new Excel.Application();
+                Excel.Workbook workbook = application.Workbooks.Open(currentDirectory + $"\\Организация1\\Журнал{idJournal}.xlsx");
+                application.Visible = true;
+            }
+            catch 
+            {
+                
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(application);
+            }
         }
     }
 }

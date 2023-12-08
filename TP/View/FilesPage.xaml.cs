@@ -26,28 +26,6 @@ namespace TP.View
             InitializeComponent();
         }
 
-        private void ChoiceJournal1_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                LabelJournal1.Visibility = Visibility.Visible;
-                // Org
-            }
-        }
-
-        private void ChoiceJournal2_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                LabelJournal2.Visibility = Visibility.Visible;
-                // Org
-            }
-        }
-
         private void DirectionJournal_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();

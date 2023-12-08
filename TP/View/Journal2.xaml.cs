@@ -37,7 +37,7 @@ namespace TP.View
                 if (window.Name == "TPWindow")
                 {
                     MainWindow current = window as MainWindow;
-                    current.ViewPages.Content = new Journal1();
+                    current.ViewPages.Content = new Org1Journals();
                 }
             }
         }
