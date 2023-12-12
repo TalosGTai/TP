@@ -31,7 +31,8 @@ namespace TP
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            // create_window
+            InfoWindow infoWindow = new InfoWindow();
+            infoWindow.ShowDialog();
         }
 
         private void ButtonSendChoice_Click(object sender, RoutedEventArgs e)

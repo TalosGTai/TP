@@ -1,0 +1,84 @@
+﻿<Window
+    x:Class="TP.InfoWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TP"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="InformationWindow"
+    Title="О программе"
+    Width="700"
+    Height="460"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontFamily" Value="Times New Roman" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontFamily" Value="Times New Roman" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Padding" Value="15,5,15,5" />
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <StackPanel Height="532">
+            <TextBlock
+                x:Name="TextName"
+                Width="Auto"
+                Margin="30,30,30,0"
+                FontSize="16"
+                TextWrapping="Wrap">
+                Название
+            </TextBlock>
+            <TextBlock
+                x:Name="TextInformation"
+                Width="Auto"
+                Margin="30,10,30,0"
+                FontSize="14"
+                TextWrapping="Wrap">
+                Данная программа разработана в целях...<LineBreak />
+                С помощью данного приложения можно:...<LineBreak />
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+                esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+                officia deserunt mollit anim id est laborum.<LineBreak />
+                Выполнено по заказу ООО...</TextBlock>
+            <TextBlock
+                Width="Auto"
+                Margin="30,100,30,0"
+                FontSize="14"
+                TextWrapping="Wrap">
+                Разработано Дмитрием Солодовниковым<LineBreak />
+                Telegram:</TextBlock>
+            <TextBlock
+                x:Name="Author"
+                Width="Auto"
+                Margin="120,-25,10,0"
+                Foreground="Blue"
+                PreviewMouseDown="ButtonTelegramUrl_Click"
+                TextDecorations="Underline"
+                TextWrapping="Wrap">
+                @GTai_IT
+            </TextBlock>
+            <Button
+                x:Name="ButtonExit"
+                Width="129"
+                Margin="0,-50,30,0"
+                Click="ButtonExit_Click"
+                Content="OK" />
+        </StackPanel>
+        <StackPanel />
+
+    </DockPanel>
+</Window>
