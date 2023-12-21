@@ -1,19 +1,13 @@
-﻿using Microsoft.Office.Interop.Excel;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace TP.Model
 {
-
-    
-
+    /// <summary>
+    /// Класс для работы с базой данный
+    /// </summary>
     internal class DBConnection
     {
         internal class Configuration
@@ -32,24 +26,34 @@ namespace TP.Model
             _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
             connection = new MySqlConnection(_connectionString);
         }
-
+        /// <summary>
+        /// Открыть соединения с бд
+        /// </summary>
         public void OpenConnection()
         {
             if (connection.State == System.Data.ConnectionState.Closed)
                 connection.Open();
         }
-
+        /// <summary>
+        /// Закрыть соединение с бд
+        /// </summary>
         public void CloseConnection()
         {
             if (connection.State == System.Data.ConnectionState.Open)
                 connection.Close();
         }
-
-        public MySqlConnection getConnection()
+        /// <summary>
+        /// Получить соединение с бд
+        /// </summary>
+        /// <returns></returns>
+        public MySqlConnection GetConnection()
         {
             return connection;
         }
-
+        /// <summary>
+        /// Получить id последнего добавленного элемента
+        /// </summary>
+        /// <returns>id последнего элемента</returns>
         public int SelectLastId()
         {
             try
@@ -68,7 +72,12 @@ namespace TP.Model
             }
             return -1;
         }
-
+        /// <summary>
+        /// Получить строку по колонке
+        /// </summary>
+        /// <param name="idJournalRow">идентификатор строки</param>
+        /// <param name="idColumn">идентификатор колонки</param>
+        /// <returns>строка из бд</returns>
         public string SelectJournalOrg1ChangesRowByColumnId(int idJournalRow, string idColumn)
         {
             try

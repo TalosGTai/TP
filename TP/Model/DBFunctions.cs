@@ -1,74 +1,76 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TP.Model
 {
     public class DBFunctions
     {
         public DBFunctions() { }
-
+        /// <summary>
+        /// Получить 1 строку заголовка журнала
+        /// </summary>
+        /// <returns>Общество с ограниченной ответственностью «Испытательный Центр Вектор»</returns>
         public string GetJournalTitleRow1()
         {
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "1");
-            //return "Общество с ограниченной ответственностью «Испытательный Центр Вектор»";
             return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "1");
         }
-
+        /// <summary>
+        /// Получить 2 строку заголовка журнала
+        /// </summary>
+        /// <returns>"Испытательный центр"</returns>
         public string GetJournalTitleRow2()
         {
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "2");
-            //return "Испытательный центр";
             return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "2");
         }
-
+        /// <summary>
+        /// Получить 3 строку заголовка журнала
+        /// </summary>
+        /// <returns>«Журнал регистрации направлений и образцов 4»</returns>
         public string GetJournalTitleRow3()
         {
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "3");
-            //return "«Журнал регистрации направлений и образцов 4»";
             return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "3");
         }
-
+        /// <summary>
+        /// Получить 4 строку заголовка журнала
+        /// </summary>
+        /// <returns>value1 = "Ответственный за ведение журнала", value2 = "Дата начала       « 09 »           января            2023 г.";</returns>
         public Tuple<string, string> GetJournalTitleRow4()
         {
             DBConnection dBConnection = new DBConnection();
             string value1, value2;
-            //value1 = "Ответственный за ведение журнала";
             value1 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "4_1");
             // подчёркивания для строки
-            //value2 = "Дата начала       « 09 »           января            2023 г.";
             value2 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "4_2");
             return new Tuple<string, string>(value1, value2);
         }
-
+        /// <summary>
+        /// Получить 5 строку заголовка журнала
+        /// </summary>
+        /// <returns>value1 = "ФИО (подпись)*    Бузулуцкова С.А. ", value2 = "Дата окончания «      »        2023 г." </returns>
         public Tuple<string, string> GetJournalTitleRow5()
         {
             DBConnection dBConnection = new DBConnection();
             string value1, value2;
             // подчёркивания для строки
-            //value1 = "ФИО (подпись)*    Бузулуцкова С.А. ";
             value1 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "5_1");
             // подчёркивания для строки
-            //value2 = "Дата окончания «      »        2023 г.";
             value2 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "5_2"); ;
             return new Tuple<string, string>(value1, value2);
         }
-
+        /// <summary>
+        /// Получить 6 строку заголовка журнала
+        /// </summary>
+        /// <returns>"*подпись только для журналов, ведущихся на бумажном носителе"</returns>
         public string GetJournalTitleRow6()
         {
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "6");
-            //return "*подпись только для журналов, ведущихся на бумажном носителе";
             return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "6");
         }
     }
-
-    
 }
