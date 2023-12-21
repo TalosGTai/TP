@@ -1,40 +1,43 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TP.Model;
 
 namespace TP.Control
 {
-    
-
+    /// <summary>
+    /// Класс для работы с заголовком журнала
+    /// </summary>
     public class GetDatas
     {
-        List<Tuple<string, string>> rows { get; }
+        List<Tuple<string, string>> _rows;
         DBFunctions functions;
-
+        /// <summary>
+        /// Запись заголовка журнала в Rows - список из Tuple<string, string>
+        /// </summary>
         public GetDatas()
         {
-            rows = new List<Tuple<string, string>>();
+            _rows = new List<Tuple<string, string>>();
             functions = new DBFunctions();
             GetJournalTitleList();
         }
-
+        /// <summary>
+        /// Получение заголовка журнала построчно
+        /// </summary>
         private void GetJournalTitleList()
         {
-            rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow1(), ""));
-            rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow2(), ""));
-            rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow3(), ""));
-            rows.Add(functions.GetJournalTitleRow4());
-            rows.Add(functions.GetJournalTitleRow5());
-            rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow6(), ""));
+            _rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow1(), ""));
+            _rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow2(), ""));
+            _rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow3(), ""));
+            _rows.Add(functions.GetJournalTitleRow4());
+            _rows.Add(functions.GetJournalTitleRow5());
+            _rows.Add(new Tuple<string, string>(functions.GetJournalTitleRow6(), ""));
         }
-
+        /// <summary>
+        /// Список строк полного заголовка журнала в виде списка из Tuple<string, string>
+        /// </summary>
         public List<Tuple<string, string>> Rows
         {
-            get { return rows; }
+            get { return _rows; }
         }
     }
 }

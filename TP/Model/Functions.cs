@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using TP.View;
 
 namespace TP.Model
 {
     public class Functions
     {
-        Frame frame {  get; set; }
+        Frame _frame;
         public Functions() 
         {
-            frame = FindFrameByName("ViewPages");
+            _frame = FindFrameByName("ViewPages");
         }
 
         public Functions(string name)
         {
-            frame = FindFrameByName(name);
+            _frame = FindFrameByName(name);
         }
 
         public Frame Frame 
         { 
-            get { return frame; } 
-            set { frame = value; }
+            get { return _frame; } 
+            set { _frame = value; }
         }
-
+        /// <summary>
+        /// Найти фрейм по названию
+        /// </summary>
+        /// <param name="name">Название фрейма</param>
+        /// <returns>Frame</returns>
         public Frame FindFrameByName(string name)
         {
             foreach (Window window in Application.Current.Windows)

@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
+﻿using ClosedXML.Excel;
 using Res = TP.Properties.Resources;
 using TP.Control;
 
 namespace TP.Model
 {
+    /// <summary>
+    /// Класс работы с созданием журнала
+    /// </summary>
     public class CreateNewJournal
     {
+        /// <summary>
+        /// Создаем новый журнал по умолчанию
+        /// </summary>
         public CreateNewJournal()
         {
             var workbook = new XLWorkbook();
@@ -28,6 +26,11 @@ namespace TP.Model
             workbook.SaveAs("Организация1\\Журнал1.xlsx");
         }
 
+        /// <summary>
+        /// Создаем новый журнал
+        /// </summary>
+        /// <param name="idOrganization">идентификатор организации</param>
+        /// <param name="idJournal">идентификатор журнала</param>
         public CreateNewJournal(int idOrganization, int idJournal)
         {
             var workbook = new XLWorkbook();
@@ -42,6 +45,11 @@ namespace TP.Model
             workbook.SaveAs($"Организация{idOrganization}\\Журнал{idJournal}.xlsx");
         }
 
+        /// <summary>
+        /// Создаем excel титульную страницу и заполняем некоторые ячейки
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
         private IXLWorksheet CreateTitleList(IXLWorksheet worksheet)
         {
             GetDatas getDatas = new GetDatas();
@@ -75,6 +83,11 @@ namespace TP.Model
             return worksheet;
         }
 
+        /// <summary>
+        /// Создаем excel страницу 1 с заданными колонками
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
         private IXLWorksheet CreateColumnsList1(IXLWorksheet worksheet)
         {
             worksheet.ColumnWidth = 21;
@@ -105,6 +118,11 @@ namespace TP.Model
             return worksheet;
         }
 
+        /// <summary>
+        /// Создаем excel страницу 2 с заданными колонками
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
         private IXLWorksheet CreateColumnsList2(IXLWorksheet worksheet)
         {
             worksheet.ColumnWidth = 21;
