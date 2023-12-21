@@ -120,6 +120,9 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Text.Json, Version=7.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.7.0.4\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
@@ -148,6 +151,7 @@
     <Compile Include="Control\FunctionsPrint.cs" />
     <Compile Include="Control\GetDatas.cs" />
     <Compile Include="Control\LoadDatas.cs" />
+    <Compile Include="Model\DBConnection.cs" />
     <Compile Include="Model\DBFunctions.cs" />
     <Compile Include="Model\Functions.cs" />
     <Compile Include="Model\Org1List1.cs" />
@@ -251,6 +255,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="config.json" />
     <None Include="Datas\Directions\Направление.docx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
