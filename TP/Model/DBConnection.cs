@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -22,56 +24,69 @@ namespace TP.Model
         }
 
         private readonly string _connectionString;
-        private SqlConnection connection;
+        private MySqlConnection connection;
 
         public DBConnection()
         {
             string json = System.IO.File.ReadAllText("..\\..\\config.json");
             _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
+            connection = new MySqlConnection(_connectionString);
         }
 
-        public bool IsServerConnected(string connectionString)
+        public void OpenConnection()
         {
-                try
-                {
-                    connection.Open();
-                    return true;
-                }
-                catch (SqlException)
-                {
-                    return false;
-                }
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
         }
 
-        public void Select(string connectionString)
+        public void CloseConnection()
+        {
+            if (connection.State == System.Data.ConnectionState.Open)
+                connection.Close();
+        }
+
+        public MySqlConnection getConnection()
+        {
+            return connection;
+        }
+
+        public int SelectLastId()
         {
             try
             {
                 connection.Open();
+                var queryString = "SELECT LAST_INSERT_ID();";
+                MySqlCommand command = new MySqlCommand(queryString, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+                reader.Read();
 
-                var queryString = "SELECT * FROM...";
-                SqlCommand command = new SqlCommand(queryString, connection);
-                command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                try
-                {
-                    while (reader.Read())
-                    {
-                        Console.WriteLine(String.Format("{0}, {1}",
-                        reader["tPatCulIntPatIDPk"], reader["tPatSFirstname"]));
-                    }
-                }
-                finally
-                {
-                    reader.Close();
-                }
+                return Convert.ToInt32(reader["idEditJournalVersion"].ToString());
             }
             catch (SqlException)
             {
 
             }
+            return -1;
         }
-        
+
+        public string SelectJournalOrg1ChangesRowByColumnId(int idJournalRow, string idColumn)
+        {
+            try
+            {
+                connection.Open();
+                var queryString = $"SELECT Row{idColumn} FROM laboratory.editjournalorg1 WHERE idEditJournalOrg1={idJournalRow}";
+                MySqlCommand command = new MySqlCommand(queryString, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+
+                return reader[0].ToString();
+            }
+            catch (SqlException)
+            {
+
+            }
+            return "";
+        }
+
     }
 }
