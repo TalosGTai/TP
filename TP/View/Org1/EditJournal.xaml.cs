@@ -46,7 +46,6 @@ namespace TP.View.Org1
         private void SaveChangesJournalTitle_Click(object sender, RoutedEventArgs e)
         {
             LblSaveChanges.Visibility = Visibility.Visible;
-
         }
     }
 }

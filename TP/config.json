@@ -1,5 +1,5 @@
 {
-  "ConnectionString": "Server=;Port=3300;Database=service;Uid=root;OldGuids=true;ConvertZeroDateTime=true;",
-  "Login": "admin",
-  "Password": "password"
+  "ConnectionString": "Server=;Port=3300;Database=labaratory;Uid=root;OldGuids=true;ConvertZeroDateTime=true;",
+  "Login": "GTai",
+  "Password": "DS18099081MySqlDB1331"
 }
