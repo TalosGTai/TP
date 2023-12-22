@@ -1,33 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TP.Model
+﻿namespace TP.Model
 {
     internal class Org1List2 : NotifyPropertyChanged
     {
-        // № п/п
-        private string _numberProduct;
-        // Номер протокола испытаний
-        private string _numberProtocolTest;
-        // Дата протокола испытаний
+        
+        private string _numberProduct;       
+        private string _numberProtocolTest;        
         private string _dateReturnSampleAfterTest;
-        // № и дата направления
         private string _numberDateDirection;
-        // Регистрационный номер образца
         private string _numberRegSample;
-        // Номер акта на списание (утилизацию)/возврата образцов
         private string _numberActUtil;
-        // Дата акта на списание (утилизацию)/возврата образцов
         private string _dateActUtil;
-        // Дата выдачи протокола испытаний
         private string _dateReturnSample;
-        // Ф.И.О. сотрудника, внесшего запись
         private string _fioInsertRecord;
 
-        public string numberProduct
+        /// <summary>
+        /// № п/п
+        /// </summary>
+        public string NumberProduct
         {
             get => _numberProduct;
             set
@@ -37,7 +26,10 @@ namespace TP.Model
             }
         }
 
-        public string numberProtocolTest
+        /// <summary>
+        /// Номер протокола испытаний
+        /// </summary>
+        public string NumberProtocolTest
         {
             get => _numberProtocolTest;
             set
@@ -47,7 +39,10 @@ namespace TP.Model
             }
         }
 
-        public string dateReturnSampleAfterTest
+        /// <summary>
+        /// Дата протокола испытаний
+        /// </summary>
+        public string DateReturnSampleAfterTest
         {
             get => _dateReturnSampleAfterTest;
             set
@@ -57,7 +52,10 @@ namespace TP.Model
             }
         }
 
-        public string numberDateDirection
+        /// <summary>
+        /// № и дата направления
+        /// </summary>
+        public string NumberDateDirection
         {
             get => _numberDateDirection;
             set
@@ -67,7 +65,10 @@ namespace TP.Model
             }
         }
 
-        public string numberRegSample
+        /// <summary>
+        /// Регистрационный номер образца
+        /// </summary>
+        public string NumberRegSample
         {
             get => _numberRegSample;
             set
@@ -77,7 +78,10 @@ namespace TP.Model
             }
         }
 
-        public string numberActUtil
+        /// <summary>
+        /// Номер акта на списание (утилизацию)/возврата образцов
+        /// </summary>
+        public string NumberActUtil
         {
             get => _numberActUtil;
             set
@@ -87,7 +91,10 @@ namespace TP.Model
             }
         }
 
-        public string dateActUtil
+        /// <summary>
+        /// Дата акта на списание (утилизацию)/возврата образцов
+        /// </summary>
+        public string DateActUtil
         {
             get => _dateActUtil;
             set
@@ -97,7 +104,10 @@ namespace TP.Model
             }
         }
 
-        public string dateReturnSample
+        /// <summary>
+        /// Дата выдачи протокола испытаний
+        /// </summary>
+        public string DateReturnSample
         {
             get => _dateReturnSample;
             set
@@ -107,7 +117,10 @@ namespace TP.Model
             }
         }
 
-        public string fioInsertRecord
+        /// <summary>
+        /// Ф.И.О. сотрудника, внесшего запись
+        /// </summary>
+        public string FioInsertRecord
         {
             get => _fioInsertRecord;
             set

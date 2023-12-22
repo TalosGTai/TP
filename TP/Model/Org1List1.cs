@@ -1,51 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TP.Model
+﻿namespace TP.Model
 {
     internal class Org1List1 : NotifyPropertyChanged
     {
-        // № п/п
         private string _numberProduct;
-        // № и дата направления
         private string _numberDateDirection;
-        // акт отбора образцов
         private string _samplingAct;
-        // Наименование продукции (образца)
         private string _sampleName;
-        // Наименование организации заказчика
         private string _organizationName;
-        // Количество образцов/масса/обьем
         private string _numberSampleWeightCapacity;
-        // Номер и дата акта о непригодности образцов (при наличии)
         private string _numberDateUnsuitabilitySamples;
-        // Дата поступления образцов (вручную)
         private string _dateReceiptSample;
-        // Регистрационный номер образца
         private string _numberRegSample;
-        // ФИО ответственного исполнителя, осуществляющего проведение испытаний (вручную)
         private string _fioResponsiblePersonTest;
-        // Дата выдачи образца ответственному исполнителю осуществляющего проведение испытаний (вручную)
         private string _dateIssueSample;
-        // Дата возврата образца после испытаний  (вручную)
         private string _dateReturnSampleAfterTest;
-        // Ф.И.О. сотрудника, внесшего запись
         private string _fioInsertRecord;
-        // Примечание
         private string _note;
-        // Номер протокола
         private string _numberProtocol;
-        // Вид продукции
         private string _productType;
-        // Заявитель
         private string _applicant;
-        // Изготовитель
         private string _manufacturer;
 
-        public string numberProduct { 
+        /// <summary>
+        /// № п/п
+        /// </summary>
+        public string NumberProduct { 
             get=> _numberProduct;
             set
             { 
@@ -54,7 +33,10 @@ namespace TP.Model
             } 
         }
 
-        public string numberDateDirection
+        /// <summary>
+        /// № и дата направления
+        /// </summary>
+        public string NumberDateDirection
         {
             get => _numberDateDirection;
             set
@@ -64,7 +46,10 @@ namespace TP.Model
             }
         }
 
-        public string samplingAct
+        /// <summary>
+        /// акт отбора образцов
+        /// </summary>
+        public string SamplingAct
         {
             get => _samplingAct;
             set
@@ -74,7 +59,10 @@ namespace TP.Model
             }
         }
 
-        public string sampleName
+        /// <summary>
+        /// Наименование продукции (образца)
+        /// </summary>
+        public string SampleName
         {
             get => _sampleName;
             set
@@ -84,7 +72,10 @@ namespace TP.Model
             }
         }
 
-        public string organizationName
+        /// <summary>
+        /// Наименование организации заказчика
+        /// </summary>
+        public string OrganizationName
         {
             get => _organizationName;
             set
@@ -94,7 +85,10 @@ namespace TP.Model
             }
         }
 
-        public string numberSampleWeightCapacity
+        /// <summary>
+        /// Количество образцов/масса/обьем
+        /// </summary>
+        public string NumberSampleWeightCapacity
         {
             get => _numberSampleWeightCapacity;
             set
@@ -104,7 +98,10 @@ namespace TP.Model
             }
         }
 
-        public string numberDateUnsuitabilitySamples
+        /// <summary>
+        /// Номер и дата акта о непригодности образцов (при наличии)
+        /// </summary>
+        public string NumberDateUnsuitabilitySamples
         {
             get => _numberDateUnsuitabilitySamples;
             set
@@ -114,7 +111,10 @@ namespace TP.Model
             }
         }
 
-        public string dateReceiptSample
+        /// <summary>
+        /// Дата поступления образцов (вручную)
+        /// </summary>
+        public string DateReceiptSample
         {
             get => _dateReceiptSample;
             set
@@ -123,8 +123,11 @@ namespace TP.Model
                 OnPropertyChanged();
             }
         }
-        
-        public string numberRegSample
+
+        /// <summary>
+        /// Регистрационный номер образца
+        /// </summary>
+        public string NumberRegSample
         {
             get => _numberRegSample;
             set
@@ -133,8 +136,11 @@ namespace TP.Model
                 OnPropertyChanged();
             }
         }
-        
-        public string fioResponsiblePersonTest
+
+        /// <summary>
+        /// ФИО ответственного исполнителя, осуществляющего проведение испытаний (вручную)
+        /// </summary>
+        public string FioResponsiblePersonTest
         {
             get => _fioResponsiblePersonTest;
             set
@@ -144,7 +150,10 @@ namespace TP.Model
             }
         }
 
-        public string dateIssueSample
+        /// <summary>
+        /// Дата выдачи образца ответственному исполнителю осуществляющего проведение испытаний (вручную)
+        /// </summary>
+        public string DateIssueSample
         {
             get => _dateIssueSample;
             set
@@ -153,8 +162,11 @@ namespace TP.Model
                 OnPropertyChanged();
             }
         }
-        
-        public string dateReturnSampleAfterTest
+
+        /// <summary>
+        /// Дата возврата образца после испытаний  (вручную)
+        /// </summary>
+        public string DateReturnSampleAfterTest
         {
             get => _dateReturnSampleAfterTest;
             set
@@ -164,7 +176,10 @@ namespace TP.Model
             }
         }
 
-        public string fioInsertRecord
+        /// <summary>
+        /// Ф.И.О. сотрудника, внесшего запись
+        /// </summary>
+        public string FioInsertRecord
         {
             get => _fioInsertRecord;
             set
@@ -174,7 +189,10 @@ namespace TP.Model
             }
         }
 
-        public string note
+        /// <summary>
+        /// Примечание
+        /// </summary>
+        public string Note
         {
             get => _note;
             set
@@ -184,7 +202,10 @@ namespace TP.Model
             }
         }
 
-        public string numberProtocol
+        /// <summary>
+        /// Номер протокола
+        /// </summary>
+        public string NumberProtocol
         {
             get => _numberProtocol;
             set
@@ -194,7 +215,10 @@ namespace TP.Model
             }
         }
 
-        public string productType
+        /// <summary>
+        /// Вид продукции
+        /// </summary>
+        public string ProductType
         {
             get => _productType;
             set
@@ -204,7 +228,10 @@ namespace TP.Model
             }
         }
 
-        public string applicant
+        /// <summary>
+        /// Заявитель
+        /// </summary>
+        public string Applicant
         {
             get => _applicant;
             set
@@ -214,7 +241,10 @@ namespace TP.Model
             }
         }
 
-        public string manufacturer
+        /// <summary>
+        /// Изготовитель
+        /// </summary>
+        public string Manufacturer
         {
             get => _manufacturer;
             set
