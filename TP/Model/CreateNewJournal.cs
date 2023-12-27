@@ -23,7 +23,22 @@ namespace TP.Model
             worksheetList1 = CreateColumnsList1(worksheetList1);
             worksheetList2 = CreateColumnsList2(worksheetList2);
             //workbook.SaveAs("..\\..\\Datas\\Journals\\test.xlsx");
-            workbook.SaveAs("Организация1\\Журнал1.xlsx");
+            try
+            {
+                DBConnection dBConnection = new DBConnection();
+                // add exists
+                dBConnection.createTableJournalOrg1List0(1, 1);
+                dBConnection.createTableJournalOrg1List1(1, 1);
+                dBConnection.createTableJournalOrg1List2(1, 1);
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                workbook.SaveAs("Организация1\\Журнал1.xlsx");
+            }
         }
 
         /// <summary>
@@ -42,7 +57,22 @@ namespace TP.Model
             worksheetList1 = CreateColumnsList1(worksheetList1);
             worksheetList2 = CreateColumnsList2(worksheetList2);
             //workbook.SaveAs("..\\..\\Datas\\Journals\\test.xlsx");
-            workbook.SaveAs($"Организация{idOrganization}\\Журнал{idJournal}.xlsx");
+            try
+            {
+                DBConnection dBConnection = new DBConnection();
+                // add exists
+                dBConnection.createTableJournalOrg1List0(idOrganization, idJournal);
+                dBConnection.createTableJournalOrg1List1(idOrganization, idJournal);
+                dBConnection.createTableJournalOrg1List2(idOrganization, idJournal);
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                workbook.SaveAs($"Организация{idOrganization}\\Журнал{idJournal}.xlsx");
+            }
         }
 
         /// <summary>

@@ -1,5 +1,3 @@
 {
-  "ConnectionString": "Server=;Port=3300;Database=labaratory;Uid=root;OldGuids=true;ConvertZeroDateTime=true;",
-  "Login": "GTai",
-  "Password": "DS18099081MySqlDB1331"
+  "ConnectionString": "server=localhost;port=3306;Database=labaratory;user=GTai;password=DS18099081MySqlDB1331"
 }

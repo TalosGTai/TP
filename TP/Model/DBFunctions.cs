@@ -72,5 +72,6 @@ namespace TP.Model
             dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "6");
             return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "6");
         }
+
     }
 }

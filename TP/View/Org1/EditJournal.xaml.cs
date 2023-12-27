@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TP.Control;
+using TP.Model;
 
 namespace TP.View.Org1
 {
@@ -46,6 +47,19 @@ namespace TP.View.Org1
         private void SaveChangesJournalTitle_Click(object sender, RoutedEventArgs e)
         {
             LblSaveChanges.Visibility = Visibility.Visible;
+            List<string> saveChanges = new List<string>
+            {
+                TxtBoxRow1.Text,
+                TxtBoxRow2.Text,
+                TxtBoxRow3.Text,
+                TxtBoxRow4.Text,
+                TxtBoxRow41.Text,
+                TxtBoxRow5.Text,
+                TxtBoxRow51.Text,
+                TxtBoxRow6.Text
+            };
+            DBConnection dBConnection = new DBConnection();
+            dBConnection.InsertJournalOrg1ChangesRow(saveChanges);
         }
     }
 }

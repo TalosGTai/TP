@@ -1,30 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using TP.Control;
 using TP.Model;
-using System.Data;
 using Res = TP.Properties.Resources;
-using TP.View.Org1;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using System.IO;
-using Microsoft.Office.Interop.Excel;
-using System.Windows.Interop;
+using TP.Model.Scripts;
+using TP.Control;
 
 namespace TP.View
 {
@@ -44,20 +28,40 @@ namespace TP.View
 
             _journalsList1 = new List<Org1List1>();
             _journalsList2 = new List<Org1List2>();
-            _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
-
-            _journalsList.Add((_journalsList1, _journalsList2));
-            _journalsList.Add((_journalsList1, _journalsList2));
+            _journalsList = new List<(List<Org1List1>, List<Org1List2>)>
+            {
+                (_journalsList1, _journalsList2),
+                (_journalsList1, _journalsList2)
+            };
             TableJournals.ItemsSource = _journalsList[0].Item1;
 
-            if (!File.Exists("Организация1\\Журнал1.xlsx"))
+            for (int i = 0; i < Math.Max(GetCountJournals(), 2); i++)
             {
-                CreateNewJournal createNewJournal = new CreateNewJournal();
+                if (!File.Exists($"Организация1\\Журнал{i + 1}.xlsx"))
+                {
+                    CreateNewJournal createNewJournal = new CreateNewJournal(1, i + 1);
+                }
+                if (i >= 2)
+                {
+                    CmbBoxChoiceJournal.Items.Add("Журнал " + (i + 1).ToString());
+                    List<Org1List1> list1 = new List<Org1List1>();
+                    List<Org1List2> list2 = new List<Org1List2>();
+                    _journalsList.Add((list1, list2));
+                }
             }
-            if (!File.Exists("Организация1\\Журнал2.xlsx"))
+        }
+
+        private int GetCountJournals()
+        {
+            DBConnection dBConnection = new DBConnection();
+            var tables = dBConnection.GetAllTables().Split('|');
+            int countTables = -1;
+            foreach (string table in tables)
             {
-                CreateNewJournal createNewJournal = new CreateNewJournal(1, 2);
+                if (table.IndexOf("rg1") != -1)
+                    countTables++;
             }
+            return countTables / 3;
         }
 
         private void BtnCreateJournal_Click(object sender, RoutedEventArgs e)
@@ -87,6 +91,7 @@ namespace TP.View
 
         private void ChangeSourceTable(int idJournal, int idList)
         {
+            string currentDirectory = Environment.CurrentDirectory;
             if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null)) 
             {
                 switch (idList)
@@ -95,16 +100,20 @@ namespace TP.View
                         TableJournals.ItemsSource = _journalsList[idJournal].Item1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
+                        GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
+                        //ExcelParser excelParser1 = new ExcelParser(currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx", 2);
                         break;
                     case 2:
                         TableJournalsList2.ItemsSource = _journalsList[idJournal].Item2;
                         TableJournals.Visibility = Visibility.Hidden;
                         TableJournalsList2.Visibility = Visibility.Visible;
+                        //ExcelParser excelParser2 = new ExcelParser(currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx", 3);
                         break;
                     default:
                         TableJournals.ItemsSource = _journalsList[0].Item1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
+                        //ExcelParser excelParser3 = new ExcelParser(currentDirectory + "\\Организация1\\Журнал1.xlsx", 2);
                         break;
                 }
             }

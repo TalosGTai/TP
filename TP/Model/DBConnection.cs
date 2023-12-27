@@ -1,7 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text.Json;
+using System.Windows.Documents;
 
 namespace TP.Model
 {
@@ -13,8 +16,6 @@ namespace TP.Model
         internal class Configuration
         {
             public string ConnectionString { get; set; }
-            public string Login { get; set; }
-            public string Password { get; set; }
         }
 
         private readonly string _connectionString;
@@ -58,13 +59,13 @@ namespace TP.Model
         {
             try
             {
-                connection.Open();
-                var queryString = "SELECT LAST_INSERT_ID();";
-                MySqlCommand command = new MySqlCommand(queryString, connection);
-                MySqlDataReader reader = command.ExecuteReader();
-                reader.Read();
+                OpenConnection();
+                var queryString = "SELECT COUNT(*) FROM laboratory.org1editjournal;";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                int result = Convert.ToInt32(command.ExecuteScalar().ToString());
+                CloseConnection();
 
-                return Convert.ToInt32(reader["idEditJournalVersion"].ToString());
+                return result;
             }
             catch (SqlException)
             {
@@ -82,13 +83,12 @@ namespace TP.Model
         {
             try
             {
-                connection.Open();
-                var queryString = $"SELECT Row{idColumn} FROM laboratory.editjournalorg1 WHERE idEditJournalOrg1={idJournalRow}";
-                MySqlCommand command = new MySqlCommand(queryString, connection);
-                MySqlDataReader reader = command.ExecuteReader();
-                reader.Read();
-
-                return reader[0].ToString();
+                OpenConnection();
+                var queryString = $"SELECT Row{idColumn} FROM laboratory.org1editjournal WHERE idOrg1EditJournal={idJournalRow}";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                string result = command.ExecuteScalar().ToString();
+                CloseConnection();
+                return result;
             }
             catch (SqlException)
             {
@@ -97,5 +97,153 @@ namespace TP.Model
             return "";
         }
 
+        public void createTableJournalOrg1List0(int idOrg, int idJournal)
+        {
+            string query = $"create table laboratory.org{idOrg}journal{idJournal}list0 (";
+            query += $"org{idOrg}idjournal{idJournal}list0 int NOT NULL AUTO_INCREMENT,";
+            query += "Row1 varchar(200),";
+            query += "Row2 varchar(200),";
+            query += "Row3 varchar(200),";
+            query += "Row4_1 varchar(200),";
+            query += "Row4_2 varchar(200),";
+            query += "Row5_1 varchar(200),";
+            query += "Row5_2 varchar(200),";
+            query += "Row6 varchar(200),";
+            query += $"PRIMARY KEY org{idOrg}idjournal{idJournal}list0)";
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void createTableJournalOrg1List1(int idOrg, int idJournal)
+        {
+            string query = $"create table laboratory.org{idOrg}journal{idJournal}list1 (";
+            query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
+            query += "A Text,";
+            query += "B Text,";
+            query += "C Text,";
+            query += "D Text,";
+            query += "E Text,";
+            query += "F Text,";
+            query += "G Text,";
+            query += "H Text,";
+            query += "I Text,";
+            query += "J Text,";
+            query += "K Text,";
+            query += "L Text,";
+            query += "M Text,";
+            query += "N Text,";
+            query += "O Text,";
+            query += "P Text,";
+            query += $"PRIMARY KEY org{idOrg}idjournal{idJournal}list1)";
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void createTableJournalOrg1List2(int idOrg, int idJournal)
+        {
+            string query = $"create table laboratory.org{idOrg}journal{idJournal}list2 (";
+            query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
+            query += "A Text,";
+            query += "B Text,";
+            query += "C Text,";
+            query += "D Text,";
+            query += "E Text,";
+            query += "F Text,";
+            query += "G Text,";
+            query += "H Text,";
+            query += "I Text,";
+            query += $"PRIMARY KEY org{idOrg}idjournal{idJournal}list1)";
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException)
+            {
+
+            }
+        }
+
+        public void InsertJournalOrg1ChangesRow(List<string> values)
+        {
+            try
+            {
+                OpenConnection();
+                var queryString = $"INSERT INTO laboratory.org1editjournal";
+                queryString += "(Row1, Row2, Row3, Row4_1, Row4_2, Row5_1, Row5_2, Row6)";
+                queryString += $" Values (\"{values[0]}\", \"{values[1]}\", \"{values[2]}\", \"{values[3]}\", ";
+                queryString += $"\"{values[4]}\", \"{values[5]}\", \"{values[6]}\", \"{values[7]}\")";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException)
+            {
+
+            }
+        }
+
+        public string GetAllTables()
+        {
+            try
+            {
+                OpenConnection();
+                var queryString = $"SHOW FULL TABLES from laboratory";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                string result = "";
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    result += reader[0] + "|";
+                }
+                reader.Close();
+                CloseConnection();
+                return result;
+            }
+            catch (SqlException)
+            {
+
+            }
+            return "";
+        }
+
+        public DataTable GetListJournalOrg(int idOrg, int idJournal, int idList)
+        {
+            try
+            {
+                OpenConnection();
+                string query = $"select * from laboratory.org{idOrg}journal{idJournal}list{idList}";
+                MySqlDataAdapter mySqlDataAdapter = new MySqlDataAdapter(query, GetConnection());
+                DataSet ds = new DataSet("list");
+                mySqlDataAdapter.Fill(ds);
+                CloseConnection();
+                return ds.Tables[0];
+            }
+            catch (SqlException)
+            {
+
+            }
+            return null;
+        }
     }
 }

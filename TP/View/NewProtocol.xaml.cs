@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,10 +40,10 @@ namespace TP.View
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
             // Создание Протокола
-            //DocParser docParser = new DocParser();
-            //FunctionsPrint functionsPrint = new FunctionsPrint();
-            //functionsPrint.PrintTupleDictionary(docParser.JournalParse);
-            CreateNewJournal createNewJournal = new CreateNewJournal();
+            DocParser docParser = new DocParser("Направление.docx");
+            FunctionsPrint functionsPrint = new FunctionsPrint();
+            functionsPrint.PrintTupleDictionary(docParser.JournalParse);
+            //CreateNewJournal createNewJournal = new CreateNewJournal();
         }
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
@@ -52,7 +53,13 @@ namespace TP.View
 
         private void BtnDirection_Click(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // LabelDirection.Visibility = Visibility.Visible;
+                // Org
+            }
         }
     }
 }
