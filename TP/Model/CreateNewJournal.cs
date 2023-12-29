@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using Res = TP.Properties.Resources;
 using TP.Control;
+using System.Collections.Generic;
+using System;
 
 namespace TP.Model
 {
@@ -27,9 +29,9 @@ namespace TP.Model
             {
                 DBConnection dBConnection = new DBConnection();
                 // add exists
-                dBConnection.createTableJournalOrg1List0(1, 1);
-                dBConnection.createTableJournalOrg1List1(1, 1);
-                dBConnection.createTableJournalOrg1List2(1, 1);
+                dBConnection.СreateTableJournalOrg1List0(1, 1);
+                dBConnection.СreateTableJournalOrg1List1(1, 1);
+                dBConnection.СreateTableJournalOrg1List2(1, 1);
                 dBConnection.InsertStartValuesOrgJournalList1(1, 1);
                 dBConnection.InsertStartValuesOrgJournalList2(1, 1);
             }
@@ -39,7 +41,7 @@ namespace TP.Model
             }
             finally
             {
-                workbook.SaveAs("Организация1\\Журнал1.xlsx");
+                workbook.SaveAs(@"Организация1\Журнал1.xlsx");
             }
         }
 
@@ -63,9 +65,9 @@ namespace TP.Model
             {
                 DBConnection dBConnection = new DBConnection();
                 // add exists
-                dBConnection.createTableJournalOrg1List0(idOrganization, idJournal);
-                dBConnection.createTableJournalOrg1List1(idOrganization, idJournal);
-                dBConnection.createTableJournalOrg1List2(idOrganization, idJournal);
+                dBConnection.СreateTableJournalOrg1List0(idOrganization, idJournal);
+                dBConnection.СreateTableJournalOrg1List1(idOrganization, idJournal);
+                dBConnection.СreateTableJournalOrg1List2(idOrganization, idJournal);
                 dBConnection.InsertStartValuesOrgJournalList1(1, idJournal);
                 dBConnection.InsertStartValuesOrgJournalList2(1, idJournal);
             }
@@ -176,6 +178,70 @@ namespace TP.Model
             worksheet.Style.Alignment.WrapText = true;
             worksheet.RowHeight = 70;
             return worksheet;
+        }
+
+        /// <summary>
+        /// Записать листы в таблицу
+        /// </summary>
+        /// <param name="idOrganization">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
+        /// <param name="dataList1">данные из таблицы листа1</param>
+        /// <param name="dataList2">данные из таблицы листа2</param>
+        public static void WriteToExcelList1(int idOrganization, int idJournal, List<Org1List1> dataList1, List<Org1List2> dataList2)
+        {
+            try
+            {
+                string filePath = $"Организация{idOrganization}\\Журнал{idJournal}.xlsx";
+                var workbook = new XLWorkbook(filePath);
+
+                var worksheet = workbook.Worksheet("Лист1");
+                for (int i = 0; i < dataList1.Count; i++)
+                {
+                    // i от 0, а заполняем строки после 1-й
+                    var row = i + 2;
+                    worksheet.Cell("A" + row).Value = dataList1[i].NumberProduct;
+                    worksheet.Cell("B" + row).Value = dataList1[i].NumberDateDirection;
+                    worksheet.Cell("C" + row).Value = dataList1[i].SamplingAct;
+                    worksheet.Cell("D" + row).Value = dataList1[i].SampleName;
+                    worksheet.Cell("E" + row).Value = dataList1[i].OrganizationName;
+                    worksheet.Cell("F" + row).Value = dataList1[i].NumberSampleWeightCapacity;
+                    worksheet.Cell("G" + row).Value = dataList1[i].NumberDateUnsuitabilitySamples;
+                    worksheet.Cell("H" + row).Value = dataList1[i].DateReceiptSample;
+                    worksheet.Cell("I" + row).Value = dataList1[i].NumberRegSample;
+                    worksheet.Cell("J" + row).Value = dataList1[i].FioResponsiblePersonTest;
+                    worksheet.Cell("K" + row).Value = dataList1[i].DateIssueSample;
+                    worksheet.Cell("L" + row).Value = dataList1[i].DateReturnSampleAfterTest;
+                    worksheet.Cell("M" + row).Value = dataList1[i].FioInsertRecord;
+                    worksheet.Cell("N" + row).Value = dataList1[i].Note;
+                    worksheet.Cell("O" + row).Value = dataList1[i].NumberProtocol;
+                    worksheet.Cell("P" + row).Value = dataList1[i].ProductType;
+                    worksheet.Cell("Q" + row).Value = dataList1[i].Applicant;
+                    worksheet.Cell("R" + row).Value = dataList1[i].Manufacturer;
+                }
+
+                worksheet = workbook.Worksheet("Лист2");
+                for (int i = 0; i < dataList2.Count; i++)
+                {
+                    var row = i + 2;
+                    worksheet.Cell("A" + row).Value = dataList2[i].NumberProduct;
+                    worksheet.Cell("B" + row).Value = dataList2[i].NumberProtocolTest;
+                    worksheet.Cell("C" + row).Value = dataList2[i].DateReturnSampleAfterTest;
+                    worksheet.Cell("D" + row).Value = dataList2[i].NumberDateDirection;
+                    worksheet.Cell("E" + row).Value = dataList2[i].NumberRegSample;
+                    worksheet.Cell("F" + row).Value = dataList2[i].NumberActUtil;
+                    worksheet.Cell("G" + row).Value = dataList2[i].DateActUtil;
+                    worksheet.Cell("H" + row).Value = dataList2[i].DateReturnSample;
+                    worksheet.Cell("I" + row).Value = dataList2[i].FioInsertRecord;
+                }
+
+                workbook.SaveAs(filePath);
+
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
     }
 }
