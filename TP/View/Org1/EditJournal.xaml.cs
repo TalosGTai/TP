@@ -59,7 +59,7 @@ namespace TP.View.Org1
                 TxtBoxRow6.Text
             };
             DBConnection dBConnection = new DBConnection();
-            dBConnection.InsertJournalOrg1ChangesRow(saveChanges);
+            dBConnection.InsertJournalOrgChangesRow(1, saveChanges);
         }
     }
 }

@@ -1,6 +1,9 @@
-﻿namespace TP.Model
+﻿using Org.BouncyCastle.Asn1.Mozilla;
+using System.Collections.Generic;
+
+namespace TP.Model
 {
-    internal class Org1List1 : NotifyPropertyChanged
+    public class Org1List1 : NotifyPropertyChanged
     {
         private string _numberProduct;
         private string _numberDateDirection;
@@ -20,6 +23,33 @@
         private string _productType;
         private string _applicant;
         private string _manufacturer;
+
+        public Org1List1()
+        {
+
+        }
+
+        public Org1List1(List<string> values) 
+        {
+            _numberProduct = values[0];
+            _numberDateDirection = values[1];
+            _samplingAct = values[2];
+            _sampleName = values[3];
+            _organizationName = values[4];
+            _numberSampleWeightCapacity = values[5];
+            _numberDateUnsuitabilitySamples = values[6];
+            _dateReceiptSample = values[7];
+            _numberRegSample = values[8];
+            _fioResponsiblePersonTest = values[9];
+            _dateIssueSample = values[10];
+            _dateReturnSampleAfterTest = values[11];
+            _fioInsertRecord = values[12];
+            _note = values[13];
+            _numberProtocol = values[14];
+            _productType = values[15];
+            _applicant = values[16];
+            _manufacturer = values[17];
+        }
 
         /// <summary>
         /// № п/п

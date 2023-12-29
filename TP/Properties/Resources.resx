@@ -198,4 +198,28 @@
   <data name="List2I" xml:space="preserve">
     <value>Ф.И.О. сотрудника, внесшего запись</value>
   </data>
+  <data name="Org1EditJournalStartValue1" xml:space="preserve">
+    <value>Общество с ограниченной ответственностью «Испытательный Центр Вектор»</value>
+  </data>
+  <data name="Org1EditJournalStartValue2" xml:space="preserve">
+    <value>Испытательный центр</value>
+  </data>
+  <data name="Org1EditJournalStartValue3" xml:space="preserve">
+    <value>«Журнал регистрации направлений и образцов 4»</value>
+  </data>
+  <data name="Org1EditJournalStartValue4_1" xml:space="preserve">
+    <value>Ответственный за ведение журнала</value>
+  </data>
+  <data name="Org1EditJournalStartValue4_2" xml:space="preserve">
+    <value>Дата начала       « 09 »           января            2023 г.</value>
+  </data>
+  <data name="Org1EditJournalStartValue5_1" xml:space="preserve">
+    <value>ФИО (подпись)*    Бузулуцкова С.А.</value>
+  </data>
+  <data name="Org1EditJournalStartValue5_2" xml:space="preserve">
+    <value>Дата окончания «      »        2023 г.</value>
+  </data>
+  <data name="Org1EditJournalStartValue6" xml:space="preserve">
+    <value>*подпись только для журналов, ведущихся на бумажном носителе</value>
+  </data>
 </root>

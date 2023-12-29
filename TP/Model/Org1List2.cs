@@ -1,6 +1,8 @@
-﻿namespace TP.Model
+﻿using System.Collections.Generic;
+
+namespace TP.Model
 {
-    internal class Org1List2 : NotifyPropertyChanged
+    public class Org1List2 : NotifyPropertyChanged
     {
         
         private string _numberProduct;       
@@ -12,6 +14,24 @@
         private string _dateActUtil;
         private string _dateReturnSample;
         private string _fioInsertRecord;
+
+        public Org1List2()
+        {
+
+        }
+
+        public Org1List2(List<string> values)
+        {
+            _numberProduct = values[0];
+            _numberProtocolTest = values[1];
+            _dateReturnSampleAfterTest = values[2];
+            _numberDateDirection = values[3];
+            _numberRegSample = values[4];
+            _numberActUtil = values[5];
+            _dateActUtil = values[6];
+            _dateReturnSample = values[7];
+            _fioInsertRecord = values[8];
+        }
 
         /// <summary>
         /// № п/п

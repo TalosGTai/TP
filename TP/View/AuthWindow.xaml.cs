@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.IO;
+using TP.Model;
+using System.Collections.Generic;
 
 namespace TP
 {
@@ -22,6 +14,20 @@ namespace TP
         public AuthWindow()
         {
             InitializeComponent();
+
+            int idOrg = 1;
+
+            DBConnection dBConnection = new DBConnection();
+            dBConnection.createTableEditJournal(idOrg);
+            if (dBConnection.SelectLastId(1) == 0 || dBConnection.SelectLastId(1) == -1)
+                dBConnection.InsertStartValuesEditJournalOrg(1);
+            for (int i = 0; i < 2; i++)
+            {
+                if (!File.Exists($"Организация{idOrg}\\Журнал{i + 1}.xlsx"))
+                {
+                    CreateNewJournal createNewJournal = new CreateNewJournal(1, i + 1);
+                }
+            }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -41,6 +47,11 @@ namespace TP
             MainWindow mainWindow = new MainWindow(idOrg);
             Close();
             mainWindow.Show();
+        }
+
+        private void Parametres_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

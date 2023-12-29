@@ -17,8 +17,8 @@ namespace TP.Control
             //DataSet ds = new DataSet("Org1");
             //DataTable dataTable = ds.Tables[0];
             //DataRow dataRow;
-            _journalList1 = GenerateTextColumnsList1();
-            _journalList2 = GenerateTextColumnsList2();
+            //_journalList1 = GenerateTextColumnsList1();
+            //_journalList2 = GenerateTextColumnsList2();
         }
         /// <summary>
         /// Лист журнала 1
@@ -40,29 +40,29 @@ namespace TP.Control
         /// <returns>Таблица DataGrid</returns>
         public DataGrid GenerateTextColumnsList1()
         {
-            Org1List1 list1 = new Org1List1();
+            //Org1List1 list1 = new Org1List1();
             DataGrid dataGrid = new DataGrid();
 
-            dataGrid.Columns.Add(TextColumnA(list1));
-            dataGrid.Columns.Add(TextColumnB(list1));
-            dataGrid.Columns.Add(TextColumnC(list1));
-            dataGrid.Columns.Add(TextColumnD(list1));
-            dataGrid.Columns.Add(TextColumnE(list1));
-            dataGrid.Columns.Add(TextColumnF(list1));
-            dataGrid.Columns.Add(TextColumnG(list1));
-            dataGrid.Columns.Add(TextColumnH(list1));
-            dataGrid.Columns.Add(TextColumnI(list1));
-            dataGrid.Columns.Add(TextColumnJ(list1));
-            dataGrid.Columns.Add(TextColumnK(list1));
-            dataGrid.Columns.Add(TextColumnL(list1));
-            dataGrid.Columns.Add(TextColumnM(list1));
-            dataGrid.Columns.Add(TextColumnN(list1));
-            dataGrid.Columns.Add(TextColumnO(list1));
-            dataGrid.Columns.Add(TextColumnP(list1));
-            dataGrid.Columns.Add(TextColumnQ(list1));
-            dataGrid.Columns.Add(TextColumnR(list1));
-            dataGrid.CanUserReorderColumns = false;
-            dataGrid.CanUserSortColumns = false;
+            //dataGrid.Columns.Add(TextColumnA(list1));
+            //dataGrid.Columns.Add(TextColumnB(list1));
+            //dataGrid.Columns.Add(TextColumnC(list1));
+            //dataGrid.Columns.Add(TextColumnD(list1));
+            //dataGrid.Columns.Add(TextColumnE(list1));
+            //dataGrid.Columns.Add(TextColumnF(list1));
+            //dataGrid.Columns.Add(TextColumnG(list1));
+            //dataGrid.Columns.Add(TextColumnH(list1));
+            //dataGrid.Columns.Add(TextColumnI(list1));
+            //dataGrid.Columns.Add(TextColumnJ(list1));
+            //dataGrid.Columns.Add(TextColumnK(list1));
+            //dataGrid.Columns.Add(TextColumnL(list1));
+            //dataGrid.Columns.Add(TextColumnM(list1));
+            //dataGrid.Columns.Add(TextColumnN(list1));
+            //dataGrid.Columns.Add(TextColumnO(list1));
+            //dataGrid.Columns.Add(TextColumnP(list1));
+            //dataGrid.Columns.Add(TextColumnQ(list1));
+            //dataGrid.Columns.Add(TextColumnR(list1));
+            //dataGrid.CanUserReorderColumns = false;
+            //dataGrid.CanUserSortColumns = false;
 
 
             return dataGrid;
@@ -73,7 +73,7 @@ namespace TP.Control
         /// <returns>Таблица DataGrid</returns>
         public DataGrid GenerateTextColumnsList2()
         {
-            Org1List2 list2 = new Org1List2();
+            //Org1List2 list2 = new Org1List2();
             DataGrid dataGrid = new DataGrid();
 
             //dataGrid.Columns.Add(TextColumnA(list2));

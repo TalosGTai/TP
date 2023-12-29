@@ -140,38 +140,38 @@
         <DataGrid x:Name="TableJournals" Grid.Row="3" Grid.Column="0"
                   Grid.ColumnSpan="3" Grid.RowSpan="5">
                 <DataGrid.Columns>
-                <DataGridTextColumn Header="№ п/п" Binding="{Binding numberProduct, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="№ и дата направления" Binding="{Binding numberDateDirection, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Акт отбора образцов (номер, дата)" Binding="{Binding samplingAct, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Наименование продукции (образца)" Binding="{Binding sampleName, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Наименование организации заказчика" Binding="{Binding organizationName, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Количество образцов/масса/обьем" Binding="{Binding numberSampleWeightCapacity, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Номер и дата акта о непригодности образцов (при наличии)" Binding="{Binding numberDateUnsuitabilitySamples, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Дата поступления образцов" Binding="{Binding dateReceiptSample, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Регистрационный номер образца" Binding="{Binding numberRegSample, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="ФИО ответственного исполнителя, осуществляющего проведение испытаний" Binding="{Binding fioResponsiblePersonTest, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Дата выдачи образца ответственному исполнителю осуществляющего проведение испытаний" Binding="{Binding dateIssueSample, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Дата возврата образца после испытаний" Binding="{Binding dateReturnSampleAfterTest, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Ф.И.О. сотрудника, внесшего запись" Binding="{Binding fioInsertRecord, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Примечание" Binding="{Binding note, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Номер протокола" Binding="{Binding numberProtocol, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Вид продукции" Binding="{Binding productType, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Заявитель" Binding="{Binding applicant, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Изготовитель" Binding="{Binding manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="№ п/п" Binding="{Binding NumberProduct, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="№ и дата направления" Binding="{Binding NumberDateDirection, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Акт отбора образцов (номер, дата)" Binding="{Binding SamplingAct, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Наименование продукции (образца)" Binding="{Binding SampleName, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Наименование организации заказчика" Binding="{Binding OrganizationName, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Количество образцов/масса/обьем" Binding="{Binding NumberSampleWeightCapacity, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Номер и дата акта о непригодности образцов (при наличии)" Binding="{Binding NumberDateUnsuitabilitySamples, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Дата поступления образцов" Binding="{Binding DateReceiptSample, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Регистрационный номер образца" Binding="{Binding NumberRegSample, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="ФИО ответственного исполнителя, осуществляющего проведение испытаний" Binding="{Binding FioResponsiblePersonTest, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Дата выдачи образца ответственному исполнителю осуществляющего проведение испытаний" Binding="{Binding DateIssueSample, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Дата возврата образца после испытаний" Binding="{Binding DateReturnSampleAfterTest, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Ф.И.О. сотрудника, внесшего запись" Binding="{Binding FioInsertRecord, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Примечание" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Номер протокола" Binding="{Binding NumberProtocol, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Вид продукции" Binding="{Binding ProductType, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Заявитель" Binding="{Binding Applicant, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Изготовитель" Binding="{Binding Manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="TableJournalsList2" Grid.Row="3" Grid.Column="0"
           Grid.ColumnSpan="3" Grid.RowSpan="5" Visibility="Hidden">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="№ п/п" Binding="{Binding numberProduct, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Номер протокола испытаний" Binding="{Binding numberProtocolTest, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Дата протокола испытаний" Binding="{Binding dateReturnSampleAfterTest, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="№ и дата направления" Binding="{Binding numberDateDirection, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Регистрационный номер образца" Binding="{Binding numberRegSample, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Номер акта на списание (утилизацию)/возврата образцов" Binding="{Binding numberActUtil, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Дата акта на списание (утилизацию)/возврата образцов" Binding="{Binding dateActUtil, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Дата выдачи протокола испытаний" Binding="{Binding dateReturnSample, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Ф.И.О. сотрудника, внесшего запись" Binding="{Binding fioInsertRecord, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="№ п/п" Binding="{Binding NumberProduct, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Номер протокола испытаний" Binding="{Binding NumberProtocolTest, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Дата протокола испытаний" Binding="{Binding DateReturnSampleAfterTest, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="№ и дата направления" Binding="{Binding NumberDateDirection, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Регистрационный номер образца" Binding="{Binding NumberRegSample, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Номер акта на списание (утилизацию)/возврата образцов" Binding="{Binding NumberActUtil, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Дата акта на списание (утилизацию)/возврата образцов" Binding="{Binding DateActUtil, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Дата выдачи протокола испытаний" Binding="{Binding DateReturnSample, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Ф.И.О. сотрудника, внесшего запись" Binding="{Binding FioInsertRecord, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

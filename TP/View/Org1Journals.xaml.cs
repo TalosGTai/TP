@@ -9,6 +9,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using TP.Model.Scripts;
 using TP.Control;
+using System.Data.Common;
 
 namespace TP.View
 {
@@ -23,9 +24,6 @@ namespace TP.View
 
         public Org1Journals()
         {
-            InitializeComponent();
-            DataContext = this;
-
             _journalsList1 = new List<Org1List1>();
             _journalsList2 = new List<Org1List2>();
             _journalsList = new List<(List<Org1List1>, List<Org1List2>)>
@@ -33,7 +31,11 @@ namespace TP.View
                 (_journalsList1, _journalsList2),
                 (_journalsList1, _journalsList2)
             };
-            TableJournals.ItemsSource = _journalsList[0].Item1;
+
+            InitializeComponent();
+            //TableJournals.ItemsSource = _journalsList[0].Item1;
+            TableJournals.ItemsSource = _journalsList1;
+            DataContext = this;
 
             for (int i = 0; i < Math.Max(GetCountJournals(), 2); i++)
             {
@@ -44,9 +46,9 @@ namespace TP.View
                 if (i >= 2)
                 {
                     CmbBoxChoiceJournal.Items.Add("Журнал " + (i + 1).ToString());
-                    List<Org1List1> list1 = new List<Org1List1>();
-                    List<Org1List2> list2 = new List<Org1List2>();
-                    _journalsList.Add((list1, list2));
+                    //List<Org1List1> list1 = new List<Org1List1>();
+                    //List<Org1List2> list2 = new List<Org1List2>();
+                    //_journalsList.Add((list1, list2));
                 }
             }
         }
@@ -92,25 +94,35 @@ namespace TP.View
         private void ChangeSourceTable(int idJournal, int idList)
         {
             string currentDirectory = Environment.CurrentDirectory;
-            if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null)) 
+            GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
+            if (_journalsList != null)
+                _journalsList.Clear();
+            List<Org1List1> list1 = new List<Org1List1>();
+            List<Org1List2> list2 = new List<Org1List2>();
+            list1 = getListJournalFromDB.GetList1();
+            list2 = getListJournalFromDB.GetList2();
+
+            //_journalsList.Add((list1, list2));
+            if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null) && !(TableJournals is null)) 
             {
                 switch (idList)
                 {
                     case 1:
-                        TableJournals.ItemsSource = _journalsList[idJournal].Item1;
+                        //TableJournals.ItemsSource = _journalsList[idJournal].Item1;
+                        TableJournals.ItemsSource = list1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
-                        GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
                         //ExcelParser excelParser1 = new ExcelParser(currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx", 2);
                         break;
                     case 2:
-                        TableJournalsList2.ItemsSource = _journalsList[idJournal].Item2;
+                        //TableJournalsList2.ItemsSource = _journalsList[idJournal].Item2;
+                        TableJournalsList2.ItemsSource = list2;
                         TableJournals.Visibility = Visibility.Hidden;
                         TableJournalsList2.Visibility = Visibility.Visible;
                         //ExcelParser excelParser2 = new ExcelParser(currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx", 3);
                         break;
                     default:
-                        TableJournals.ItemsSource = _journalsList[0].Item1;
+                        TableJournals.ItemsSource = list1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
                         //ExcelParser excelParser3 = new ExcelParser(currentDirectory + "\\Организация1\\Журнал1.xlsx", 2);

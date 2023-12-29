@@ -6,7 +6,7 @@ namespace TP.Model
     /// <summary>
     /// Уведомление об изменении свойства
     /// </summary>
-    internal class NotifyPropertyChanged : INotifyPropertyChanged
+    public class NotifyPropertyChanged : INotifyPropertyChanged
     {
         /// <summary>
         /// Событие изменения свойства

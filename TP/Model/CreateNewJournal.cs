@@ -30,6 +30,8 @@ namespace TP.Model
                 dBConnection.createTableJournalOrg1List0(1, 1);
                 dBConnection.createTableJournalOrg1List1(1, 1);
                 dBConnection.createTableJournalOrg1List2(1, 1);
+                dBConnection.InsertStartValuesOrgJournalList1(1, 1);
+                dBConnection.InsertStartValuesOrgJournalList2(1, 1);
             }
             catch
             {
@@ -64,6 +66,8 @@ namespace TP.Model
                 dBConnection.createTableJournalOrg1List0(idOrganization, idJournal);
                 dBConnection.createTableJournalOrg1List1(idOrganization, idJournal);
                 dBConnection.createTableJournalOrg1List2(idOrganization, idJournal);
+                dBConnection.InsertStartValuesOrgJournalList1(1, idJournal);
+                dBConnection.InsertStartValuesOrgJournalList2(1, idJournal);
             }
             catch
             {

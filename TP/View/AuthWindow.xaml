@@ -61,6 +61,8 @@
               BorderThickness="2" 
               BorderBrush="Black">
             <MenuItem Header="_Файл">
+                <MenuItem x:Name="Parametres" Header="Параметры"
+                          Click="Parametres_Click"/>
                 <MenuItem x:Name="Exit" Header="_Выход"
                           Click="Exit_Click"/>
             </MenuItem>

@@ -302,5 +302,77 @@ namespace TP.Properties {
                 return ResourceManager.GetString("List2I", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Общество с ограниченной ответственностью «Испытательный Центр Вектор».
+        /// </summary>
+        public static string Org1EditJournalStartValue1 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Испытательный центр.
+        /// </summary>
+        public static string Org1EditJournalStartValue2 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на «Журнал регистрации направлений и образцов 4».
+        /// </summary>
+        public static string Org1EditJournalStartValue3 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Ответственный за ведение журнала.
+        /// </summary>
+        public static string Org1EditJournalStartValue4_1 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue4_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Дата начала       « 09 »           января            2023 г..
+        /// </summary>
+        public static string Org1EditJournalStartValue4_2 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue4_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на ФИО (подпись)*    Бузулуцкова С.А..
+        /// </summary>
+        public static string Org1EditJournalStartValue5_1 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue5_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Дата окончания «      »        2023 г..
+        /// </summary>
+        public static string Org1EditJournalStartValue5_2 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue5_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на *подпись только для журналов, ведущихся на бумажном носителе.
+        /// </summary>
+        public static string Org1EditJournalStartValue6 {
+            get {
+                return ResourceManager.GetString("Org1EditJournalStartValue6", resourceCulture);
+            }
+        }
     }
 }

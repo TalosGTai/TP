@@ -12,8 +12,8 @@ namespace TP.Model
         public string GetJournalTitleRow1()
         {
             DBConnection dBConnection = new DBConnection();
-            dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "1");
-            return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "1");
+            dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "1");
+            return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "1");
         }
         /// <summary>
         /// Получить 2 строку заголовка журнала
@@ -22,8 +22,8 @@ namespace TP.Model
         public string GetJournalTitleRow2()
         {
             DBConnection dBConnection = new DBConnection();
-            dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "2");
-            return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "2");
+            dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "2");
+            return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "2");
         }
         /// <summary>
         /// Получить 3 строку заголовка журнала
@@ -32,8 +32,8 @@ namespace TP.Model
         public string GetJournalTitleRow3()
         {
             DBConnection dBConnection = new DBConnection();
-            dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "3");
-            return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "3");
+            dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "3");
+            return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "3");
         }
         /// <summary>
         /// Получить 4 строку заголовка журнала
@@ -43,9 +43,9 @@ namespace TP.Model
         {
             DBConnection dBConnection = new DBConnection();
             string value1, value2;
-            value1 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "4_1");
+            value1 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "4_1");
             // подчёркивания для строки
-            value2 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "4_2");
+            value2 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "4_2");
             return new Tuple<string, string>(value1, value2);
         }
         /// <summary>
@@ -57,9 +57,9 @@ namespace TP.Model
             DBConnection dBConnection = new DBConnection();
             string value1, value2;
             // подчёркивания для строки
-            value1 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "5_1");
+            value1 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "5_1");
             // подчёркивания для строки
-            value2 = dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "5_2"); ;
+            value2 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "5_2"); ;
             return new Tuple<string, string>(value1, value2);
         }
         /// <summary>
@@ -69,8 +69,8 @@ namespace TP.Model
         public string GetJournalTitleRow6()
         {
             DBConnection dBConnection = new DBConnection();
-            dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "6");
-            return dBConnection.SelectJournalOrg1ChangesRowByColumnId(dBConnection.SelectLastId(), "6");
+            dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "6");
+            return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "6");
         }
 
     }
