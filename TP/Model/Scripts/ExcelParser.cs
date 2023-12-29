@@ -9,6 +9,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TP.Model.Scripts
 {
+    /// <summary>
+    /// Excel парсер
+    /// </summary>
     public class ExcelParser
     {
         Excel.Application app = new Excel.Application();
@@ -30,6 +33,10 @@ namespace TP.Model.Scripts
             GetDataFromExcel(idList);
         }
 
+        /// <summary>
+        /// Получить данные из Excel
+        /// </summary>
+        /// <param name="numberList">номер листа</param>
         public void GetDataFromExcel(int numberList)
         {
             int iWorksheet = 0;

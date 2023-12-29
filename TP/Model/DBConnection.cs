@@ -14,6 +14,9 @@ namespace TP.Model
     {
         internal class Configuration
         {
+            /// <summary>
+            /// Строка подключения к БД
+            /// </summary>
             public string ConnectionString { get; set; }
         }
 
@@ -96,7 +99,11 @@ namespace TP.Model
             return "";
         }
 
-        public void createTableEditJournal(int idOrg)
+        /// <summary>
+        /// Создать таблицу для EditJournal
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        public void СreateTableEditJournal(int idOrg)
         {
             string query = $"create table if not exists laboratory.org{idOrg}editjournal (";
             query += $"idorg{idOrg}editjournal int NOT NULL AUTO_INCREMENT,";
@@ -122,7 +129,12 @@ namespace TP.Model
             }
         }
 
-        public void createTableJournalOrg1List0(int idOrg, int idJournal)
+        /// <summary>
+        /// Создать таблицу для листа0 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
+        public void СreateTableJournalOrg1List0(int idOrg, int idJournal)
         {
             string query = $"create table if not exists laboratory.org{idOrg}journal{idJournal}list0 (";
             query += $"org{idOrg}idjournal{idJournal}list0 int NOT NULL AUTO_INCREMENT,";
@@ -148,7 +160,12 @@ namespace TP.Model
             }
         }
 
-        public void createTableJournalOrg1List1(int idOrg, int idJournal)
+        /// <summary>
+        /// Создать таблицу листа1 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
+        public void СreateTableJournalOrg1List1(int idOrg, int idJournal)
         {
             string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
             query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
@@ -184,7 +201,12 @@ namespace TP.Model
             }
         }
 
-        public void createTableJournalOrg1List2(int idOrg, int idJournal)
+        /// <summary>
+        /// Создать таблицу для листа2 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
+        public void СreateTableJournalOrg1List2(int idOrg, int idJournal)
         {
             string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
             query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
@@ -230,6 +252,10 @@ namespace TP.Model
             }
         }
 
+        /// <summary>
+        /// Внести начальные значения в EditJournal
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
         public void InsertStartValuesEditJournalOrg(int idOrg)
         {
             try
@@ -252,6 +278,11 @@ namespace TP.Model
             }
         }
 
+        /// <summary>
+        /// Внести начальные значения в лист1 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организцаии</param>
+        /// <param name="idJournal">номер журнала</param>
         public void InsertStartValuesOrgJournalList1(int idOrg, int idJournal)
         {
             try
@@ -280,6 +311,11 @@ namespace TP.Model
             }
         }
 
+        /// <summary>
+        /// Внести начальные значения в лист2 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
         public void InsertStartValuesOrgJournalList2(int idOrg, int idJournal)
         {
             try
@@ -304,6 +340,10 @@ namespace TP.Model
             }
         }
 
+        /// <summary>
+        /// Получить все таблицы бд
+        /// </summary>
+        /// <returns>Список таблиц через | </returns>
         public string GetAllTables()
         {
             try
@@ -328,6 +368,13 @@ namespace TP.Model
             return "";
         }
 
+        /// <summary>
+        /// Получить лист журнала
+        /// </summary>
+        /// <param name="idOrg">идентификатор/номер организации</param>
+        /// <param name="idJournal">идентификатор/номер журнала</param>
+        /// <param name="idList">идентификатор/номер листа</param>
+        /// <returns>Таблица с данными листа</returns>
         public DataTable GetListJournalOrg(int idOrg, int idJournal, int idList)
         {
             try
