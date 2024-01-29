@@ -94,7 +94,7 @@ namespace TP.View
         private void ChangeSourceTable(int idJournal, int idList)
         {
             string currentDirectory = Environment.CurrentDirectory;
-            GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
+            GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, idList);
             if (_journalsList != null)
                 _journalsList.Clear();
             List<Org1List1> list1 = new List<Org1List1>();
@@ -169,6 +169,18 @@ namespace TP.View
             {
                 Marshal.ReleaseComObject(application);
             }
+        }
+
+        private void CombineJournal_Click(object sender, RoutedEventArgs e)
+        {
+            var idJournal = CmbBoxChoiceJournal.SelectedIndex + 1;
+
+            var getList1JournalFromDB = new GetListJournalFromDB(1, idJournal, 1);
+            var getList2JournalFromDB = new GetListJournalFromDB(1, idJournal, 2);
+            var list1 = getList1JournalFromDB.GetList1();
+            var list2 = getList2JournalFromDB.GetList2();
+
+            CreateNewJournal.WriteToExcelList1(1, idJournal, list1, list2);
         }
     }
 }

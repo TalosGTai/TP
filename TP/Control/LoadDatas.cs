@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Windows.Data;
 using TP.Model;
 
@@ -7,6 +8,7 @@ namespace TP.Control
     /// <summary>
     /// Класс работы с колонками DataGrid
     /// </summary>
+    [Obsolete("Этот класс не используется")]
     internal class LoadDatas
     {
         private DataGrid _journalList1;
