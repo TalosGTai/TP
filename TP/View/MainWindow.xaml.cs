@@ -88,11 +88,11 @@ namespace TP
         private void EditJournalsTitul_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (idOrg == 1)
-                ViewPages.Content = new EditJournal();
+                ViewPages.Content = new ChooseChanges();
             else if (idOrg == 2)
-                ViewPages.Content = new EditJournal();
+                ViewPages.Content = new ChooseChanges();
             else
-                MessageBox.Show("Ошибка загрузки страницы изменения журнала!");
+                MessageBox.Show("Ошибка загрузки страницы изменения журналов и протоколов!");
         }
     }
 }

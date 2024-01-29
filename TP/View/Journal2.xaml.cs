@@ -41,10 +41,5 @@ namespace TP.View
                 }
             }
         }
-
-        private void TableJournal2_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-
-        }
     }
 }

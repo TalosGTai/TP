@@ -214,6 +214,41 @@ namespace TP.Model.Scripts
             return false;
         }
 
+        private Dictionary<string, string> SetDefaultValuesList1(Dictionary<string, string> listValues)
+        {
+            listValues["B"] = "";
+            listValues["C"] = "";
+            listValues["D"] = "";
+            listValues["E"] = "";
+            listValues["F"] = "";
+            listValues["G"] = "";
+            listValues["H"] = "";
+            listValues["I"] = "";
+            listValues["J"] = "";
+            listValues["K"] = "";
+            listValues["L"] = "";
+            listValues["M"] = "";
+            listValues["N"] = "";
+            listValues["O"] = "";
+            listValues["P"] = "";
+            listValues["Q"] = "";
+            listValues["R"] = "";
+            return listValues;
+        }
+
+        private Dictionary<string, string> SetDefaultValuesList2(Dictionary<string, string> listValues)
+        {
+            listValues["B"] = "";
+            listValues["C"] = "";
+            listValues["D"] = "";
+            listValues["E"] = "";
+            listValues["F"] = "";
+            listValues["G"] = "";
+            listValues["H"] = "";
+            listValues["I"] = "";
+            return listValues;
+        }
+
         /// <summary>
         /// Заполняем колонки листа 1 и листа 2
         /// </summary>
@@ -226,6 +261,8 @@ namespace TP.Model.Scripts
             bool columnB, columnC, columnD, columnE, columnF, columnQ, columnR, columnDHelp, columnQHelp;
 
             columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp = false;
+            list1Values = SetDefaultValuesList1(list1Values);
+            list2Values = SetDefaultValuesList2(list2Values);
 
             foreach (Paragraph paragraph in paragraphs)
             {
@@ -301,6 +338,15 @@ namespace TP.Model.Scripts
                     }
                 }
             }
+            list1Values["E"] = list1Values["Q"];
+            list2Values["B"] = list1Values["O"];
+            list2Values["C"] = list1Values["L"];
+            list2Values["D"] = list1Values["B"];
+            list2Values["E"] = list1Values["I"];
+            list2Values["F"] = list2Values["B"];
+            list2Values["G"] = list2Values["C"];
+            list2Values["H"] = list2Values["C"];
+            list2Values["I"] = list1Values["M"];
             return new Tuple<Dictionary<string, string>, Dictionary<string, string>>(list1Values, list2Values);
         }
     }

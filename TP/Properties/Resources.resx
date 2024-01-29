@@ -222,4 +222,132 @@
   <data name="Org1EditJournalStartValue6" xml:space="preserve">
     <value>*подпись только для журналов, ведущихся на бумажном носителе</value>
   </data>
+  <data name="Protocol1" xml:space="preserve">
+    <value>Общество с ограниченной ответственностью</value>
+  </data>
+  <data name="Protocol10" xml:space="preserve">
+    <value>УТВЕРЖДАЮ</value>
+  </data>
+  <data name="Protocol11" xml:space="preserve">
+    <value>Руководитель испытательного центра</value>
+  </data>
+  <data name="Protocol12" xml:space="preserve">
+    <value>ООО «Испытательный Центр Вектор»</value>
+  </data>
+  <data name="Protocol13" xml:space="preserve">
+    <value>_______________Иванов Иван____________________</value>
+  </data>
+  <data name="Protocol14" xml:space="preserve">
+    <value>Подпись  инициалы, фамилия</value>
+  </data>
+  <data name="Protocol15" xml:space="preserve">
+    <value>_________________________14.09.2029_______________</value>
+  </data>
+  <data name="Protocol16" xml:space="preserve">
+    <value>Дата утверждения</value>
+  </data>
+  <data name="Protocol17" xml:space="preserve">
+    <value>М.П.</value>
+  </data>
+  <data name="Protocol18" xml:space="preserve">
+    <value>ПРОТОКОЛ ИСПЫТАНИЙ</value>
+  </data>
+  <data name="Protocol19" xml:space="preserve">
+    <value>Число страниц:</value>
+  </data>
+  <data name="Protocol2" xml:space="preserve">
+    <value>«Испытательный Центр Вектор»</value>
+  </data>
+  <data name="Protocol20" xml:space="preserve">
+    <value>Регистрационный (условный) номер, характеристика испытуемого образца:</value>
+  </data>
+  <data name="Protocol21" xml:space="preserve">
+    <value>Дата получения образца:</value>
+  </data>
+  <data name="Protocol22" xml:space="preserve">
+    <value>Место проведения испытаний: 420000, РОССИЯ, Татарстан Респ, Зеленодольский р-н, Осиновское сельское поселение, территория промышленная площадка Индустриальный парк М7, здание 8
+420000, РОССИЯ, Респ Татарстан, Зеленодольский р-н, муниципальный, сельское поселение Осиновское, территория ПромышленнаяПлощадкаИндустриальныйПаркМ7, здание 8/1, помещения 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34 ,35,36,37,38,51,52, 53,54,55,56,57,58,59</value>
+  </data>
+  <data name="Protocol23" xml:space="preserve">
+    <value>Сведения о заказчике:</value>
+  </data>
+  <data name="Protocol24" xml:space="preserve">
+    <value>Сведения об изготовителе:</value>
+  </data>
+  <data name="Protocol25" xml:space="preserve">
+    <value>Реквизиты сопроводительного документа:</value>
+  </data>
+  <data name="Protocol26" xml:space="preserve">
+    <value>Обозначения и наименования нормативных документов, устанавливающих методы испытаний:</value>
+  </data>
+  <data name="Protocol27" xml:space="preserve">
+    <value>Сведения об отборе образцов: Образец(ы) предоставлен(ы) заказчиком;</value>
+  </data>
+  <data name="Protocol28" xml:space="preserve">
+    <value>Реквизиты акта отбора образцов (при необходимости)-</value>
+  </data>
+  <data name="Protocol29" xml:space="preserve">
+    <value>Даты проведения испытаний: </value>
+  </data>
+  <data name="Protocol3" xml:space="preserve">
+    <value>Адрес места нахождения юридического лица:</value>
+  </data>
+  <data name="Protocol30" xml:space="preserve">
+    <value>Условия проведения испытаний: </value>
+  </data>
+  <data name="Protocol31" xml:space="preserve">
+    <value>Относительная влажность воздуха: (30-80) %, температура воздуха: (15-25) °С, атмосферное давление (630-800) мм.рт.ст., частота: (49,9-50,1) Гц, напряжение: (200-240) В.</value>
+  </data>
+  <data name="Protocol32" xml:space="preserve">
+    <value>Дополнительная информация:</value>
+  </data>
+  <data name="Protocol33" xml:space="preserve">
+    <value>Внимание! Результаты испытаний, зафиксированные в протоколе, относятся только к образцам, предоставленным заказчиком и подвергнутым испытаниям. Испытательная лаборатория не несет ответственности за информацию, предоставленную заказчиком. Протокол испытаний не может быть воспроизведен частично или полностью без письменного разрешения лаборатории.</value>
+  </data>
+  <data name="Protocol34" xml:space="preserve">
+    <value>В случаях, если необходимость выдачи заключений о соответствии и правило принятия решения приведено в методе испытаний, заявления о соответствии требованиям или спецификации приведены в разделе «Результаты испытаний». В иных случаях, в выдаче заявлений о соответствии нет необходимости.</value>
+  </data>
+  <data name="Protocol35" xml:space="preserve">
+    <value>Конец протокола испытаний</value>
+  </data>
+  <data name="Protocol36" xml:space="preserve">
+    <value>Результаты испытаний:</value>
+  </data>
+  <data name="Protocol37" xml:space="preserve">
+    <value>№ п/п</value>
+  </data>
+  <data name="Protocol38" xml:space="preserve">
+    <value>Определяемый показатель, единица измерения</value>
+  </data>
+  <data name="Protocol39" xml:space="preserve">
+    <value>НД на методы испытаний</value>
+  </data>
+  <data name="Protocol4" xml:space="preserve">
+    <value>422527, РОССИЯ, РЕСП. ТАТАРСТАН, Зеленодольский Р-Н, ТЕР. ПРОМЫШЛЕННАЯПЛОЩАДКАИНДУСТРИАЛЬНЫЙПАРКМ7, ЗД. 8</value>
+  </data>
+  <data name="Protocol40" xml:space="preserve">
+    <value>Средства измерения/испытательное оборудование</value>
+  </data>
+  <data name="Protocol41" xml:space="preserve">
+    <value>ПДК и нормы
+(при необходимости)</value>
+  </data>
+  <data name="Protocol42" xml:space="preserve">
+    <value>Результаты испытаний</value>
+  </data>
+  <data name="Protocol5" xml:space="preserve">
+    <value>Адрес (адреса) места (мест) осуществления деятельности:420000, РОССИЯ, Респ Татарстан, Зеленодольский р-н, муниципальный, сельское поселение Осиновское, территория ПромышленнаяПлощадкаИндустриальныйПаркМ7, здание 8/1, помещения 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34 ,35,36,37,38,51,52, 53,54,55,56,57,58,59</value>
+  </data>
+  <data name="Protocol6" xml:space="preserve">
+    <value>420000, РОССИЯ, Татарстан Респ, Зеленодольский р-н, Осиновское сельское поселение, территория промышленная площадка Индустриальный парк М7, здание 8</value>
+  </data>
+  <data name="Protocol7" xml:space="preserve">
+    <value>Уникальный номер записи об аккредитации в реестре аккредитованных лиц № RA.RU.21ОМ79 от 28.03.2022</value>
+  </data>
+  <data name="Protocol8" xml:space="preserve">
+    <value>телефон: +7 9299752698</value>
+  </data>
+  <data name="Protocol9" xml:space="preserve">
+    <value>e-mail: icvektor@bk.ru</value>
+  </data>
 </root>

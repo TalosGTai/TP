@@ -1,21 +1,14 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TP.Control;
 using TP.Model;
 using TP.Model.Scripts;
+using System.IO;
+using TP.Model.Org1;
 
 namespace TP.View
 {
@@ -24,42 +17,90 @@ namespace TP.View
     /// </summary>
     public partial class NewProtocol : Page
     {
+        private int _idOrg;
         private int _idProtocol;
+        private bool _isDirection;
+        private bool _isAdditionals;
+        private DocParser _direction;
+        private DocParser _additionals;
+        private List<string> _pathAdditionals;
+        private Tuple<Dictionary<string, string>, Dictionary<string, string>> _journal;
 
         public NewProtocol()
         {
             InitializeComponent();
+            _idProtocol = 1;
+            _isDirection = false;
+            _isAdditionals = false;
         }
 
         public NewProtocol(int idProtocol)
         {
             InitializeComponent();
             _idProtocol = idProtocol;
+            _isDirection = false;
+            _isAdditionals = false;
+        }
+
+        private void CheckProtocolReady()
+        {
+            if (!_isDirection)
+                MessageBox.Show("Для начала выберете направление.");
+            else if (!_isAdditionals)
+                MessageBox.Show("Для начала выберете приложения.");
         }
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
-            // Создание Протокола
-            DocParser docParser = new DocParser("Направление.docx");
-            FunctionsPrint functionsPrint = new FunctionsPrint();
-            functionsPrint.PrintTupleDictionary(docParser.JournalParse);
-            //CreateNewJournal createNewJournal = new CreateNewJournal();
+            if (_isDirection && _isAdditionals)
+            {
+                //DocParser docParser = new DocParser("Направление.docx");
+                //FunctionsPrint functionsPrint = new FunctionsPrint();
+                //functionsPrint.PrintTupleDictionary(docParser.JournalParse);
+                CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, _idOrg, _idProtocol);
+            }
+            CheckProtocolReady();
         }
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            openFileDialog.Filter = "Word (*.docx)|*.docx|All files (*.*)|*.*";
+            _pathAdditionals = new List<string>();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                _isAdditionals = true;
+                foreach (string filename in openFileDialog.FileNames)
+                    _pathAdditionals.Add(filename);
+            }
         }
 
         private void BtnDirection_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Excel 2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            openFileDialog.Filter = "Word (*.docx)|*.docx|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                // LabelDirection.Visibility = Visibility.Visible;
-                // Org
+                _isDirection = true;
+                _direction = new DocParser(openFileDialog.FileName);
+                _journal = _direction.JournalParse;
             }
+        }
+
+        private void CreateProtocolFileT()
+        {
+            //_journalList1["O"];
+            //_journalList1["I"];
+            //_journalList1["D"];
+            //_journalList1["H"];
+            //_journalList1["Q"];
+            //_journalList1["B"];
+            //_journalList1["R"];
+            // Информация //
+            // _journalList1["C"];
+            // _journalList1["H"]; - _journalList2["C"];
+            // 
         }
     }
 }

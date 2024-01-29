@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Cells, Version=24.1.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Cells.24.1.0\lib\net40\Aspose.Cells.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -207,10 +210,14 @@
     <Compile Include="Model\NotifyPropertyChanged.cs" />
     <Compile Include="Model\Org1List2.cs" />
     <Compile Include="Model\CreateNewJournal.cs" />
+    <Compile Include="Model\Org1\CreateProtocolFile.cs" />
     <Compile Include="Model\Org2List2.cs" />
     <Compile Include="Model\Org2List1.cs" />
     <Compile Include="Model\Scripts\DocParser.cs" />
     <Compile Include="Model\Scripts\ExcelParser.cs" />
+    <Compile Include="View\ChooseChanges.xaml.cs">
+      <DependentUpon>ChooseChanges.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FilesPage.xaml.cs">
       <DependentUpon>FilesPage.xaml</DependentUpon>
     </Compile>
@@ -223,10 +230,17 @@
     <Compile Include="View\Org2\Org2Journals.xaml.cs">
       <DependentUpon>Org2Journals.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ProtocolChanges.xaml.cs">
+      <DependentUpon>ProtocolChanges.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Protocols.xaml.cs">
       <DependentUpon>Protocols.xaml</DependentUpon>
     </Compile>
     <Page Include="View\AuthWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ChooseChanges.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -282,6 +296,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ProtocolChanges.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Protocols.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -318,7 +336,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Datas\Journals\" />
-    <Folder Include="Model\Org1\" />
     <Folder Include="Model\Org2\" />
   </ItemGroup>
   <ItemGroup>

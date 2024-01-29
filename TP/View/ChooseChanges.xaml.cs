@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using TP.Model;
+using TP.View.Org1;
+
+namespace TP.View
+{
+    /// <summary>
+    /// Логика взаимодействия для ChooseChanges.xaml
+    /// </summary>
+    public partial class ChooseChanges : Page
+    {
+        int _idOrg;
+
+        public ChooseChanges()
+        {
+            InitializeComponent();
+        }
+
+        public ChooseChanges(int idOrg)
+        {
+            InitializeComponent();
+            _idOrg = idOrg;
+        }
+
+        private void JournalChange_Click(object sender, RoutedEventArgs e)
+        {
+            Functions functions = new Functions();
+            functions.Frame.Content = new EditJournal();
+        }
+
+        private void ProtocolChange_Click(object sender, RoutedEventArgs e)
+        {
+            Functions functions = new Functions();
+            functions.Frame.Content = new ProtocolChanges();
+        }
+    }
+}
