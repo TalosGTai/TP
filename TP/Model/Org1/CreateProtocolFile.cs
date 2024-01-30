@@ -2,9 +2,13 @@
 using System;
 using System.Collections.Generic;
 using TP.Properties;
-using Aspose.Cells;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Linq;
+using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
+using DocumentFormat.OpenXml;
+using Break = DocumentFormat.OpenXml.Wordprocessing.Break;
+using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 
 
 namespace TP.Model.Org1
@@ -26,7 +30,7 @@ namespace TP.Model.Org1
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Главная");
             var worksheet2 = workbook.Worksheets.Add("Таблицы");
-            var worksheet3 = workbook.Worksheets.Add("Коновка");
+            var worksheet3 = workbook.Worksheets.Add("Концовка");
             _journal = journal;
             worksheet = CreateChapter1(worksheet);
             worksheet = CreateChapter2(worksheet);
@@ -45,7 +49,67 @@ namespace TP.Model.Org1
             worksheet.Column(6).Width = 8;
             workbook.SaveAs("Организация1\\Протокол1.xlsx");
             var workbookSave = new Aspose.Cells.Workbook("Организация1\\Протокол1.xlsx");
-            workbookSave.Save("Организация1\\Протокол1.docx");
+            workbookSave.Save("Организация1\\Протокол1tmp.docx");
+
+            List<Paragraph> paragraphItems = new List<Paragraph>();
+            string prev = null;
+
+            using (var doc = WordprocessingDocument.Open("Организация1\\Протокол1tmp.docx", false))
+            {
+                var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
+                var tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>();
+                foreach (var el in paragraphs)
+                {
+                    if (!el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
+                        && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")
+                        && !(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
+                    {
+                        if (el.InnerText.Contains("Результаты испытаний:"))
+                        {
+                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
+                            paragraphItems.Add(p);
+                        }
+                        paragraphItems.Add(el);
+
+                    }
+                    prev = el.InnerText;
+                }                
+            }
+
+            using (WordprocessingDocument firstDocument = WordprocessingDocument.Open("Организация1\\Протокол1tmp.docx", false))
+            using (WordprocessingDocument secondDocument = WordprocessingDocument.Create("Организация1\\Протокол1.docx", WordprocessingDocumentType.Document))
+            {
+                foreach (var part in firstDocument.Parts)
+                {
+                    secondDocument.AddPart(part.OpenXmlPart, part.RelationshipId);
+                }
+            }
+
+            CreateFile("Организация1\\Протокол1.docx", paragraphItems);
+
+
+        }
+
+        public void CreateFile(string resultFile, List<Paragraph> paragraphItems)
+        {
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(resultFile, true))
+            {
+                var myContentControl = wordDocument.MainDocumentPart.Document.Body.Descendants<SdtBlock>()
+                    .Where(e => e.Descendants<SdtAlias>().FirstOrDefault().Val == "myTablePlaceholder").FirstOrDefault();
+
+                MainDocumentPart mainPart = wordDocument.MainDocumentPart;
+
+                mainPart.Document = new Document();
+                Body body = mainPart.Document.AppendChild(new Body());
+
+                foreach (var item in paragraphItems)
+                {
+                    Paragraph para = new Paragraph();
+                    para.InnerXml = item.InnerXml;
+                    body.AppendChild(para);
+                }
+            }
+
         }
 
         private IXLWorksheet CreateChapter1(IXLWorksheet worksheet)

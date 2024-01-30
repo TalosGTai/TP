@@ -45,9 +45,9 @@ namespace TP.View
         private void CheckProtocolReady()
         {
             if (!_isDirection)
-                MessageBox.Show("Для начала выберете направление.");
+                MessageBox.Show("Для начала выберите направление.");
             else if (!_isAdditionals)
-                MessageBox.Show("Для начала выберете приложения.");
+                MessageBox.Show("Для начала выберите приложения.");
         }
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
