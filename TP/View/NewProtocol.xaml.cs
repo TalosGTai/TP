@@ -54,7 +54,6 @@ namespace TP.View
         {
             if (_isDirection && _isAdditionals)
             {
-                //DocParser docParser = new DocParser("Направление.docx");
                 //FunctionsPrint functionsPrint = new FunctionsPrint();
                 //functionsPrint.PrintTupleDictionary(docParser.JournalParse);
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, _idOrg, _idProtocol);
@@ -86,21 +85,6 @@ namespace TP.View
                 _direction = new DocParser(openFileDialog.FileName);
                 _journal = _direction.JournalParse;
             }
-        }
-
-        private void CreateProtocolFileT()
-        {
-            //_journalList1["O"];
-            //_journalList1["I"];
-            //_journalList1["D"];
-            //_journalList1["H"];
-            //_journalList1["Q"];
-            //_journalList1["B"];
-            //_journalList1["R"];
-            // Информация //
-            // _journalList1["C"];
-            // _journalList1["H"]; - _journalList2["C"];
-            // 
         }
     }
 }
