@@ -94,7 +94,7 @@ namespace TP.View
         private void ChangeSourceTable(int idJournal, int idList)
         {
             string currentDirectory = Environment.CurrentDirectory;
-            GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, idList);
+            GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
             if (_journalsList != null)
                 _journalsList.Clear();
             List<Org1List1> list1 = new List<Org1List1>();

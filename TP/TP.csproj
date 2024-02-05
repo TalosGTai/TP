@@ -213,7 +213,9 @@
     <Compile Include="Model\Org1\CreateProtocolFile.cs" />
     <Compile Include="Model\Org2List2.cs" />
     <Compile Include="Model\Org2List1.cs" />
+    <Compile Include="Model\Protocol.cs" />
     <Compile Include="Model\Scripts\DocParser.cs" />
+    <Compile Include="Model\Scripts\ExcelParseAdditionals.cs" />
     <Compile Include="Model\Scripts\ExcelParser.cs" />
     <Compile Include="View\ChooseChanges.xaml.cs">
       <DependentUpon>ChooseChanges.xaml</DependentUpon>

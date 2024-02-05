@@ -71,23 +71,40 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Button x:Name="OpenProtocol" Click="OpenProtocol_Click"
+        <Button x:Name="OpenProtocolExcel" 
+                Click="OpenProtocolExcel_Click"
                 Grid.Row="6" Grid.Column="2"
                 Content="Открыть в Excel"/>
+        <Button x:Name="OpenProtocolWord" 
+                Click="OpenProtocolWord_Click"
+                Grid.Row="6" Grid.Column="1"
+                Content="Открыть в Word"/>
+        <Button x:Name="OpenProtocolFolder" 
+                Click="OpenProtocolFolder_Click"
+                Grid.Row="6" Grid.Column="0"
+                Content="Открыть папку"/>
+        <Button x:Name="SyncProtocols" 
+                Click="SyncProtocols_Click"
+                Grid.Row="0" Grid.Column="1"
+                Grid.ColumnSpan="2"
+                Content="Обновить протоколы"/>
         <DataGrid x:Name="ListProtocols" Grid.Row="0"
                   Grid.Column="0" Grid.RowSpan="6" 
-                  Margin="15,20,0,0" HorizontalAlignment="Left" 
-                  Width="219">
+                  Margin="15,20,0,0" 
+                  HorizontalAlignment="Left" 
+                  Width="219"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="№" Width="35"/>
+                <DataGridTextColumn Header="№" Width="35" Binding="{Binding NumberProtocol, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Протоколы"
                                     MaxWidth="184"
                                     MinWidth="80"
-                                    Width="184"/>
+                                    Width="184 " Binding="{Binding NameProtocol, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid x:Name="DataProtocol" Grid.Row="0"
-          Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="2" 
+        <DataGrid x:Name="DataProtocol" Grid.Row="1"
+          Grid.Column="1" Grid.RowSpan="5" Grid.ColumnSpan="2" 
           Margin="10,20,20,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Протокол"/>

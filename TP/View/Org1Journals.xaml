@@ -137,7 +137,8 @@
                 Content="Открыть Журнал"
                 Grid.Row="8" Grid.Column="0"
                 Click="OpenCurrentJournal_Click"/>
-        <DataGrid x:Name="TableJournals" Grid.Row="3" Grid.Column="0"
+        <DataGrid x:Name="TableJournals" Grid.Row="3"
+                  Grid.Column="0"
                   Grid.ColumnSpan="3" Grid.RowSpan="5">
                 <DataGrid.Columns>
                 <DataGridTextColumn Header="№ п/п" Binding="{Binding NumberProduct, UpdateSourceTrigger=PropertyChanged}"/>

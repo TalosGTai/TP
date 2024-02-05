@@ -34,7 +34,7 @@ namespace TP.View
             _isAdditionals = false;
         }
 
-        public NewProtocol(int idProtocol)
+        public NewProtocol(int idOrg, int idProtocol)
         {
             InitializeComponent();
             _idProtocol = idProtocol;
@@ -42,30 +42,42 @@ namespace TP.View
             _isAdditionals = false;
         }
 
-        private void CheckProtocolReady()
+        private bool CheckProtocolReady()
         {
             if (!_isDirection)
+            {
                 MessageBox.Show("Для начала выберите направление.");
+                return false;
+            }
             else if (!_isAdditionals)
+            {
                 MessageBox.Show("Для начала выберите приложения.");
+                return false;
+            }
+            return true;
         }
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
-            if (_isDirection && _isAdditionals)
+            if (CheckProtocolReady())
             {
                 //FunctionsPrint functionsPrint = new FunctionsPrint();
                 //functionsPrint.PrintTupleDictionary(docParser.JournalParse);
-                CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, _idOrg, _idProtocol);
+                List<Tuple<List<string>, Dictionary<int, List<string>>>> values = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
+                for (int i = 0; i < _pathAdditionals.Count; i++)
+                {
+                    ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
+                    values.Add(excelParseAdditionals.Values);
+                }
+                CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
             }
-            CheckProtocolReady();
         }
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.Filter = "Word (*.docx)|*.docx|All files (*.*)|*.*";
+            openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
             _pathAdditionals = new List<string>();
             if (openFileDialog.ShowDialog() == true)
             {
