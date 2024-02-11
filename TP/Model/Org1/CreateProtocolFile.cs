@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using TP.Properties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -10,14 +9,24 @@ using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using DocumentFormat.OpenXml;
 using Break = DocumentFormat.OpenXml.Wordprocessing.Break;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
+using Microsoft.Office.Interop.Word;
+using Paragraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
+using DocumentWord = Microsoft.Office.Interop.Word.Document;
+using ParagraphWord = Microsoft.Office.Interop.Word.Paragraph;
+using System.IO;
+using TableStyle = DocumentFormat.OpenXml.Wordprocessing.TableStyle;
 
 
 namespace TP.Model.Org1
 {
+    /// <summary>
+    /// Создание таблицы и документа Протокол{idProtocol}
+    /// </summary>
     public class CreateProtocolFile
     {
         private Tuple<Dictionary<string, string>, Dictionary<string, string>> _journal;
         private int idRow;
+        private readonly string FONT = "Times New Roman";
 
         public CreateProtocolFile()
         {
@@ -38,9 +47,9 @@ namespace TP.Model.Org1
             worksheet = CreateChapter2(worksheet);
             worksheet2 = CreateTablesTests(worksheet2, values);
             worksheet3 = CreateLastChapter(worksheet3);
-            worksheet.Style.Font.FontName = "Times New Roman";
-            worksheet2.Style.Font.FontName = "Times New Roman";
-            worksheet3.Style.Font.FontName = "Times New Roman";
+            worksheet.Style.Font.FontName = FONT;
+            worksheet2.Style.Font.FontName = FONT;
+            worksheet3.Style.Font.FontName = FONT;
             worksheet.Style.Alignment.WrapText = true;
             worksheet2.Style.Alignment.WrapText = true;
             worksheet3.Style.Alignment.WrapText = true;
@@ -49,74 +58,191 @@ namespace TP.Model.Org1
             worksheet.Column(4).Width = 14;
             worksheet.Column(5).Width = 14;
             worksheet.Column(6).Width = 8;
-            workbook.SaveAs($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx");
-            var workbookSave = new Aspose.Cells.Workbook($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx");
-            workbookSave.Save($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
+            string PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
+            workbook.SaveAs(PROTOCOL_EXCEL_PATH);
+            var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
+
+            workbookSave.Save($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx", Aspose.Cells.SaveFormat.Docx);
+
+            ChangeDocFont(idOrg, idProtocol);
             CreateFile($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx", ParseDocument(idOrg, idProtocol));
-            File.Delete($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
+            //File.Delete($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
         }
 
-        private List<Paragraph> ParseDocument(int idOrg, int idProtocol)
+        /// <summary>
+        /// Изменение шрифта в документе, созданном по таблице Протокол
+        /// </summary>
+        /// <param name="idOrg"></param>
+        /// <param name="idProtocol"></param>
+        private void ChangeDocFont(int idOrg, int idProtocol)
+        {
+            Application wordApp = new Application();
+            string filename = $"{Directory.GetCurrentDirectory()}\\Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx";
+
+            DocumentWord myDoc = wordApp.Documents.Open(filename);
+
+            if (myDoc.Paragraphs.Count > 0)
+            {
+                foreach (ParagraphWord p in myDoc.Paragraphs)
+                {
+                    p.Range.Font.Name = FONT;
+                }
+            }
+            myDoc.Save();
+            myDoc.Close();
+            myDoc = null;
+            wordApp.Quit();
+            wordApp = null;
+        }
+
+        /// <summary>
+        /// Получаем параграфы временного документа, созданного по таблице Протокол
+        /// </summary>
+        /// <param name="idOrg"></param>
+        /// <param name="idProtocol"></param>
+        /// <returns></returns>
+        private (Table, List<Paragraph>) ParseDocument(int idOrg, int idProtocol)
         {
             List<Paragraph> paragraphItems = new List<Paragraph>();
             string prev = null;
-
+            Table[] tbl = Array.Empty<Table>();
             using (var doc = WordprocessingDocument.Open($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx", false))
             {
                 var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
-                var tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>();
+                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray();
+
+                //Исключаем копирайтинг строки
+                paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
+                        && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
+
+                var flagForTable = false;
                 foreach (var el in paragraphs)
                 {
-                    if (!el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
-                        && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")
-                        && !(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
+                    //исключаем пустые параграфы, если их более одного подряд
+                    if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
                     {
                         if (el.InnerText.Contains("Результаты испытаний:"))
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             paragraphItems.Add(p);
+                            flagForTable = true;
+                            paragraphItems.Add(el);
                         }
-                        paragraphItems.Add(el);
+                        if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
+                        {
+                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
+                            paragraphItems.Add(p);
+                        }
+                        if (el.InnerText.Contains("Внимание!"))
+                        {
+                            flagForTable = false;
+                        }
+                        if (!flagForTable)
+                            paragraphItems.Add(el);
 
                     }
                     prev = el.InnerText;
                 }
             }
 
-            using (WordprocessingDocument firstDocument = WordprocessingDocument.Open($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx", false))
-            using (WordprocessingDocument secondDocument = WordprocessingDocument.Create($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx", WordprocessingDocumentType.Document))
-            {
-                foreach (var part in firstDocument.Parts)
-                {
-                    secondDocument.AddPart(part.OpenXmlPart, part.RelationshipId);
-                }
-            }
-
-            return paragraphItems;
+            return (tbl[4], paragraphItems);
         }
 
-        public void CreateFile(string resultFile, List<Paragraph> paragraphItems)
+        /// <summary>
+        /// Создаем итоговый файл по временному, который создан по таблице Протокол
+        /// </summary>
+        /// <param name="resultFile"></param>
+        /// <param name="paragraphItems"></param>
+        public void CreateFile(string resultFile, (Table, List<Paragraph>) tableAndParagraphs)
         {
-            using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(resultFile, true))
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(resultFile, WordprocessingDocumentType.Document))
             {
-                var myContentControl = wordDocument.MainDocumentPart.Document.Body.Descendants<SdtBlock>()
-                    .Where(e => e.Descendants<SdtAlias>().FirstOrDefault().Val == "myTablePlaceholder").FirstOrDefault();
-
+                var paragraphItems = tableAndParagraphs.Item2;
+                wordDocument.AddMainDocumentPart();
                 MainDocumentPart mainPart = wordDocument.MainDocumentPart;
 
-                mainPart.Document = new Document();
+                mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
                 Body body = mainPart.Document.AppendChild(new Body());
 
-                foreach (var item in paragraphItems)
+                Paragraph prevItem = null;
+                List<Paragraph> endParagraph = new List<Paragraph>();
+                for (int i = 0; i < paragraphItems.Count; i++)
                 {
+                    var item = paragraphItems[i];
                     Paragraph para = new Paragraph();
                     para.InnerXml = item.InnerXml;
-                    body.AppendChild(para);
+                    if ((prevItem != null && prevItem.InnerText.Contains("Результаты испытаний:")))
+                    {
+                        Table t = new Table();
+                        OpenXmlElementList oxl = tableAndParagraphs.Item1.ChildElements;
+                        foreach (var c in oxl)
+                        {
+                            if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
+                            {
+                                OpenXmlElement child = c.CloneNode(true);
+                                t.AppendChild(child);
+                            }
+                        }
+
+                        TableProperties props = new TableProperties();
+                        //TableStyle tableStyle = new TableStyle { Val = "Light Shading Accent 1" };
+                        TableWidth tw = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
+                        TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto,};
+
+                        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
+                        props.Append(tableStyle, tw, th);
+
+                        t.Append(props);
+                        //props.TableStyle = tableStyle;
+                        //props.AddChild(tw);
+                        //props.AddChild(th);
+                        ////props.Append(tableStyle);
+                        //t.AddChild(props);
+
+                        //props.Append(tw);
+                        //props.Append(th);
+                        //t.Append(props);
+
+                        //props.AppendChild(tw);
+                        //props.AppendChild(th);
+                        //t.AppendChild(props);
+
+
+                        body.AppendChild(t);
+                    }
+                    if (i > 0)
+                    {
+                        prevItem = paragraphItems[i - 1];
+                        if (item.InnerText.Contains("Внимание!") || prevItem.InnerText.Contains("Внимание!"))
+                        {
+                            endParagraph.Add(para);
+                        }
+                        else
+                        {
+                            body.AppendChild(para);
+                        }
+                    }
+                    if (i == paragraphItems.Count - 1)
+                    {
+                        foreach (var e in endParagraph)
+                            body.AppendChild(e);
+                    }
                 }
+
+                PageMargin pageMargins = new PageMargin();
+                pageMargins.Left = 0;
+                pageMargins.Right = 0;
+                pageMargins.Header = 1; 
+                pageMargins.Footer = 1; 
+
+                SectionProperties sectionProps = new SectionProperties();
+                sectionProps.Append(pageMargins);
+                body.Append(sectionProps);
+                wordDocument.Save();
+
             }
-
         }
-
+      
         private IXLWorksheet CreateChapter1(IXLWorksheet worksheet)
         {
             worksheet.Cell("A" + 1).Value = Resources.Protocol1;
