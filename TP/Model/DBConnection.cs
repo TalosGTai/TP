@@ -479,5 +479,33 @@ namespace TP.Model
             finally { CloseConnection(); }
             return null;
         }
+
+
+        /// <summary>
+        /// Создать таблицу org1editprotocol
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        public void СreateTableEditProtocol(int idOrg)
+        {
+            string query = $"create table if not exists laboratory.org{idOrg}editprotocol (";
+            query += $"idorg{idOrg}editprotocol int NOT NULL AUTO_INCREMENT,";
+            query += "addressPlacements TEXT,";
+            query += "fio varchar(100),";
+            query += "place TEXT,";
+            query += "conditions TEXT, ";
+            query += $"PRIMARY KEY (idorg{idOrg}editprotocol))";
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
+        }
     }
 }

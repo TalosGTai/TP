@@ -19,6 +19,7 @@ namespace TP
 
             DBConnection dBConnection = new DBConnection();
             dBConnection.СreateTableEditJournal(idOrg);
+            dBConnection.СreateTableEditProtocol(idOrg);
             if (dBConnection.SelectLastId(1) == 0 || dBConnection.SelectLastId(1) == -1)
                 dBConnection.InsertStartValuesEditJournalOrg(1);
             for (int i = 0; i < 2; i++)
