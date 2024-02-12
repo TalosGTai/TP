@@ -61,6 +61,10 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}editjournal"))
+                {
+                    СreateTableEditJournal(idOrg);
+                }
                 OpenConnection();
                 var queryString = $"SELECT COUNT(*) FROM laboratory.org{idOrg}editjournal;";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
@@ -85,16 +89,22 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}editjournal"))
+                {
+                    СreateTableEditJournal(idOrg);
+                }
                 OpenConnection();
                 var queryString = $"SELECT Row{idColumn} FROM laboratory.org{idOrg}editjournal WHERE idOrg{idOrg}editjournal={idJournalRow}";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 string result = command.ExecuteScalar().ToString();
-                CloseConnection();
                 return result;
             }
             catch (SqlException exception)
             {
                 Console.WriteLine(exception.Message);
+            }
+            finally { 
+                CloseConnection(); 
             }
             return "";
         }
@@ -120,6 +130,41 @@ namespace TP.Model
                 Console.WriteLine(exception.Message);
             }
             return "";
+        }
+
+        /// <summary>
+        /// Проверка таблицы на существование
+        /// </summary>
+        /// <param name="tableName">название таблицы</param>
+        /// <returns>true - таблицы существует</returns>
+        private bool CheckTable(string tableName)
+        {
+            try
+            {
+                OpenConnection();
+                var queryString = $"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES " +
+                    $"WHERE TABLE_SCHEMA = 'laboratory' " +
+                    $"AND TABLE_NAME = '{tableName}'";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+
+                int count = 0;
+                var rd = command.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    rd.Read();
+                    count = rd.GetInt32(0);
+                }
+                return count > 0;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+            return false;
         }
 
         /// <summary>
@@ -150,6 +195,7 @@ namespace TP.Model
             {
                 Console.WriteLine(e.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -181,6 +227,7 @@ namespace TP.Model
             {
                 Console.WriteLine(e.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -222,6 +269,7 @@ namespace TP.Model
             {
                 Console.WriteLine(e.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -254,12 +302,17 @@ namespace TP.Model
             {
 
             }
+            finally { CloseConnection(); }
         }
 
         public void InsertJournalOrgChangesRow(int idOrg, List<string> values)
         {
             try
             {
+                if (!CheckTable($"org{idOrg}editjournal"))
+                {
+                    СreateTableEditJournal(idOrg);
+                }
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}editjournal";
                 queryString += "(Row1, Row2, Row3, Row4_1, Row4_2, Row5_1, Row5_2, Row6)";
@@ -273,6 +326,7 @@ namespace TP.Model
             {
                 Console.WriteLine(exception.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -283,6 +337,10 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}editjournal"))
+                {
+                    СreateTableEditJournal(idOrg);
+                }
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}editjournal";
                 queryString += "(Row1, Row2, Row3, Row4_1, Row4_2, Row5_1, Row5_2, Row6)";
@@ -299,6 +357,7 @@ namespace TP.Model
             {
                 Console.WriteLine(exception.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -310,6 +369,10 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+                {
+                    СreateTableJournalOrg1List1(idOrg, idJournal);
+                }
                 // 18 columns without idColumn
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list1";
@@ -332,6 +395,7 @@ namespace TP.Model
             {
                 Console.WriteLine(exception.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -343,6 +407,10 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list2"))
+                {
+                    СreateTableJournalOrg1List2(idOrg, idJournal);
+                }
                 // 9 columns without idColumn
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list2";
@@ -361,6 +429,7 @@ namespace TP.Model
             {
                 Console.WriteLine(exception.Message);
             }
+            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -388,6 +457,7 @@ namespace TP.Model
             {
 
             }
+            finally { CloseConnection(); }
             return "";
         }
 
@@ -402,6 +472,21 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list{idList}"))
+                {
+                    switch (idList)
+                    {
+                        case 0:
+                            СreateTableJournalOrg1List0(idOrg, idJournal);
+                            break;
+                        case 1:
+                            СreateTableJournalOrg1List1(idOrg, idJournal);
+                            break;
+                        case 2:
+                            СreateTableJournalOrg1List2(idOrg, idJournal);
+                            break;
+                    }
+                }
                 OpenConnection();
                 string query = $"select * from laboratory.org{idOrg}journal{idJournal}list{idList}";
                 MySqlDataAdapter mySqlDataAdapter = new MySqlDataAdapter(query, GetConnection());
@@ -414,7 +499,36 @@ namespace TP.Model
             {
 
             }
+            finally { CloseConnection(); }
             return null;
+        }
+
+
+        /// <summary>
+        /// Создать таблицу org1editprotocol
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        public void СreateTableEditProtocol(int idOrg)
+        {
+            string query = $"create table if not exists laboratory.org{idOrg}editprotocol (";
+            query += $"idorg{idOrg}editprotocol int NOT NULL AUTO_INCREMENT,";
+            query += "addressPlacements TEXT,";
+            query += "fio varchar(100),";
+            query += "place TEXT,";
+            query += "conditions TEXT, ";
+            query += $"PRIMARY KEY (idorg{idOrg}editprotocol))";
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
         }
     }
 }
