@@ -69,9 +69,17 @@ namespace TP.Model
         public string GetJournalTitleRow6()
         {
             DBConnection dBConnection = new DBConnection();
-            dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "6");
+            //dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "6");
             return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "6");
         }
-
+        /// <summary>
+        /// Получить 1 строку из изменений протокола
+        /// </summary>
+        /// <returns>"*подпись только для журналов, ведущихся на бумажном носителе"</returns>
+        public string GetProtocolTitleByRow(int row)
+        {
+            DBConnection dBConnection = new DBConnection();
+            return dBConnection.SelectProtocolOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), row.ToString());
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using TP.Model;
 
 namespace TP.View
 {
@@ -11,6 +12,15 @@ namespace TP.View
         public ProtocolChanges()
         {
             InitializeComponent();
+        }
+
+        public void LoadDatas()
+        {
+            DBFunctions functions = new DBFunctions();
+            TxtBoxRow1.Text = functions.GetProtocolTitleByRow(1);
+            TxtBoxRow2.Text = functions.GetProtocolTitleByRow(2);
+            TxtBoxRow3.Text = functions.GetProtocolTitleByRow(3);
+            TxtBoxRow4.Text = functions.GetProtocolTitleByRow(4);
         }
 
         private void SaveAllChanges_Click(object sender, RoutedEventArgs e)

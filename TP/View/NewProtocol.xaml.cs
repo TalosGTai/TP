@@ -20,6 +20,7 @@ namespace TP.View
         private int _idOrg;
         private int _idProtocol;
         private bool _isDirection;
+        private string _directionFileName;
         private bool _isAdditionals;
         private DocParser _direction;
         private DocParser _additionals;
@@ -29,6 +30,7 @@ namespace TP.View
         public NewProtocol()
         {
             InitializeComponent();
+            _idOrg = 1;
             _idProtocol = 1;
             _isDirection = false;
             _isAdditionals = false;
@@ -37,6 +39,7 @@ namespace TP.View
         public NewProtocol(int idOrg, int idProtocol)
         {
             InitializeComponent();
+            _idOrg = idOrg;
             _idProtocol = idProtocol;
             _isDirection = false;
             _isAdditionals = false;
@@ -61,8 +64,6 @@ namespace TP.View
         {
             if (CheckProtocolReady())
             {
-                //FunctionsPrint functionsPrint = new FunctionsPrint();
-                //functionsPrint.PrintTupleDictionary(docParser.JournalParse);
                 List<Tuple<List<string>, Dictionary<int, List<string>>>> values = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                 for (int i = 0; i < _pathAdditionals.Count; i++)
                 {
@@ -70,7 +71,27 @@ namespace TP.View
                     values.Add(excelParseAdditionals.Values);
                 }
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
+                string PROTOCOL_EXCEL_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+                File.Copy(_directionFileName, PROTOCOL_EXCEL_PATH + GetFileName(_directionFileName), true);
+                for (int i = 0; i < _pathAdditionals.Count; i++)
+                {
+                    File.Copy(_pathAdditionals[i], PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]), true);
+                }
             }
+        }
+
+        private string GetFileName(string path)
+        {
+            string fileName = "";
+            for (int i = Math.Max(path.LastIndexOf("\\"), path.LastIndexOf("/")) + 1; i < path.Length; i++)
+            {
+                if (path[i] != '.')
+                    fileName += path[i];
+                else
+                    break;
+            }
+            fileName += ".docx";
+            return fileName;
         }
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
@@ -95,6 +116,7 @@ namespace TP.View
             {
                 _isDirection = true;
                 _direction = new DocParser(openFileDialog.FileName);
+                _directionFileName = openFileDialog.FileName;
                 _journal = _direction.JournalParse;
             }
         }

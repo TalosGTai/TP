@@ -66,7 +66,7 @@ namespace TP.Model.Org1
 
             ChangeDocFont(idOrg, idProtocol);
             CreateFile($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx", ParseDocument(idOrg, idProtocol));
-            //File.Delete($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
+            File.Delete($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
         }
 
         /// <summary>
