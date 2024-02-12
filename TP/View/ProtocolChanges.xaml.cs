@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using TP.Model;
 
@@ -25,7 +26,15 @@ namespace TP.View
 
         private void SaveAllChanges_Click(object sender, RoutedEventArgs e)
         {
-
+            LblSaveChanges.Visibility = Visibility.Visible;
+            List<string> saveChanges = new List<string>
+            {
+                TxtBoxRow1.Text,
+                TxtBoxRow2.Text,
+                TxtBoxRow3.Text,
+                TxtBoxRow4.Text,
+            };
+            DBConnection dBConnection = new DBConnection();
         }
     }
 }

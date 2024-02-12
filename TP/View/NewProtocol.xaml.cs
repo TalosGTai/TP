@@ -9,6 +9,7 @@ using TP.Model;
 using TP.Model.Scripts;
 using System.IO;
 using TP.Model.Org1;
+using System.Threading;
 
 namespace TP.View
 {
@@ -64,6 +65,10 @@ namespace TP.View
         {
             if (CheckProtocolReady())
             {
+                Thread threadDirection = new Thread(CopyDirection);
+                Thread threadAdditionals = new Thread(CopyAdditionals);
+                threadDirection.Start();
+                threadAdditionals.Start();
                 List<Tuple<List<string>, Dictionary<int, List<string>>>> values = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                 for (int i = 0; i < _pathAdditionals.Count; i++)
                 {
@@ -71,12 +76,24 @@ namespace TP.View
                     values.Add(excelParseAdditionals.Values);
                 }
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
-                string PROTOCOL_EXCEL_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
-                File.Copy(_directionFileName, PROTOCOL_EXCEL_PATH + GetFileName(_directionFileName), true);
-                for (int i = 0; i < _pathAdditionals.Count; i++)
-                {
-                    File.Copy(_pathAdditionals[i], PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]), true);
-                }
+                MessageBox.Show("Протокол успешно создан!");
+                Functions functions = new Functions();
+                functions.Frame.Content = new Protocols();
+            }
+        }
+
+        private void CopyDirection()
+        {
+            string PROTOCOL_EXCEL_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+            File.Copy(_directionFileName, PROTOCOL_EXCEL_PATH + GetFileName(_directionFileName), true);
+        }
+
+        private void CopyAdditionals()
+        {
+            string PROTOCOL_EXCEL_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+            for (int i = 0; i < _pathAdditionals.Count; i++)
+            {
+                File.Copy(_pathAdditionals[i], PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]), true);
             }
         }
 
