@@ -64,8 +64,9 @@
             <TextBlock
                 x:Name="Author"
                 Width="Auto"
-                Margin="120,-25,10,0"
+                Margin="90,-16,10,0"
                 Foreground="Blue"
+                FontSize="14"
                 PreviewMouseDown="ButtonTelegramUrl_Click"
                 TextDecorations="Underline"
                 TextWrapping="Wrap">
