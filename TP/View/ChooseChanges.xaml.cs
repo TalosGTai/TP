@@ -44,7 +44,9 @@ namespace TP.View
         private void ProtocolChange_Click(object sender, RoutedEventArgs e)
         {
             Functions functions = new Functions();
-            functions.Frame.Content = new ProtocolChanges();
+            ProtocolChanges changes = new ProtocolChanges();
+            functions.Frame.Content = changes;
+            changes.LoadDatas();
         }
     }
 }

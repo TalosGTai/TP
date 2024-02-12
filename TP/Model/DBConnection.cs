@@ -108,6 +108,29 @@ namespace TP.Model
             }
             return "";
         }
+        /// <summary>
+        /// Получить строку по колонке
+        /// </summary>
+        /// <param name="idJournalRow">идентификатор строки</param>
+        /// <param name="idColumn">идентификатор колонки</param>
+        /// <returns>строка из бд</returns>
+        public string SelectProtocolOrgChangesRowByColumnId(int idOrg, int idJournalRow, string idColumn)
+        {
+            try
+            {
+                OpenConnection();
+                var queryString = $"SELECT Row{idColumn} FROM laboratory.org{idOrg}editprotocol WHERE idOrg{idOrg}editprotocol={idJournalRow}";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                string result = command.ExecuteScalar().ToString();
+                CloseConnection();
+                return result;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            return "";
+        }
 
         /// <summary>
         /// Проверка таблицы на существование
@@ -306,6 +329,29 @@ namespace TP.Model
             finally { CloseConnection(); }
         }
 
+        public void InsertProtocolOrgChangesRow(int idOrg, List<string> values)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}editprotocol"))
+                {
+                    СreateTableEditProtocol(idOrg);
+                }
+                OpenConnection();
+                var queryString = $"INSERT INTO laboratory.org{idOrg}editprotocol";
+                queryString += "(Row1, Row2, Row3, Row4)";
+                queryString += $" Values (\"{values[0]}\", \"{values[1]}\", \"{values[2]}\", \"{values[3]}\")";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
         /// <summary>
         /// Внести начальные значения в EditJournal
         /// </summary>
@@ -489,10 +535,10 @@ namespace TP.Model
         {
             string query = $"create table if not exists laboratory.org{idOrg}editprotocol (";
             query += $"idorg{idOrg}editprotocol int NOT NULL AUTO_INCREMENT,";
-            query += "addressPlacements TEXT,";
-            query += "fio varchar(100),";
-            query += "place TEXT,";
-            query += "conditions TEXT, ";
+            query += "Row1 TEXT,";
+            query += "Row2 varchar(100),";
+            query += "Row3 TEXT,";
+            query += "Row4 TEXT, ";
             query += $"PRIMARY KEY (idorg{idOrg}editprotocol))";
             try
             {
