@@ -15,6 +15,7 @@ using DocumentWord = Microsoft.Office.Interop.Word.Document;
 using ParagraphWord = Microsoft.Office.Interop.Word.Paragraph;
 using System.IO;
 using TableStyle = DocumentFormat.OpenXml.Wordprocessing.TableStyle;
+using Application = Microsoft.Office.Interop.Word.Application;
 
 
 namespace TP.Model.Org1
@@ -58,6 +59,12 @@ namespace TP.Model.Org1
             worksheet.Column(4).Width = 14;
             worksheet.Column(5).Width = 14;
             worksheet.Column(6).Width = 8;
+
+            worksheet2.Column(2).Width = 32;
+            worksheet2.Column(3).Width = 14;
+            worksheet2.Column(4).Width = 14;
+            worksheet2.Column(5).Width = 14;
+            worksheet2.Column(6).Width = 8;
             string PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
             workbook.SaveAs(PROTOCOL_EXCEL_PATH);
             var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
@@ -67,6 +74,8 @@ namespace TP.Model.Org1
             ChangeDocFont(idOrg, idProtocol);
             CreateFile($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx", ParseDocument(idOrg, idProtocol));
             File.Delete($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
+
+            workbook.Dispose();
         }
 
         /// <summary>
@@ -80,19 +89,33 @@ namespace TP.Model.Org1
             string filename = $"{Directory.GetCurrentDirectory()}\\Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx";
 
             DocumentWord myDoc = wordApp.Documents.Open(filename);
-
-            if (myDoc.Paragraphs.Count > 0)
+            myDoc.PageSetup.TopMargin = 0;
+            myDoc.PageSetup.BottomMargin = 0;
+            try
             {
-                foreach (ParagraphWord p in myDoc.Paragraphs)
+                if (myDoc.Paragraphs.Count > 0)
                 {
-                    p.Range.Font.Name = FONT;
+                    foreach (ParagraphWord p in myDoc.Paragraphs)
+                    {
+                        p.Range.Font.Name = FONT;
+                    }
+                    foreach (Microsoft.Office.Interop.Word.Table t in myDoc.Tables)
+                    {
+                        var wTable = t;
+                        wTable.Range.Cells.HeightRule = WdRowHeightRule.wdRowHeightAuto;
+                        //wTable.Range.Columns.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthAuto;
+                       
+                    }
                 }
             }
-            myDoc.Save();
-            myDoc.Close();
-            myDoc = null;
-            wordApp.Quit();
-            wordApp = null;
+            finally
+            {
+                myDoc.Save();
+                myDoc.Close();
+                myDoc = null;
+                wordApp.Quit();
+                wordApp = null;
+            }
         }
 
         /// <summary>
@@ -175,6 +198,13 @@ namespace TP.Model.Org1
                     {
                         Table t = new Table();
                         OpenXmlElementList oxl = tableAndParagraphs.Item1.ChildElements;
+                        TableProperties props = new TableProperties();
+                        TableWidth tw = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
+                        TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
+                        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
+                        props.Append(tableStyle, tw, th);
+
+                        t.Append(props);
                         foreach (var c in oxl)
                         {
                             if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
@@ -183,31 +213,6 @@ namespace TP.Model.Org1
                                 t.AppendChild(child);
                             }
                         }
-
-                        TableProperties props = new TableProperties();
-                        //TableStyle tableStyle = new TableStyle { Val = "Light Shading Accent 1" };
-                        TableWidth tw = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
-                        TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto,};
-
-                        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
-                        props.Append(tableStyle, tw, th);
-
-                        t.Append(props);
-                        //props.TableStyle = tableStyle;
-                        //props.AddChild(tw);
-                        //props.AddChild(th);
-                        ////props.Append(tableStyle);
-                        //t.AddChild(props);
-
-                        //props.Append(tw);
-                        //props.Append(th);
-                        //t.Append(props);
-
-                        //props.AppendChild(tw);
-                        //props.AppendChild(th);
-                        //t.AppendChild(props);
-
-
                         body.AppendChild(t);
                     }
                     if (i > 0)
@@ -229,15 +234,15 @@ namespace TP.Model.Org1
                     }
                 }
 
-                PageMargin pageMargins = new PageMargin();
-                pageMargins.Left = 0;
-                pageMargins.Right = 0;
-                pageMargins.Header = 1; 
-                pageMargins.Footer = 1; 
+                //PageMargin pageMargins = new PageMargin();
+                //pageMargins.Left = 0;
+                //pageMargins.Right = 0;
+                //pageMargins.Top = 1; 
+                //pageMargins.Bottom = 1; 
 
-                SectionProperties sectionProps = new SectionProperties();
-                sectionProps.Append(pageMargins);
-                body.Append(sectionProps);
+                //SectionProperties sectionProps = new SectionProperties();
+               // sectionProps.Append(pageMargins);
+                //body.Append(sectionProps);
                 wordDocument.Save();
 
             }
