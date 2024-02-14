@@ -239,6 +239,7 @@ namespace TP.Model
         {
             string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
             query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
+            query += $"id, ";
             query += "A Text,";
             query += "B Text,";
             query += "C Text,";
@@ -281,6 +282,7 @@ namespace TP.Model
         {
             string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
             query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
+            query += $"id, ";
             query += "A Text,";
             query += "B Text,";
             query += "C Text,";
