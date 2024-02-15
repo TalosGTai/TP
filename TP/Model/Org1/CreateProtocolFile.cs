@@ -65,17 +65,37 @@ namespace TP.Model.Org1
             worksheet2.Column(4).Width = 14;
             worksheet2.Column(5).Width = 14;
             worksheet2.Column(6).Width = 8;
+
             string PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
+            string PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+            string PROTOCOL_WORD_TMP_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx";
+
+            //Создаем excel файлл
             workbook.SaveAs(PROTOCOL_EXCEL_PATH);
             var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
 
-            workbookSave.Save($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx", Aspose.Cells.SaveFormat.Docx);
-
+            //Получаем docx файл
+            workbookSave.Save(PROTOCOL_WORD_TMP_PATH, Aspose.Cells.SaveFormat.Docx);
             ChangeDocFont(idOrg, idProtocol);
-            CreateFile($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx", ParseDocument(idOrg, idProtocol));
-            File.Delete($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx");
+            CreateFile(PROTOCOL_WORD_PATH, ParseDocument(idOrg, idProtocol));
+            File.Delete(PROTOCOL_WORD_TMP_PATH);
 
             workbook.Dispose();
+
+            //Подготавливаем файлы для сохранения в БД
+            FileStream fs = new FileStream(PROTOCOL_EXCEL_PATH, FileMode.Open, FileAccess.Read);
+            byte[] protocolXls = new byte[fs.Length];
+            fs.Read(protocolXls, 0, System.Convert.ToInt32(fs.Length));
+            fs.Close();
+
+            fs = new FileStream(PROTOCOL_WORD_PATH, FileMode.Open, FileAccess.Read);
+            byte[] protocolDoc = new byte[fs.Length];
+            fs.Read(protocolDoc, 0, System.Convert.ToInt32(fs.Length));
+            fs.Close();
+
+            //Сохраняем протоколы в БД
+            var db = new DBConnection();
+            db.InsertOrUpdateOrgProtocolRow(idOrg, idProtocol, protocolDoc, protocolXls);
         }
 
         /// <summary>
