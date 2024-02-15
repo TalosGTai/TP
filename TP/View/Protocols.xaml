@@ -96,16 +96,19 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="№" Width="35" Binding="{Binding NumberProtocol, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="№" Width="35" 
+                                    Binding="{Binding NumberProtocol, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Протоколы"
                                     MaxWidth="184"
                                     MinWidth="80"
-                                    Width="184 " Binding="{Binding NameProtocol, UpdateSourceTrigger=PropertyChanged}"/>
+                                    Width="184 " 
+                                    Binding="{Binding NameProtocol, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="DataProtocol" Grid.Row="1"
-          Grid.Column="1" Grid.RowSpan="5" Grid.ColumnSpan="2" 
-          Margin="10,20,20,0">
+                  Grid.Column="1" Grid.RowSpan="5"
+                  Grid.ColumnSpan="2" 
+                  Margin="10,20,20,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Протокол"/>
             </DataGrid.Columns>

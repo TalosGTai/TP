@@ -55,12 +55,9 @@ namespace TP
 
         private void Protocols_Click(object sender, RoutedEventArgs e)
         {
-            if (idOrg == 1)
-                ViewPages.Content = new Protocols();
-            else if (idOrg == 2)
-                ViewPages.Content = new Protocols();
-            else
-                MessageBox.Show("Ошибка загрузки протоколов!");
+            Protocols protocols = new Protocols(idOrg);
+            ViewPages.Content = protocols;
+            protocols.FillProtocolsView(protocols.GetCountProtocols());
         }
 
         private void ChoiceOrganization_Click(object sender, RoutedEventArgs e)
