@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace TP.Model
@@ -239,7 +241,7 @@ namespace TP.Model
         {
             string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
             query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
-            query += $"id, ";
+            query += "id int,";
             query += "A Text,";
             query += "B Text,";
             query += "C Text,";
@@ -282,7 +284,7 @@ namespace TP.Model
         {
             string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
             query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
-            query += $"id, ";
+            query += "id int, ";
             query += "A Text,";
             query += "B Text,";
             query += "C Text,";
@@ -305,7 +307,7 @@ namespace TP.Model
 
             }
             finally { CloseConnection(); }
-        }
+        }      
 
         public void InsertJournalOrgChangesRow(int idOrg, List<string> values)
         {
@@ -552,6 +554,213 @@ namespace TP.Model
             catch (SqlException e)
             {
                 Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
+        public void СreateTableProtocolOrgJournal(int idOrg)
+        {
+            string query = $"create table if not exists  laboratory.org{idOrg}Protocol (";
+            query += $"org{idOrg}ProtocolId int NOT NULL AUTO_INCREMENT, ";
+            query += "ProtocolId VARCHAR(128), ";
+            query += "ProtocolDoc BLOB, ";
+            query += "ProtocolXls BLOB, ";
+            query += $"PRIMARY KEY (org{idOrg}ProtocolId))";
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException)
+            {
+
+            }
+            finally { CloseConnection(); }
+        }
+
+        public void InsertOrUpdateOrgProtocolRow(int idOrg, int idProtocol, byte[] docFile, byte[] xlsFile)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}Protocol"))
+                {
+                    СreateTableProtocolOrgJournal(idOrg);
+                }
+
+                var protocolName = "Протокол" + idProtocol;
+                if (IsExistProtocol(idOrg, protocolName))
+                {
+                    OpenConnection();
+                    using (var sqlWrite = new MySqlCommand($"Update laboratory.org{idOrg}Protocol " +
+                        $"SET ProtocolDoc = @File1, ProtocolDoc = @File2 " +
+                        $"WHERE ProtocolId = \"{protocolName}\"", GetConnection()))
+                    {
+                        sqlWrite.Parameters.Add("@File1", MySqlDbType.VarBinary, docFile.Length).Value = docFile;
+                        sqlWrite.Parameters.Add("@File2", MySqlDbType.VarBinary, xlsFile.Length).Value = xlsFile;
+                        sqlWrite.ExecuteNonQuery();
+                    }
+                    CloseConnection();
+                }
+                else
+                {
+                    OpenConnection();
+                    using (var sqlWrite = new MySqlCommand($"INSERT INTO laboratory.org{idOrg}Protocol (ProtocolId, ProtocolDoc, ProtocolXls) " +
+                        $"Values(@idProtocol, @File1, @File2)", GetConnection()))
+                    {
+                        sqlWrite.Parameters.Add("@idProtocol", MySqlDbType.VarString).Value = "Протокол" + idProtocol;
+                        sqlWrite.Parameters.Add("@File1", MySqlDbType.VarBinary, docFile.Length).Value = docFile;
+                        sqlWrite.Parameters.Add("@File2", MySqlDbType.VarBinary, xlsFile.Length).Value = xlsFile;
+                        sqlWrite.ExecuteNonQuery();
+                    }
+                    CloseConnection();
+                }
+
+                
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
+        public bool IsExistProtocol(int idOrg, string idProtocol)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}Protocol"))
+                {
+                    СreateTableProtocolOrgJournal(idOrg);
+                }
+
+                OpenConnection();
+                var count = 0;
+                using (var sqlQuery = new MySqlCommand($"SELECT COUNT(*) FROM laboratory.org{idOrg}Protocol WHERE ProtocolId = \"{idProtocol}\"", GetConnection()))
+                {
+                    count = Convert.ToInt32(sqlQuery.ExecuteScalar());
+                }
+                CloseConnection();
+                return count > 0;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+            finally { CloseConnection(); }
+        }
+
+        public (MemoryStream docFile, MemoryStream xlsFile) GetOrgProtocolRow(int idOrg, int idProtocol)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}Protocol"))
+                {
+                    СreateTableProtocolOrgJournal(idOrg);
+                }
+
+                OpenConnection();
+
+                MemoryStream msDoc = new MemoryStream();
+                MemoryStream msXls = new MemoryStream();
+                using (var sqlQuery = new MySqlCommand($"SELECT ProtocolDoc, ProtocolXls FROM laboratory.org{idOrg}Protocol WHERE ProtocolId = \"{"Протокол"+idProtocol}\"", GetConnection()))
+                {
+                    sqlQuery.Parameters.AddWithValue("@varID", "Протокол"+idProtocol);
+                    using (var sqlQueryResult = sqlQuery.ExecuteReader())
+                        if (sqlQueryResult != null)
+                        {
+                            sqlQueryResult.Read();
+                            byte[] colProtocolDoc = (byte[])sqlQueryResult["ProtocolDoc"];
+                            byte[] colProtocolXls = (byte[])sqlQueryResult["ProtocolXls"];
+                            //var blob1 = new Byte[(colProtocolDoc.GetBytes(0, 0, null, 0, int.MaxValue))];
+                            //var blob1 = new Byte[(sqlQueryResult.GetBytes(0, 0, null, 0, int.MaxValue))];
+                            //sqlQueryResult.GetBytes(0, 0, blob1, 0, blob1.Length);
+                            //using (var fs = new MemoryStream(memoryStream, FileMode.Create, FileAccess.Write)) {
+                            //msDoc.Write(blob, 0, blob.Length);
+                            //msXls.Write(blob, 0, blob.Length);
+                            msDoc.Write(colProtocolDoc, 0, colProtocolDoc.Length);
+                            msDoc.Write(colProtocolXls, 0, colProtocolXls.Length);
+
+                            using (var fs = new FileStream(@"C:\Users\Margarita\OneDrive\Documents\TP\TP\bin\Debug\Организация1\Протокол1\test.docx", FileMode.Create, FileAccess.Write))
+                                fs.Write(colProtocolDoc, 0, colProtocolDoc.Length);
+                        }
+                }
+                CloseConnection();
+                return (msDoc, msXls);
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+            finally { CloseConnection(); }
+        }
+
+        public (MemoryStream docFile, MemoryStream xlsFile) GetPartOfOrgProtocolRow(int idOrg, string path, IReadOnlyCollection<string> excludeProtocols)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}Protocol"))
+                {
+                    СreateTableProtocolOrgJournal(idOrg);
+                }
+
+                OpenConnection();
+
+                MemoryStream msDoc = new MemoryStream();
+                MemoryStream msXls = new MemoryStream();
+                var excludeString = String.Join(", ", excludeProtocols.ToArray());
+                var query = "";
+                if (string.IsNullOrEmpty(excludeString))
+                {
+                    query = $"SELECT ProtocolId, ProtocolDoc, ProtocolXls FROM laboratory.org{idOrg}Protocol WHERE ProtocolId NOT IN ({excludeString})";
+                }
+                else
+                {
+                    query = $"SELECT ProtocolId, ProtocolDoc, ProtocolXls FROM laboratory.org{idOrg}Protocol";
+                }
+                var sqlQuery = new MySqlCommand(query, GetConnection());
+
+                using (var sqlQueryResult = sqlQuery.ExecuteReader())
+                {
+                    if (sqlQueryResult != null)
+                    {
+                        while (sqlQueryResult.Read())
+                        {
+                            if (sqlQueryResult.HasRows)
+                            {
+                                string protocolName = (string)sqlQueryResult["ProtocolId"];
+
+                                if (!File.Exists($"{path}\\{protocolName}.docx"))
+                                {
+                                    byte[] colProtocolDoc = (byte[])sqlQueryResult["ProtocolDoc"];
+                                    msDoc.Write(colProtocolDoc, 0, colProtocolDoc.Length);
+                                    using (var fs = new FileStream($"{path}\\{protocolName}.docx", FileMode.Create, FileAccess.Write))
+                                        fs.Write(colProtocolDoc, 0, colProtocolDoc.Length);
+                                }
+
+                                if (!File.Exists($"{path}\\{protocolName}.xlsx"))
+                                {
+                                    byte[] colProtocolXls = (byte[])sqlQueryResult["ProtocolXls"];
+                                    msXls.Write(colProtocolXls, 0, colProtocolXls.Length);
+                                    using (var fs = new FileStream($"{path}\\{protocolName}.xlsx", FileMode.Create, FileAccess.Write))
+                                        fs.Write(colProtocolXls, 0, colProtocolXls.Length);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                
+                CloseConnection();
+                return (msDoc, msXls);
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
             }
             finally { CloseConnection(); }
         }
