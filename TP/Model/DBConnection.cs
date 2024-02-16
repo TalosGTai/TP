@@ -276,6 +276,147 @@ namespace TP.Model
         }
 
         /// <summary>
+        /// Сохранить в таблицу листа1 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
+        public void SaveTableJournalOrg1List1(int idOrg, int idJournal, List<Org1List1> listFromUI)
+        {
+            try
+            {
+                idJournal += 1;
+                //Все значения из базы
+                var listTable = GetListJournalOrg(idOrg, idJournal, 1);
+                var listFromDb = new List<Org1List1>();
+                for (int i = 0; i < listTable.Rows.Count; i++)
+                {
+                    var row = listTable.Rows[i];
+                    var listString = new List<string>();
+                    listString.Add(row.Field<int>("id").ToString());
+                    listString.Add(row.Field<string>("A"));
+                    listString.Add(row.Field<string>("B"));
+                    listString.Add(row.Field<string>("C"));
+                    listString.Add(row.Field<string>("D"));
+                    listString.Add(row.Field<string>("E"));
+                    listString.Add(row.Field<string>("F"));
+                    listString.Add(row.Field<string>("G"));
+                    listString.Add(row.Field<string>("H"));
+                    listString.Add(row.Field<string>("I"));
+                    listString.Add(row.Field<string>("J"));
+                    listString.Add(row.Field<string>("K"));
+                    listString.Add(row.Field<string>("L"));
+                    listString.Add(row.Field<string>("M"));
+                    listString.Add(row.Field<string>("N"));
+                    listString.Add(row.Field<string>("O"));
+                    listString.Add(row.Field<string>("P"));
+                    listString.Add(row.Field<string>("Q"));
+                    listString.Add(row.Field<string>("R"));
+
+                    listFromDb.Add(new Org1List1(listString));
+                }
+                //значения UI которых нет в значениях базы 
+                var difList = listFromUI.Except(listFromDb, new Org1List1Comparer()).ToList();
+                //добавляем значения, которых нет в базе, но есть в UI
+                foreach (var dif in difList)
+                {
+                    string query = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list1 " +
+                        $"(id, A, B, C, D, E, F, G, H , I, J, K, L, M, N, O, P, Q, R) " +
+                        $"VALUES(\"{dif.Id}\"," +
+                        $"\"{dif.NumberProduct}\"," +
+                        $"\"{dif.NumberDateDirection}\"," +
+                        $"\"{dif.SamplingAct}\"," +
+                        $"\"{dif.SampleName}\"," +
+                        $"\"{dif.OrganizationName}\"," +
+                        $"\"{dif.NumberSampleWeightCapacity}\"," +
+                        $"\"{dif.NumberDateUnsuitabilitySamples}\"," +
+                        $"\"{dif.DateReceiptSample}\"," +
+                        $"\"{dif.NumberRegSample}\"," +
+                        $"\"{dif.FioResponsiblePersonTest}\"," +
+                        $"\"{dif.DateIssueSample}\"," +
+                        $"\"{dif.DateReturnSampleAfterTest}\"," +
+                        $"\"{dif.FioInsertRecord}\"," +
+                        $"\"{dif.Note}\"," +
+                        $"\"{dif.NumberProtocol}\"," +
+                        $"\"{dif.ProductType}\"," +
+                        $"\"{dif.Applicant}\"," +
+                        $"\"{dif.Manufacturer}\")";
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
+        /// <summary>
+        /// Сохранить в таблицу листа2 журнала
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="idJournal">номер журнала</param>
+        public void SaveTableJournalOrg1List2(int idOrg, int idJournal, List<Org1List2> listFromUI)
+        {
+            try
+            {
+                idJournal += 1;
+                //Все значения из базы
+                var listTable = GetListJournalOrg(idOrg, idJournal, 1);
+                var listFromDb = new List<Org1List2>();
+                for (int i = 0; i < listTable.Rows.Count; i++)
+                {
+                    var row = listTable.Rows[i];
+                    var listString = new List<string>();
+                    listString.Add(row.Field<int>("id").ToString());
+                    listString.Add(row.Field<string>("A"));
+                    listString.Add(row.Field<string>("B"));
+                    listString.Add(row.Field<string>("C"));
+                    listString.Add(row.Field<string>("D"));
+                    listString.Add(row.Field<string>("E"));
+                    listString.Add(row.Field<string>("F"));
+                    listString.Add(row.Field<string>("G"));
+                    listString.Add(row.Field<string>("H"));
+                    listString.Add(row.Field<string>("I"));
+
+                    listFromDb.Add(new Org1List2(listString));
+                }
+                //значения UI которых нет в значениях базы 
+                var difList = listFromUI.Except(listFromDb, new Org1List2Comparer()).ToList();
+                //добавляем значения, которых нет в базе, но есть в UI
+                foreach (var dif in difList)
+                {
+                    string query = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list2 " +
+                        $"(id, A, B, C, D, E, F, G, H , I) " +
+                        $"VALUES(\"{dif.Id}\"," +
+                        $"\"{dif.NumberProduct}\"," +
+                        $"\"{dif.NumberProtocolTest}\"," +
+                        $"\"{dif.DateReturnSampleAfterTest}\"," +
+                        $"\"{dif.NumberDateDirection}\"," +
+                        $"\"{dif.NumberRegSample}\"," +
+                        $"\"{dif.NumberActUtil}\"," +
+                        $"\"{dif.DateActUtil}\"," +
+                        $"\"{dif.DateReturnSample}\"," +
+                        $"\"{dif.FioInsertRecord}\"" +
+                        $")";
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
+
+
+        /// <summary>
         /// Создать таблицу для листа2 журнала
         /// </summary>
         /// <param name="idOrg">номер организации</param>

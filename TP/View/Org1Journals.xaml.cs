@@ -156,6 +156,9 @@ namespace TP.View
                     MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
                 }
                 // сохранение изменений в БД
+                var db = new DBConnection();
+                db.SaveTableJournalOrg1List1(1, idJournal, _journalsList[idJournal].Item1);
+
                 //Thread localJournal = new Thread();
                 //Thread dbJournal = new Thread();
                 //localJournal.Start();

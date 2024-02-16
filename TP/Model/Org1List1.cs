@@ -1,10 +1,12 @@
 ﻿using Org.BouncyCastle.Asn1.Mozilla;
+using System;
 using System.Collections.Generic;
 
 namespace TP.Model
 {
-    public class Org1List1 : NotifyPropertyChanged
+    public class Org1List1 : NotifyPropertyChanged, IEquatable<Org1List1>
     {
+        private string _id;
         private string _numberProduct;
         private string _numberDateDirection;
         private string _samplingAct;
@@ -31,24 +33,38 @@ namespace TP.Model
 
         public Org1List1(List<string> values) 
         {
-            _numberProduct = values[0];
-            _numberDateDirection = values[1];
-            _samplingAct = values[2];
-            _sampleName = values[3];
-            _organizationName = values[4];
-            _numberSampleWeightCapacity = values[5];
-            _numberDateUnsuitabilitySamples = values[6];
-            _dateReceiptSample = values[7];
-            _numberRegSample = values[8];
-            _fioResponsiblePersonTest = values[9];
-            _dateIssueSample = values[10];
-            _dateReturnSampleAfterTest = values[11];
-            _fioInsertRecord = values[12];
-            _note = values[13];
-            _numberProtocol = values[14];
-            _productType = values[15];
-            _applicant = values[16];
-            _manufacturer = values[17];
+            _id = values[0];
+            _numberProduct = values[1];
+            _numberDateDirection = values[2];
+            _samplingAct = values[3];
+            _sampleName = values[4];
+            _organizationName = values[5];
+            _numberSampleWeightCapacity = values[6];
+            _numberDateUnsuitabilitySamples = values[7];
+            _dateReceiptSample = values[8];
+            _numberRegSample = values[9];
+            _fioResponsiblePersonTest = values[10];
+            _dateIssueSample = values[11];
+            _dateReturnSampleAfterTest = values[12];
+            _fioInsertRecord = values[13];
+            _note = values[14];
+            _numberProtocol = values[15];
+            _productType = values[16];
+            _applicant = values[17];
+            _manufacturer = values[18];
+        }
+
+        /// <summary>
+        /// id
+        /// </summary>
+        public string Id
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -282,6 +298,71 @@ namespace TP.Model
                 _manufacturer = value;
                 OnPropertyChanged();
             }
+        }
+
+        public bool Equals(Org1List1 o)
+        {
+            bool condition = this.Applicant == o.Applicant
+               && this.DateIssueSample == o.DateIssueSample
+               && this.DateReceiptSample == o.DateReceiptSample
+               && this.DateReturnSampleAfterTest == o.DateReturnSampleAfterTest
+               && this.FioInsertRecord == o.FioInsertRecord
+               && this.FioResponsiblePersonTest == o.FioResponsiblePersonTest
+               && this.Id == o.Id
+               && this.Manufacturer == o.Manufacturer
+               && this.Note == o.Note
+               && this.NumberDateDirection == o.NumberDateDirection
+               && this.NumberDateUnsuitabilitySamples == o.NumberDateUnsuitabilitySamples
+               && this.NumberProduct == o.NumberProduct
+               && this.NumberProtocol == o.NumberProtocol
+               && this.NumberRegSample == o.NumberRegSample
+               && this.NumberSampleWeightCapacity == o.NumberSampleWeightCapacity
+               && this.OrganizationName == o.OrganizationName
+               && this.SampleName == o.SampleName
+               && this.ProductType == o.ProductType
+               && this.SamplingAct == o.SamplingAct;
+
+            return condition;
+        }
+
+        public int GetHashCode(Org1List1 x)
+        {
+            var hash = 19;
+            hash = hash * 23 + x.Id.GetHashCode();
+            hash = hash * 23 + x.NumberDateDirection.GetHashCode();
+            hash = hash * 23 + x.NumberProduct.GetHashCode();
+            hash = hash * 23 + x.SamplingAct.GetHashCode();
+            hash = hash * 23 + x.SampleName.GetHashCode();
+            hash = hash * 23 + x.OrganizationName.GetHashCode();
+            hash = hash * 23 + x.NumberSampleWeightCapacity.GetHashCode();
+            hash = hash * 23 + x.NumberDateUnsuitabilitySamples.GetHashCode();
+            hash = hash * 23 + x.DateReceiptSample.GetHashCode();
+            hash = hash * 23 + x.NumberRegSample.GetHashCode();
+            hash = hash * 23 + x.FioResponsiblePersonTest.GetHashCode();
+            hash = hash * 23 + x.DateIssueSample.GetHashCode();
+            hash = hash * 23 + x.DateReturnSampleAfterTest.GetHashCode();
+            hash = hash * 23 + x.FioInsertRecord.GetHashCode();
+            hash = hash * 23 + x.Note.GetHashCode();
+            hash = hash * 23 + x.NumberProtocol.GetHashCode();
+            hash = hash * 23 + x.ProductType.GetHashCode();
+            hash = hash * 23 + x.Applicant.GetHashCode();
+            hash = hash * 23 + x.Manufacturer.GetHashCode();
+            return hash;
+        }
+
+
+    }
+
+    public class Org1List1Comparer : IEqualityComparer<Org1List1>
+    {
+        public bool Equals(Org1List1 x, Org1List1 y)
+        {
+            return x.Equals(y);
+        }
+
+        public int GetHashCode(Org1List1 x)
+        {
+            return x.GetHashCode();
         }
     }
 }
