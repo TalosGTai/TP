@@ -193,6 +193,12 @@
                 <DataGridTextColumn Header="Дата выдачи протокола испытаний" Binding="{Binding DateReturnSample, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Ф.И.О. сотрудника, внесшего запись" Binding="{Binding FioInsertRecord, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить строку"
+                              Click="MenuItem_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </Page>

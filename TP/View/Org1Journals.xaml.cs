@@ -36,11 +36,11 @@ namespace TP.View
             TableJournals.ItemsSource = _journalsList1;
             DataContext = this;
             _currentDirectory = Environment.CurrentDirectory;
-            CreateJournalsFoldersDB();
         }
 
-        private void CreateJournalsFoldersDB()
+        public void CreateJournalsFoldersDB()
         {
+            _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
             for (int i = 0; i < Math.Max(GetCountJournals(), 2); i++)
             {
                 if (!File.Exists($"Организация1\\Журнал{i + 1}.xlsx"))
@@ -50,10 +50,8 @@ namespace TP.View
                 if (i >= 2)
                 {
                     CmbBoxChoiceJournal.Items.Add("Журнал " + (i + 1).ToString());
-                    //List<Org1List1> list1 = new List<Org1List1>();
-                    //List<Org1List2> list2 = new List<Org1List2>();
-                    //_journalsList.Add((list1, list2));
                 }
+                _journalsList.Add((new List<Org1List1>(), new List<Org1List2>()));
             }
         }
 
@@ -86,45 +84,54 @@ namespace TP.View
 
         private void ChoiceJournal_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int idJournal = CmbBoxChoiceJournal.SelectedIndex;
+            _idJournal = CmbBoxChoiceJournal.SelectedIndex;
 
+            if (_journalsList is null)
+                _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
             if (_firstStart)
-                SaveChanges();
-            LabelJournalNumber.Content = "Журнал " + (Convert.ToInt32(idJournal.ToString()) + 1).ToString();
+                SaveChanges(_idJournal);
+            LabelJournalNumber.Content = "Журнал " + (Convert.ToInt32(_idJournal.ToString()) + 1).ToString();
 
             if (!(CmbBoxChoiceList is null) && CmbBoxChoiceList.Items.Count > 0)
             {
                 CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[0];
-                ChangeSourceTable(idJournal, 1);
+                ChangeSourceTable(_idJournal, 1);
             }
         }
 
         private void ChangeSourceTable(int idJournal, int idList)
         {
-            GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
+            //GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
             if (_journalsList != null)
                 _journalsList.Clear();
-            List<Org1List1> list1 = new List<Org1List1>();
-            List<Org1List2> list2 = new List<Org1List2>();
-            list1 = getListJournalFromDB.GetList1();
-            list2 = getListJournalFromDB.GetList2();
+            while (_journalsList.Count <= idJournal)
+                _journalsList.Add((new List<Org1List1>(), new List<Org1List2>()));
+            //List<Org1List1> list1 = new List<Org1List1>();
+            //List<Org1List2> list2 = new List<Org1List2>();
+            //list1 = getListJournalFromDB.GetList1();
+            //list2 = getListJournalFromDB.GetList2();
+            List<Org1List1> t1 = new List<Org1List1>();
+            List<Org1List2> t2 = new List<Org1List2>();
 
             if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null) && !(TableJournals is null)) 
             {
                 switch (idList)
                 {
                     case 1:
-                        TableJournals.ItemsSource = list1;
+                        TableJournals.ItemsSource = t1;
+                        TableJournals.ItemsSource = _journalsList[idJournal].Item1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
                         break;
                     case 2:
-                        TableJournalsList2.ItemsSource = list2;
+                        TableJournalsList2.ItemsSource = t2;
+                        TableJournalsList2.ItemsSource = _journalsList[idJournal].Item2;
                         TableJournals.Visibility = Visibility.Hidden;
                         TableJournalsList2.Visibility = Visibility.Visible;
                         break;
                     default:
-                        TableJournals.ItemsSource = list1;
+                        TableJournals.ItemsSource = t1;
+                        TableJournals.ItemsSource = _journalsList[idJournal].Item1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
                         break;
@@ -132,12 +139,23 @@ namespace TP.View
             }
         }
 
-        private void SaveChanges()
+        private void SaveChanges(int idJournal)
         {
+            string path = _currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
             var dialog = MessageBox.Show("Сохранить все изменения?", "Сохранение изменений", MessageBoxButton.YesNo);
             if (dialog == MessageBoxResult.Yes)
             {
-                // сохранение изменений в БД и журнал (локальный)
+                // журнал (локальный)
+                if (_journalsList.Count > 0)
+                {
+                    ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
+                    excelWorker.SaveWorksheets();
+                }
+                else
+                {
+                    MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
+                }
+                // сохранение изменений в БД
                 //Thread localJournal = new Thread();
                 //Thread dbJournal = new Thread();
                 //localJournal.Start();
@@ -151,7 +169,9 @@ namespace TP.View
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             
             if (_firstStart)
-                SaveChanges();
+                SaveChanges(_idJournal);
+            if (_journalsList is null)
+                _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
 
             if (!(CmbBoxChoiceList is null) && CmbBoxChoiceList.Items.Count > 0)
             {
@@ -162,7 +182,8 @@ namespace TP.View
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
-            SaveChanges();
+            _idJournal = CmbBoxChoiceJournal.SelectedIndex;
+            SaveChanges(_idJournal);
             Functions functions = new Functions();
             functions.Frame.Content = new NewProtocol();
         }
@@ -170,8 +191,9 @@ namespace TP.View
         private void OpenCurrentJournal_Click(object sender, RoutedEventArgs e)
         {
             Excel.Application application = null;
+            _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             int idJournal = CmbBoxChoiceJournal.SelectedIndex + 1;
-            SaveChanges();
+            SaveChanges(_idJournal);
 
             try
             {
@@ -189,9 +211,9 @@ namespace TP.View
             }
         }
 
-        private void SaveJournal(int idJournal, string path)
+        private void SaveJournal(int idJournal)
         {
-            path += $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
+            string path = _currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
 
             if (_journalsList.Count > 0)
             {
@@ -204,23 +226,11 @@ namespace TP.View
             }
         }
 
-        private void CombineJournal_Click(object sender, RoutedEventArgs e)
-        {
-            var idJournal = CmbBoxChoiceJournal.SelectedIndex + 1;
-
-            var getList1JournalFromDB = new GetListJournalFromDB(1, idJournal, 1);
-            var getList2JournalFromDB = new GetListJournalFromDB(1, idJournal, 2);
-            var list1 = getList1JournalFromDB.GetList1();
-            var list2 = getList2JournalFromDB.GetList2();
-
-            CreateNewJournal.WriteToExcelList1(1, idJournal, list1, list2);
-        }
-
         private void SaveJournals_Click(object sender, RoutedEventArgs e)
         {
-            int idJournal = CmbBoxChoiceJournal.SelectedIndex;
+            _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             _firstStart = false;
-            SaveJournal(idJournal, _currentDirectory);
+            SaveJournal(_idJournal);
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

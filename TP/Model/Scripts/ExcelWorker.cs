@@ -193,7 +193,6 @@ namespace TP.Model.Scripts
             }
         }
 
-
         public void AddRow(params string[] cells)
         {
             Rows.Add(cells.ToList());

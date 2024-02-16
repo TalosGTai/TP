@@ -46,7 +46,11 @@ namespace TP
         private void Journals_Click(object sender, RoutedEventArgs e)
         {
             if (_idOrg == 1)
-                ViewPages.Content = new Org1Journals();
+            {
+                Org1Journals org1Journals = new Org1Journals();
+                ViewPages.Content = org1Journals;
+                org1Journals.CreateJournalsFoldersDB();
+            }
             else if (_idOrg == 2)
                 ViewPages.Content = new Org2Journals();
             else
