@@ -12,7 +12,7 @@ namespace TP
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int idOrg;
+        private int _idOrg;
 
         public MainWindow()
         {
@@ -22,7 +22,7 @@ namespace TP
         public MainWindow(int idOrg)
         {
             InitializeComponent();
-            this.idOrg = idOrg;
+            this._idOrg = idOrg;
             Title += idOrg.ToString();
             LabelLab.Content += idOrg.ToString();
         }
@@ -45,9 +45,9 @@ namespace TP
 
         private void Journals_Click(object sender, RoutedEventArgs e)
         {
-            if (idOrg == 1)
+            if (_idOrg == 1)
                 ViewPages.Content = new Org1Journals();
-            else if (idOrg == 2)
+            else if (_idOrg == 2)
                 ViewPages.Content = new Org2Journals();
             else
                 MessageBox.Show("Ошибка загрузки журналов!");
@@ -55,7 +55,7 @@ namespace TP
 
         private void Protocols_Click(object sender, RoutedEventArgs e)
         {
-            Protocols protocols = new Protocols(idOrg);
+            Protocols protocols = new Protocols(_idOrg);
             ViewPages.Content = protocols;
             protocols.FillProtocolsView(protocols.GetCountProtocols());
         }
@@ -74,22 +74,12 @@ namespace TP
 
         private void Files_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (idOrg == 1)
-                ViewPages.Content = new FilesPage();
-            else if (idOrg == 2)
-                ViewPages.Content = new FilesPage();
-            else
-                MessageBox.Show("Ошибка загрузки файлов!");
+            ViewPages.Content = new FilesPage(_idOrg);
         }
 
         private void EditJournalsTitul_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (idOrg == 1)
-                ViewPages.Content = new ChooseChanges();
-            else if (idOrg == 2)
-                ViewPages.Content = new ChooseChanges();
-            else
-                MessageBox.Show("Ошибка загрузки страницы изменения журналов и протоколов!");
+            ViewPages.Content = new ChooseChanges(_idOrg);
         }
     }
 }

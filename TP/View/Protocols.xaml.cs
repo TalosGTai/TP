@@ -5,8 +5,6 @@ using TP.Model;
 using System.Collections.Generic;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Diagnostics;
-using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentFormat.OpenXml.Packaging;
 using System;
 using System.Runtime.InteropServices;
 
@@ -23,6 +21,7 @@ namespace TP.View
         public Protocols()
         {
             InitializeComponent();
+            _idOrg = 1;
             protocols = new List<Protocol>();
         }
 
@@ -134,7 +133,7 @@ namespace TP.View
             //var path = @"C:\Users\Margarita\OneDrive\Documents\TP\TP\bin\Debug\Организация1\Протокол1";
             DBConnection db = new DBConnection();
             db.GetPartOfOrgProtocolRow(1, path, excludeProtocols);
-
+            FillProtocolsView(GetCountProtocols());
         }
     }
 }

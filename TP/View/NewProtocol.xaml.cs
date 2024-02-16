@@ -78,7 +78,7 @@ namespace TP.View
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
                 MessageBox.Show("Протокол успешно создан!");
                 Functions functions = new Functions();
-                functions.Frame.Content = new Protocols();
+                functions.Frame.Content = new Protocols(_idOrg);
             }
         }
 

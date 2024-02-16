@@ -4,7 +4,6 @@ namespace TP.Model
 {
     public class Org1List2 : NotifyPropertyChanged
     {
-        
         private string _numberProduct;       
         private string _numberProtocolTest;        
         private string _dateReturnSampleAfterTest;

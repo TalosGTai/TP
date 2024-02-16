@@ -60,7 +60,6 @@ namespace TP.Model
             worksheetTitle = CreateTitleList(worksheetTitle);
             worksheetList1 = CreateColumnsList1(worksheetList1);
             worksheetList2 = CreateColumnsList2(worksheetList2);
-            //workbook.SaveAs("..\\..\\Datas\\Journals\\test.xlsx");
             try
             {
                 DBConnection dBConnection = new DBConnection();
@@ -68,8 +67,8 @@ namespace TP.Model
                 dBConnection.СreateTableJournalOrg1List0(idOrganization, idJournal);
                 dBConnection.СreateTableJournalOrg1List1(idOrganization, idJournal);
                 dBConnection.СreateTableJournalOrg1List2(idOrganization, idJournal);
-                dBConnection.InsertStartValuesOrgJournalList1(1, idJournal);
-                dBConnection.InsertStartValuesOrgJournalList2(1, idJournal);
+                //dBConnection.InsertStartValuesOrgJournalList1(1, idJournal);
+                //dBConnection.InsertStartValuesOrgJournalList2(1, idJournal);
             }
             catch
             {

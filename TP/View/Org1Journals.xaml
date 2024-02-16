@@ -137,9 +137,16 @@
                 Content="Открыть Журнал"
                 Grid.Row="8" Grid.Column="0"
                 Click="OpenCurrentJournal_Click"/>
+        <Button x:Name="SaveJournals"
+                Content="Сохранить журналы"
+                Grid.Row="8" Grid.Column="1"
+                Click="SaveJournals_Click"/>
         <DataGrid x:Name="TableJournals" Grid.Row="3"
                   Grid.Column="0"
-                  Grid.ColumnSpan="3" Grid.RowSpan="5">
+                  Grid.ColumnSpan="3" Grid.RowSpan="5"
+                  CanUserAddRows="False"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow">
                 <DataGrid.Columns>
                 <DataGridTextColumn Header="№ п/п" Binding="{Binding NumberProduct, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="№ и дата направления" Binding="{Binding NumberDateDirection, UpdateSourceTrigger=PropertyChanged}"/>
@@ -160,9 +167,21 @@
                 <DataGridTextColumn Header="Заявитель" Binding="{Binding Applicant, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Изготовитель" Binding="{Binding Manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить строку"
+                              Click="MenuItem_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
-        <DataGrid x:Name="TableJournalsList2" Grid.Row="3" Grid.Column="0"
-          Grid.ColumnSpan="3" Grid.RowSpan="5" Visibility="Hidden">
+        <DataGrid x:Name="TableJournalsList2" 
+                  Grid.Row="3" Grid.Column="0"
+                  Grid.ColumnSpan="3" 
+                  Grid.RowSpan="5" 
+                  Visibility="Hidden"
+                  CanUserAddRows="False"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№ п/п" Binding="{Binding NumberProduct, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Номер протокола испытаний" Binding="{Binding NumberProtocolTest, UpdateSourceTrigger=PropertyChanged}"/>
