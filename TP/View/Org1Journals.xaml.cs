@@ -32,7 +32,8 @@ namespace TP.View
         {
             InitializeComponent();
             _firstStart = true;
-            _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
+            if (_journalsList == null)
+                _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
             TableJournals.ItemsSource = _journalsList1;
             DataContext = this;
             _currentDirectory = Environment.CurrentDirectory;
@@ -51,8 +52,14 @@ namespace TP.View
                 {
                     CmbBoxChoiceJournal.Items.Add("Журнал " + (i + 1).ToString());
                 }
-                _journalsList.Add((new List<Org1List1>(), new List<Org1List2>()));
+                GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, i + 1, 1);
+                List<Org1List1> list1 = new List<Org1List1>();
+                List<Org1List2> list2 = new List<Org1List2>();
+                list1 = getListJournalFromDB.GetList1();
+                list2 = getListJournalFromDB.GetList2();
+                _journalsList.Add((list1, list2));
             }
+            TableJournals.ItemsSource = _journalsList[0].Item1;
         }
 
         private int GetCountJournals()
@@ -73,9 +80,7 @@ namespace TP.View
             int idJournal = CmbBoxChoiceJournal.Items.Count + 1;
             _firstStart = false;
             CmbBoxChoiceJournal.Items.Add("Журнал " + idJournal.ToString());
-            List<Org1List1> list1 = new List<Org1List1>();
-            List<Org1List2> list2 = new List<Org1List2>();
-            _journalsList.Add((list1, list2));
+            _journalsList.Add((new List<Org1List1>(), new List<Org1List2>()));
             ChangeSourceTable(idJournal - 1, 1);
             CmbBoxChoiceJournal.SelectedItem = CmbBoxChoiceJournal.Items[idJournal - 1];
             CmbBoxChoiceList.SelectedItem = CmbBoxChoiceList.Items[0];
@@ -86,7 +91,7 @@ namespace TP.View
         {
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
 
-            if (_journalsList is null)
+            if (_journalsList == null)
                 _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
             if (_firstStart)
                 SaveChanges(_idJournal);
@@ -101,36 +106,24 @@ namespace TP.View
 
         private void ChangeSourceTable(int idJournal, int idList)
         {
-            //GetListJournalFromDB getListJournalFromDB = new GetListJournalFromDB(1, idJournal + 1, 1);
-            if (_journalsList != null)
-                _journalsList.Clear();
             while (_journalsList.Count <= idJournal)
                 _journalsList.Add((new List<Org1List1>(), new List<Org1List2>()));
-            //List<Org1List1> list1 = new List<Org1List1>();
-            //List<Org1List2> list2 = new List<Org1List2>();
-            //list1 = getListJournalFromDB.GetList1();
-            //list2 = getListJournalFromDB.GetList2();
-            List<Org1List1> t1 = new List<Org1List1>();
-            List<Org1List2> t2 = new List<Org1List2>();
 
             if (!(CmbBoxChoiceList is null) && !(CmbBoxChoiceJournal is null) && !(_journalsList is null) && !(TableJournals is null)) 
             {
                 switch (idList)
                 {
                     case 1:
-                        TableJournals.ItemsSource = t1;
                         TableJournals.ItemsSource = _journalsList[idJournal].Item1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
                         break;
                     case 2:
-                        TableJournalsList2.ItemsSource = t2;
                         TableJournalsList2.ItemsSource = _journalsList[idJournal].Item2;
                         TableJournals.Visibility = Visibility.Hidden;
                         TableJournalsList2.Visibility = Visibility.Visible;
                         break;
                     default:
-                        TableJournals.ItemsSource = t1;
                         TableJournals.ItemsSource = _journalsList[idJournal].Item1;
                         TableJournals.Visibility = Visibility.Visible;
                         TableJournalsList2.Visibility = Visibility.Hidden;
@@ -142,24 +135,34 @@ namespace TP.View
         private void SaveChanges(int idJournal)
         {
             string path = _currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
-            var dialog = MessageBox.Show("Сохранить все изменения?", "Сохранение изменений", MessageBoxButton.YesNo);
-            if (dialog == MessageBoxResult.Yes)
+            //var dialog = MessageBox.Show("Сохранить все изменения?", "Сохранение изменений", MessageBoxButton.YesNo);
+            //if (dialog == MessageBoxResult.Yes)
+            //{
+            //    // журнал (локальный)
+            //    if (_journalsList.Count > 0)
+            //    {
+            //        ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
+            //        excelWorker.SaveWorksheets();
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
+            //    }
+            //    // сохранение изменений в БД
+            //    //Thread localJournal = new Thread();
+            //    //Thread dbJournal = new Thread();
+            //    //localJournal.Start();
+            //    //dbJournal.Start();
+            //}
+            // журнал (локальный)
+            if (_journalsList.Count > 0)
             {
-                // журнал (локальный)
-                if (_journalsList.Count > 0)
-                {
-                    ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
-                    excelWorker.SaveWorksheets();
-                }
-                else
-                {
-                    MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
-                }
-                // сохранение изменений в БД
-                //Thread localJournal = new Thread();
-                //Thread dbJournal = new Thread();
-                //localJournal.Start();
-                //dbJournal.Start();
+                ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
+                excelWorker.SaveWorksheets();
+            }
+            else
+            {
+                MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
             }
         }
 
@@ -263,6 +266,7 @@ namespace TP.View
             {
                 MessageBox.Show($"Ошибка с выбором листа {_idList}", "Ошибка");
             }
+            Console.WriteLine(_journalsList[0].Item1[0].NumberDateDirection);
         }
     }
 }
