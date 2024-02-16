@@ -123,8 +123,6 @@ namespace TP.Model.Org1
                     {
                         var wTable = t;
                         wTable.Range.Cells.HeightRule = WdRowHeightRule.wdRowHeightAuto;
-                        //wTable.Range.Columns.PreferredWidthType = WdPreferredWidthType.wdPreferredWidthAuto;
-                       
                     }
                 }
             }
@@ -182,7 +180,6 @@ namespace TP.Model.Org1
                         }
                         if (!flagForTable)
                             paragraphItems.Add(el);
-
                     }
                     prev = el.InnerText;
                 }
@@ -235,36 +232,11 @@ namespace TP.Model.Org1
                         }
                         body.AppendChild(t);
                     }
-                    if (i > 0)
-                    {
-                        prevItem = paragraphItems[i - 1];
-                        if (item.InnerText.Contains("Внимание!") || prevItem.InnerText.Contains("Внимание!"))
-                        {
-                            endParagraph.Add(para);
-                        }
-                        else
-                        {
-                            body.AppendChild(para);
-                        }
-                    }
-                    if (i == paragraphItems.Count - 1)
-                    {
-                        foreach (var e in endParagraph)
-                            body.AppendChild(e);
-                    }
+                    
+                        prevItem = paragraphItems[i];
+                    body.AppendChild(para);                  
                 }
-
-                //PageMargin pageMargins = new PageMargin();
-                //pageMargins.Left = 0;
-                //pageMargins.Right = 0;
-                //pageMargins.Top = 1; 
-                //pageMargins.Bottom = 1; 
-
-                //SectionProperties sectionProps = new SectionProperties();
-               // sectionProps.Append(pageMargins);
-                //body.Append(sectionProps);
                 wordDocument.Save();
-
             }
         }
       
