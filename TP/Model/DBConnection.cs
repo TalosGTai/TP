@@ -207,29 +207,32 @@ namespace TP.Model
         /// <param name="idJournal">номер журнала</param>
         public void СreateTableJournalOrg1List0(int idOrg, int idJournal)
         {
-            string query = $"create table if not exists laboratory.org{idOrg}journal{idJournal}list0 (";
-            query += $"org{idOrg}idjournal{idJournal}list0 int NOT NULL AUTO_INCREMENT,";
-            query += "Row1 varchar(200),";
-            query += "Row2 varchar(200),";
-            query += "Row3 varchar(200),";
-            query += "Row4_1 varchar(200),";
-            query += "Row4_2 varchar(200),";
-            query += "Row5_1 varchar(200),";
-            query += "Row5_2 varchar(200),";
-            query += "Row6 varchar(200),";
-            query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list0))";
-            try
+            if (!CheckTable($"laboratory.org{idOrg}journal{idJournal}list0"))
             {
-                OpenConnection();
-                MySqlCommand command = new MySqlCommand(query, GetConnection());
-                command.ExecuteNonQuery();
-                CloseConnection();
+                string query = $"create table if not exists laboratory.org{idOrg}journal{idJournal}list0 (";
+                query += $"org{idOrg}idjournal{idJournal}list0 int NOT NULL AUTO_INCREMENT,";
+                query += "Row1 varchar(200),";
+                query += "Row2 varchar(200),";
+                query += "Row3 varchar(200),";
+                query += "Row4_1 varchar(200),";
+                query += "Row4_2 varchar(200),";
+                query += "Row5_1 varchar(200),";
+                query += "Row5_2 varchar(200),";
+                query += "Row6 varchar(200),";
+                query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list0))";
+                try
+                {
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally { CloseConnection(); }
             }
-            catch (SqlException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -239,40 +242,43 @@ namespace TP.Model
         /// <param name="idJournal">номер журнала</param>
         public void СreateTableJournalOrg1List1(int idOrg, int idJournal)
         {
-            string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
-            query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
-            query += "id int,";
-            query += "A Text,";
-            query += "B Text,";
-            query += "C Text,";
-            query += "D Text,";
-            query += "E Text,";
-            query += "F Text,";
-            query += "G Text,";
-            query += "H Text,";
-            query += "I Text,";
-            query += "J Text,";
-            query += "K Text,";
-            query += "L Text,";
-            query += "M Text,";
-            query += "N Text,";
-            query += "O Text,";
-            query += "P Text,";
-            query += "Q Text,";
-            query += "R Text,";
-            query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list1))";
-            try
+            if (!CheckTable($"laboratory.org{idOrg}journal{idJournal}list1"))
             {
-                OpenConnection();
-                MySqlCommand command = new MySqlCommand(query, GetConnection());
-                command.ExecuteNonQuery();
-                CloseConnection();
+                string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
+                query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
+                query += "id int,";
+                query += "A Text,";
+                query += "B Text,";
+                query += "C Text,";
+                query += "D Text,";
+                query += "E Text,";
+                query += "F Text,";
+                query += "G Text,";
+                query += "H Text,";
+                query += "I Text,";
+                query += "J Text,";
+                query += "K Text,";
+                query += "L Text,";
+                query += "M Text,";
+                query += "N Text,";
+                query += "O Text,";
+                query += "P Text,";
+                query += "Q Text,";
+                query += "R Text,";
+                query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list1))";
+                try
+                {
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally { CloseConnection(); }
             }
-            catch (SqlException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            finally { CloseConnection(); }
         }
 
         /// <summary>
@@ -284,36 +290,11 @@ namespace TP.Model
         {
             try
             {
-                idJournal += 1;
+                //idJournal += 1;
                 //Все значения из базы
                 var listTable = GetListJournalOrg(idOrg, idJournal, 1);
-                var listFromDb = new List<Org1List1>();
-                for (int i = 0; i < listTable.Rows.Count; i++)
-                {
-                    var row = listTable.Rows[i];
-                    var listString = new List<string>();
-                    listString.Add(row.Field<int>("id").ToString());
-                    listString.Add(row.Field<string>("A"));
-                    listString.Add(row.Field<string>("B"));
-                    listString.Add(row.Field<string>("C"));
-                    listString.Add(row.Field<string>("D"));
-                    listString.Add(row.Field<string>("E"));
-                    listString.Add(row.Field<string>("F"));
-                    listString.Add(row.Field<string>("G"));
-                    listString.Add(row.Field<string>("H"));
-                    listString.Add(row.Field<string>("I"));
-                    listString.Add(row.Field<string>("J"));
-                    listString.Add(row.Field<string>("K"));
-                    listString.Add(row.Field<string>("L"));
-                    listString.Add(row.Field<string>("M"));
-                    listString.Add(row.Field<string>("N"));
-                    listString.Add(row.Field<string>("O"));
-                    listString.Add(row.Field<string>("P"));
-                    listString.Add(row.Field<string>("Q"));
-                    listString.Add(row.Field<string>("R"));
+                var listFromDb = GetOrgList1(idOrg, idJournal);
 
-                    listFromDb.Add(new Org1List1(listString));
-                }
                 //значения UI которых нет в значениях базы 
                 var difList = listFromUI.Except(listFromDb, new Org1List1Comparer()).ToList();
                 //добавляем значения, которых нет в базе, но есть в UI
@@ -354,6 +335,79 @@ namespace TP.Model
         }
 
         /// <summary>
+        /// Получить из базы лист1 в виде списка
+        /// </summary>
+        /// <param name="idOrg"></param>
+        /// <param name="idJournal"></param>
+        /// <returns></returns>
+        public List<Org1List1> GetOrgList1(int idOrg, int idJournal)
+        {
+            //idJournal += 1;
+            //Все значения из базы
+            var listTable = GetListJournalOrg(idOrg, idJournal, 1);
+            var listFromDb = new List<Org1List1>();
+            for (int i = 0; i < listTable.Rows.Count; i++)
+            {
+                var row = listTable.Rows[i];
+                var listString = new List<string>();
+                listString.Add(row.Field<int>("id").ToString());
+                listString.Add(row.Field<string>("A"));
+                listString.Add(row.Field<string>("B"));
+                listString.Add(row.Field<string>("C"));
+                listString.Add(row.Field<string>("D"));
+                listString.Add(row.Field<string>("E"));
+                listString.Add(row.Field<string>("F"));
+                listString.Add(row.Field<string>("G"));
+                listString.Add(row.Field<string>("H"));
+                listString.Add(row.Field<string>("I"));
+                listString.Add(row.Field<string>("J"));
+                listString.Add(row.Field<string>("K"));
+                listString.Add(row.Field<string>("L"));
+                listString.Add(row.Field<string>("M"));
+                listString.Add(row.Field<string>("N"));
+                listString.Add(row.Field<string>("O"));
+                listString.Add(row.Field<string>("P"));
+                listString.Add(row.Field<string>("Q"));
+                listString.Add(row.Field<string>("R"));
+
+                listFromDb.Add(new Org1List1(listString));
+            }
+            return listFromDb;
+        }
+
+        /// <summary>
+        /// Получить из базы лист2 в виде списка
+        /// </summary>
+        /// <param name="idOrg"></param>
+        /// <param name="idJournal"></param>
+        /// <returns></returns>
+        public List<Org1List2> GetOrgList2 (int idOrg, int idJournal)
+        {
+            //idJournal += 1;
+            //Все значения из базы
+            var listTable = GetListJournalOrg(idOrg, idJournal, 2);
+            var listFromDb = new List<Org1List2>();
+            for (int i = 0; i < listTable.Rows.Count; i++)
+            {
+                var row = listTable.Rows[i];
+                var listString = new List<string>();
+                listString.Add(row.Field<int>("id").ToString());
+                listString.Add(row.Field<string>("A"));
+                listString.Add(row.Field<string>("B"));
+                listString.Add(row.Field<string>("C"));
+                listString.Add(row.Field<string>("D"));
+                listString.Add(row.Field<string>("E"));
+                listString.Add(row.Field<string>("F"));
+                listString.Add(row.Field<string>("G"));
+                listString.Add(row.Field<string>("H"));
+                listString.Add(row.Field<string>("I"));
+
+                listFromDb.Add(new Org1List2(listString));
+            }
+            return listFromDb;
+        }
+
+        /// <summary>
         /// Сохранить в таблицу листа2 журнала
         /// </summary>
         /// <param name="idOrg">номер организации</param>
@@ -365,24 +419,7 @@ namespace TP.Model
                 idJournal += 1;
                 //Все значения из базы
                 var listTable = GetListJournalOrg(idOrg, idJournal, 1);
-                var listFromDb = new List<Org1List2>();
-                for (int i = 0; i < listTable.Rows.Count; i++)
-                {
-                    var row = listTable.Rows[i];
-                    var listString = new List<string>();
-                    listString.Add(row.Field<int>("id").ToString());
-                    listString.Add(row.Field<string>("A"));
-                    listString.Add(row.Field<string>("B"));
-                    listString.Add(row.Field<string>("C"));
-                    listString.Add(row.Field<string>("D"));
-                    listString.Add(row.Field<string>("E"));
-                    listString.Add(row.Field<string>("F"));
-                    listString.Add(row.Field<string>("G"));
-                    listString.Add(row.Field<string>("H"));
-                    listString.Add(row.Field<string>("I"));
-
-                    listFromDb.Add(new Org1List2(listString));
-                }
+                var listFromDb = GetOrgList2(idOrg, idJournal);
                 //значения UI которых нет в значениях базы 
                 var difList = listFromUI.Except(listFromDb, new Org1List2Comparer()).ToList();
                 //добавляем значения, которых нет в базе, но есть в UI
@@ -423,31 +460,34 @@ namespace TP.Model
         /// <param name="idJournal">номер журнала</param>
         public void СreateTableJournalOrg1List2(int idOrg, int idJournal)
         {
-            string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
-            query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
-            query += "id int, ";
-            query += "A Text,";
-            query += "B Text,";
-            query += "C Text,";
-            query += "D Text,";
-            query += "E Text,";
-            query += "F Text,";
-            query += "G Text,";
-            query += "H Text,";
-            query += "I Text,";
-            query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list2))";
-            try
+            if (!CheckTable($"laboratory.org{idOrg}journal{idJournal}list2"))
             {
-                OpenConnection();
-                MySqlCommand command = new MySqlCommand(query, GetConnection());
-                command.ExecuteNonQuery();
-                CloseConnection();
-            }
-            catch (SqlException)
-            {
+                string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
+                query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
+                query += "id int, ";
+                query += "A Text,";
+                query += "B Text,";
+                query += "C Text,";
+                query += "D Text,";
+                query += "E Text,";
+                query += "F Text,";
+                query += "G Text,";
+                query += "H Text,";
+                query += "I Text,";
+                query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list2))";
+                try
+                {
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+                }
+                catch (SqlException)
+                {
 
+                }
+                finally { CloseConnection(); }
             }
-            finally { CloseConnection(); }
         }      
 
         public void InsertJournalOrgChangesRow(int idOrg, List<string> values)
