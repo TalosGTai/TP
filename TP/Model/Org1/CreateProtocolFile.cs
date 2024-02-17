@@ -28,22 +28,21 @@ namespace TP.Model.Org1
         private Tuple<Dictionary<string, string>, Dictionary<string, string>> _journal;
         private int idRow;
         private readonly string FONT = "Times New Roman";
+        string PROTOCOL_EXCEL_PATH = "",
+                PROTOCOL_WORD_PATH = "";
 
         public CreateProtocolFile()
         {
             var workbook = new XLWorkbook();
-            var worksheetTitle = workbook.Worksheets.Add("Главная");
+            var worksheetTitle = workbook.Worksheets.Add("Главная");      
         }
 
-        public CreateProtocolFile(Tuple<Dictionary<string, string>,
-            Dictionary<string, string>> journal, int idOrg, int idProtocol,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+        public void CreateProtocolXlsxFile(List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
         {
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Главная");
             var worksheet2 = workbook.Worksheets.Add("Таблицы");
             var worksheet3 = workbook.Worksheets.Add("Концовка");
-            _journal = journal;
             worksheet = CreateChapter1(worksheet);
             worksheet = CreateChapter2(worksheet);
             worksheet2 = CreateTablesTests(worksheet2, values);
@@ -60,27 +59,33 @@ namespace TP.Model.Org1
             worksheet.Column(5).Width = 14;
             worksheet.Column(6).Width = 8;
 
-            worksheet2.Column(2).Width = 32;
-            worksheet2.Column(3).Width = 14;
-            worksheet2.Column(4).Width = 14;
-            worksheet2.Column(5).Width = 14;
+            worksheet2.Column(2).Width = 25;
+            worksheet2.Column(3).Width = 15;
+            worksheet2.Column(4).Width = 10;
+            worksheet2.Column(5).Width = 10;
             worksheet2.Column(6).Width = 8;
-
-            string PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
-            string PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
-            string PROTOCOL_WORD_TMP_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx";
-
             //Создаем excel файлл
             workbook.SaveAs(PROTOCOL_EXCEL_PATH);
-            var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
-
-            //Получаем docx файл
-            workbookSave.Save(PROTOCOL_WORD_TMP_PATH, Aspose.Cells.SaveFormat.Docx);
-            ChangeDocFont(idOrg, idProtocol);
-            CreateFile(PROTOCOL_WORD_PATH, ParseDocument(idOrg, idProtocol));
-            File.Delete(PROTOCOL_WORD_TMP_PATH);
-
             workbook.Dispose();
+        }
+
+        public CreateProtocolFile(Tuple<Dictionary<string, string>,
+            Dictionary<string, string>> journal, int idOrg, int idProtocol,
+            List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+        {
+            PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
+           // PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+            PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+            _journal = journal;
+            //Создание excel файла
+            CreateProtocolXlsxFile(values);
+            var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
+            //Получаем docx файл
+            workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
+
+            ChangeDocFont(idOrg, idProtocol, PROTOCOL_WORD_PATH);
+            //CreateFile(PROTOCOL_WORD_PATH, ParseDocument(idOrg, idProtocol));
+            FixDocument(idOrg, idProtocol, PROTOCOL_WORD_PATH);
 
             //Подготавливаем файлы для сохранения в БД
             FileStream fs = new FileStream(PROTOCOL_EXCEL_PATH, FileMode.Open, FileAccess.Read);
@@ -103,10 +108,10 @@ namespace TP.Model.Org1
         /// </summary>
         /// <param name="idOrg"></param>
         /// <param name="idProtocol"></param>
-        private void ChangeDocFont(int idOrg, int idProtocol)
+        private void ChangeDocFont(int idOrg, int idProtocol, string path)
         {
             Application wordApp = new Application();
-            string filename = $"{Directory.GetCurrentDirectory()}\\Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx";
+            string filename = $"{Directory.GetCurrentDirectory()}\\"+ path;
 
             DocumentWord myDoc = wordApp.Documents.Open(filename);
             myDoc.PageSetup.TopMargin = 0;
@@ -117,7 +122,7 @@ namespace TP.Model.Org1
                 {
                     foreach (ParagraphWord p in myDoc.Paragraphs)
                     {
-                        p.Range.Font.Name = FONT;
+                        p.Range.Font.Name = FONT;                        
                     }
                     foreach (Microsoft.Office.Interop.Word.Table t in myDoc.Tables)
                     {
@@ -142,21 +147,25 @@ namespace TP.Model.Org1
         /// <param name="idOrg"></param>
         /// <param name="idProtocol"></param>
         /// <returns></returns>
-        private (Table, List<Paragraph>) ParseDocument(int idOrg, int idProtocol)
+        private void FixDocument(int idOrg, int idProtocol, string path)
         {
             List<Paragraph> paragraphItems = new List<Paragraph>();
             string prev = null;
-            Table[] tbl = Array.Empty<Table>();
-            using (var doc = WordprocessingDocument.Open($"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}tmp.docx", false))
+            Table tbl;
+            using (var doc = WordprocessingDocument.Open(path, true))
             {
                 var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
-                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray();
-
+                //Получаем таблицу с испытаниями
+                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[4];
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
                         && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
 
+                //Параграфы берем без значений таблицы
                 var flagForTable = false;
+
+                Body body = new Body();
+
                 foreach (var el in paragraphs)
                 {
                     //исключаем пустые параграфы, если их более одного подряд
@@ -165,81 +174,71 @@ namespace TP.Model.Org1
                         if (el.InnerText.Contains("Результаты испытаний:"))
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                            paragraphItems.Add(p);
+                            body.AppendChild(p);
                             flagForTable = true;
-                            paragraphItems.Add(el);
+
+                            body.AppendChild(el.CloneNode(true));
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                            paragraphItems.Add(p);
+                            //paragraphItems.Add(p);
+                            body.AppendChild(p);
                         }
                         if (el.InnerText.Contains("Внимание!"))
                         {
                             flagForTable = false;
                         }
                         if (!flagForTable)
-                            paragraphItems.Add(el);
+                        {
+                            body.AppendChild(el.CloneNode(true));
+                        }
+
+                        if ((prev != null && prev.Contains("Результаты испытаний:")))
+                        {
+                            Table t = new Table();
+                            OpenXmlElementList oxl = tbl.ChildElements;
+                            TableProperties props = new TableProperties();
+                            TableWidth tw = new TableWidth() { Width = "1000", Type = TableWidthUnitValues.Auto };
+                            TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
+                            //TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
+                            props.Append( tw, th);
+
+                            // styling
+                            //SectionProperties sectionProp1 =
+                            //               body.Descendants<SectionProperties>()?.FirstOrDefault() ??
+                            //               body.AppendChild(new SectionProperties());
+
+                            //var pageSize = sectionProp1.Descendants<PageSize>()?.FirstOrDefault() ??
+                            //               sectionProp1.AppendChild(new PageSize());
+                            //pageSize.Width = 35840;
+                            //pageSize.Height = 22240;
+                            //pageSize.Orient = PageOrientationValues.Landscape;
+
+
+                            t.Append(props);
+                            foreach (var c in oxl)
+                            {
+                                if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
+                                {
+                                    OpenXmlElement child = c.CloneNode(true);                                   
+                                    t.AppendChild(child);
+                                }
+                            }
+                            body.AppendChild(t);
+                        }
                     }
                     prev = el.InnerText;
                 }
-            }
 
-            return (tbl[4], paragraphItems);
-        }
+                //Очищаем весь файл
+                doc.MainDocumentPart.Document.Body.Remove();
+                doc.MainDocumentPart.Document.AppendChild(body);
 
-        /// <summary>
-        /// Создаем итоговый файл по временному, который создан по таблице Протокол
-        /// </summary>
-        /// <param name="resultFile"></param>
-        /// <param name="paragraphItems"></param>
-        public void CreateFile(string resultFile, (Table, List<Paragraph>) tableAndParagraphs)
-        {
-            using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(resultFile, WordprocessingDocumentType.Document))
-            {
-                var paragraphItems = tableAndParagraphs.Item2;
-                wordDocument.AddMainDocumentPart();
-                MainDocumentPart mainPart = wordDocument.MainDocumentPart;
-
-                mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
-                Body body = mainPart.Document.AppendChild(new Body());
-
-                Paragraph prevItem = null;
-                List<Paragraph> endParagraph = new List<Paragraph>();
-                for (int i = 0; i < paragraphItems.Count; i++)
-                {
-                    var item = paragraphItems[i];
-                    Paragraph para = new Paragraph();
-                    para.InnerXml = item.InnerXml;
-                    if ((prevItem != null && prevItem.InnerText.Contains("Результаты испытаний:")))
-                    {
-                        Table t = new Table();
-                        OpenXmlElementList oxl = tableAndParagraphs.Item1.ChildElements;
-                        TableProperties props = new TableProperties();
-                        TableWidth tw = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
-                        TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
-                        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
-                        props.Append(tableStyle, tw, th);
-
-                        t.Append(props);
-                        foreach (var c in oxl)
-                        {
-                            if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
-                            {
-                                OpenXmlElement child = c.CloneNode(true);
-                                t.AppendChild(child);
-                            }
-                        }
-                        body.AppendChild(t);
-                    }
-                    
-                        prevItem = paragraphItems[i];
-                    body.AppendChild(para);                  
-                }
-                wordDocument.Save();
+                doc.Save();
             }
         }
-      
+          
         private IXLWorksheet CreateChapter1(IXLWorksheet worksheet)
         {
             worksheet.Cell("A" + 1).Value = Resources.Protocol1;

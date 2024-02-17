@@ -245,8 +245,7 @@ namespace TP.Model
             if (!CheckTable($"laboratory.org{idOrg}journal{idJournal}list1"))
             {
                 string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
-                query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
-                query += "id int,";
+                query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";               
                 query += "A Text,";
                 query += "B Text,";
                 query += "C Text,";
@@ -301,8 +300,8 @@ namespace TP.Model
                 foreach (var dif in difList)
                 {
                     string query = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list1 " +
-                        $"(id, A, B, C, D, E, F, G, H , I, J, K, L, M, N, O, P, Q, R) " +
-                        $"VALUES(\"{dif.Id}\"," +
+                        $"(A, B, C, D, E, F, G, H , I, J, K, L, M, N, O, P, Q, R) " +
+                        $"VALUES(" +
                         $"\"{dif.NumberProduct}\"," +
                         $"\"{dif.NumberDateDirection}\"," +
                         $"\"{dif.SamplingAct}\"," +
@@ -350,7 +349,6 @@ namespace TP.Model
             {
                 var row = listTable.Rows[i];
                 var listString = new List<string>();
-                listString.Add(row.Field<int>("id").ToString());
                 listString.Add(row.Field<string>("A"));
                 listString.Add(row.Field<string>("B"));
                 listString.Add(row.Field<string>("C"));
@@ -391,7 +389,6 @@ namespace TP.Model
             {
                 var row = listTable.Rows[i];
                 var listString = new List<string>();
-                listString.Add(row.Field<int>("id").ToString());
                 listString.Add(row.Field<string>("A"));
                 listString.Add(row.Field<string>("B"));
                 listString.Add(row.Field<string>("C"));
@@ -426,8 +423,8 @@ namespace TP.Model
                 foreach (var dif in difList)
                 {
                     string query = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list2 " +
-                        $"(id, A, B, C, D, E, F, G, H , I) " +
-                        $"VALUES(\"{dif.Id}\"," +
+                        $"(A, B, C, D, E, F, G, H , I) " +
+                        $"VALUES(" +
                         $"\"{dif.NumberProduct}\"," +
                         $"\"{dif.NumberProtocolTest}\"," +
                         $"\"{dif.DateReturnSampleAfterTest}\"," +
@@ -464,7 +461,6 @@ namespace TP.Model
             {
                 string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
                 query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
-                query += "id int, ";
                 query += "A Text,";
                 query += "B Text,";
                 query += "C Text,";

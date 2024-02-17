@@ -6,7 +6,6 @@ namespace TP.Model
 {
     public class Org1List1 : NotifyPropertyChanged, IEquatable<Org1List1>
     {
-        private string _id;
         private string _numberProduct;
         private string _numberDateDirection;
         private string _samplingAct;
@@ -33,39 +32,25 @@ namespace TP.Model
 
         public Org1List1(List<string> values) 
         {
-            _id = values[0];
-            _numberProduct = values[1];
-            _numberDateDirection = values[2];
-            _samplingAct = values[3];
-            _sampleName = values[4];
-            _organizationName = values[5];
-            _numberSampleWeightCapacity = values[6];
-            _numberDateUnsuitabilitySamples = values[7];
-            _dateReceiptSample = values[8];
-            _numberRegSample = values[9];
-            _fioResponsiblePersonTest = values[10];
-            _dateIssueSample = values[11];
-            _dateReturnSampleAfterTest = values[12];
-            _fioInsertRecord = values[13];
-            _note = values[14];
-            _numberProtocol = values[15];
-            _productType = values[16];
-            _applicant = values[17];
-            _manufacturer = values[18];
-        }
-
-        /// <summary>
-        /// id
-        /// </summary>
-        public string Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
+            _numberProduct = values[0];
+            _numberDateDirection = values[1];
+            _samplingAct = values[2];
+            _sampleName = values[3];
+            _organizationName = values[4];
+            _numberSampleWeightCapacity = values[5];
+            _numberDateUnsuitabilitySamples = values[6];
+            _dateReceiptSample = values[7];
+            _numberRegSample = values[8];
+            _fioResponsiblePersonTest = values[9];
+            _dateIssueSample = values[10];
+            _dateReturnSampleAfterTest = values[11];
+            _fioInsertRecord = values[12];
+            _note = values[13];
+            _numberProtocol = values[14];
+            _productType = values[15];
+            _applicant = values[16];
+            _manufacturer = values[17];
+        }       
 
         /// <summary>
         /// № п/п
@@ -308,7 +293,6 @@ namespace TP.Model
                && this.DateReturnSampleAfterTest == o.DateReturnSampleAfterTest
                && this.FioInsertRecord == o.FioInsertRecord
                && this.FioResponsiblePersonTest == o.FioResponsiblePersonTest
-               && this.Id == o.Id
                && this.Manufacturer == o.Manufacturer
                && this.Note == o.Note
                && this.NumberDateDirection == o.NumberDateDirection
@@ -328,7 +312,6 @@ namespace TP.Model
         public int GetHashCode(Org1List1 x)
         {
             var hash = 19;
-            hash = hash * 23 + x.Id.GetHashCode();
             hash = hash * 23 + x.NumberDateDirection.GetHashCode();
             hash = hash * 23 + x.NumberProduct.GetHashCode();
             hash = hash * 23 + x.SamplingAct.GetHashCode();
