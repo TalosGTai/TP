@@ -440,7 +440,7 @@ namespace TP.Model
                     СreateTableJournalOrg1List2(idOrg, idJournal);
                 }
                 //Все значения из базы
-                var listTable = GetListJournalOrg(idOrg, idJournal, 1);
+                var listTable = GetListJournalOrg(idOrg, idJournal, 2);
                 var listFromDb = GetOrgList2(idOrg, idJournal);
                 //значения UI которых нет в значениях базы 
                 var difList = new List<Org1List2>();
@@ -500,7 +500,7 @@ namespace TP.Model
                     $"F=\"{dif.NumberSampleWeightCapacity}\"," +
                     $"G=\"{dif.NumberDateUnsuitabilitySamples}\"," +
                     $"H=\"{dif.DateReceiptSample}\"," +
-                    $"I=\"{dif.NumberRegSample}\" " +
+                    $"I=\"{dif.NumberRegSample}\"," +
                     $"J=\"{dif.FioResponsiblePersonTest}\"," +
                     $"K=\"{dif.DateIssueSample}\"," +
                     $"L=\"{dif.DateReturnSampleAfterTest}\"," +
@@ -1054,7 +1054,7 @@ namespace TP.Model
         /// <param name="idJournalRow">идентификатор строки</param>
         /// <param name="idColumn">идентификатор колонки</param>
         /// <returns>строка из бд</returns>
-        public List<string> SelectOrgJournalList1ByColumnId(int idOrg, int idJournal, int idProtocol, string idColumn)
+        public List<string> SelectOrgJournalList1ByColumnId(int idOrg, int idJournal, int idProtocol)
         {
             try
             {

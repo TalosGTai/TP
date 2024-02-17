@@ -10,6 +10,7 @@ using TP.Model.Scripts;
 using System.IO;
 using TP.Model.Org1;
 using System.Threading;
+using System.Globalization;
 
 namespace TP.View
 {
@@ -27,6 +28,8 @@ namespace TP.View
         private DocParser _direction;
         private List<string> _pathAdditionals;
         private Tuple<Dictionary<string, string>, Dictionary<string, string>> _directionDict;
+        List<string> _list1;
+        List<string> _list2;
 
         public NewProtocol()
         {
@@ -76,7 +79,9 @@ namespace TP.View
                     ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
                     additionals.Add(excelParseAdditionals.Values);
                 }
-                //CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, additionals);
+                UpdateJournal();
+                Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
+                CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
                 MessageBox.Show("Протокол успешно создан!");
                 Functions functions = new Functions();
                 var protocols = new Protocols(_idOrg);
@@ -157,13 +162,39 @@ namespace TP.View
             return dList;
         }
 
+        private string GetRegNumber()
+        {
+            // количество строк, где строка равна строке (H)
+            DBConnection conn = new DBConnection();
+            conn.Select
+            string date = "";
+            string countDates = "";
+            return $"л-/{countDates}/{date}";
+        }
+
+        private string GetWeekFromDate()
+        {
+            var dt = DateTime.Now;            
+            var cal = new GregorianCalendar();
+            var weekNumber = cal.GetWeekOfYear(dt, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
+            return weekNumber.ToString();
+        }
+
+        private string GetNumberProtocol()
+        {
+            // количество строк, где строка равна строке (H)
+            // количество строк, где строка равна строке (A)
+            var dt = DateTime.Now;
+            return $"{GetWeekFromDate()}-{_idJournal + 1}-{}/{}/{dt.Year}";
+        }
+
         private void UpdateJournal()
         {
             // _idJournal + 1
-            // _idProtocol
             // A = _idProtocol
-            List<string> journal = new List<string>();
-            List<string> list1 = new List<string>()
+            DBConnection conn = new DBConnection();
+            List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProtocol);
+            _list1 = new List<string>()
             {
                 journal[0],
                 _directionDict.Item1["B"],
@@ -173,7 +204,7 @@ namespace TP.View
                 _directionDict.Item1["F"],
                 journal[6],
                 journal[7],
-                journal[8],
+                GetRegNumber(),
                 journal[9],
                 journal[10],
                 journal[11],
@@ -184,7 +215,7 @@ namespace TP.View
                 _directionDict.Item1["Q"],
                 _directionDict.Item1["R"]
             };
-            List<string> list2 = new List<string>()
+            _list2 = new List<string>()
             {
                 journal[0],
                 _directionDict.Item2["B"],
@@ -198,8 +229,8 @@ namespace TP.View
             };
 
             // занесение в БД
-            // list1
-            // list2
+            conn.UpdateTableJournalOrg1List1(1, _idJournal + 1, new Org1List1(_list1));
+            conn.UpdateTableJournalOrg1List2(1, _idJournal + 1, new Org1List2(_list2));
         }
     }
 }

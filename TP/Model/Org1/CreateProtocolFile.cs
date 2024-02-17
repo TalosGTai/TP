@@ -325,7 +325,6 @@ namespace TP.Model.Org1
             worksheet.Range("A5:G5").Merge();
             worksheet.Cell("A" + 6).Value = valuesResourses[2];
             worksheet.Cell("A" + 6).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + 6).Style.Font.Underline = XLFontUnderlineValues.Single;
             worksheet.Cell("A" + 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 6).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Row(5).Height = 62;
@@ -367,6 +366,7 @@ namespace TP.Model.Org1
             worksheet.Range("B14:G14").Merge();
             worksheet.Cell("B" + 15).Value = valuesResourses[5];
             worksheet.Cell("B" + 15).Style.Font.FontSize = 11;
+            worksheet.Cell("B" + 15).Style.Font.Underline = XLFontUnderlineValues.Single;
             worksheet.Cell("B" + 15).Style.Font.Bold = true;
             worksheet.Cell("B" + 15).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             worksheet.Cell("B" + 15).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
