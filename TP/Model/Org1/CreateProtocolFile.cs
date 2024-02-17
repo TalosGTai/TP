@@ -16,6 +16,7 @@ using ParagraphWord = Microsoft.Office.Interop.Word.Paragraph;
 using System.IO;
 using TableStyle = DocumentFormat.OpenXml.Wordprocessing.TableStyle;
 using Application = Microsoft.Office.Interop.Word.Application;
+using TP.Control;
 
 
 namespace TP.Model.Org1
@@ -39,6 +40,9 @@ namespace TP.Model.Org1
 
         public void CreateProtocolXlsxFile(List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
         {
+            GetDatas getDatas = new GetDatas();
+            var rows = getDatas.Rows;
+
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Главная");
             var worksheet2 = workbook.Worksheets.Add("Таблицы");
@@ -67,6 +71,18 @@ namespace TP.Model.Org1
             //Создаем excel файлл
             workbook.SaveAs(PROTOCOL_EXCEL_PATH);
             workbook.Dispose();
+        }
+
+        private List<string> GetValuesFromTitle(List<Tuple<string, string>> rows)
+        {
+            List<string> values = new List<string>()
+            {
+                rows[0].Item1.Substring(rows[0].Item1.IndexOf("Общество"), rows[0].Item1.IndexOf("стью") + 3),
+                rows[0].Item1.Substring(rows[0].Item1.IndexOf("Исп") - 1, rows[0].Item1.IndexOf("Вектор") + 6),
+                rows[1].Item1.Substring(rows[0].Item1.IndexOf("Исп") - 1, rows[0].Item1.IndexOf("Вектор") + 6),
+
+            };
+            return values;
         }
 
         public CreateProtocolFile(Tuple<Dictionary<string, string>,
@@ -238,9 +254,10 @@ namespace TP.Model.Org1
                 doc.Save();
             }
         }
-          
+
         private IXLWorksheet CreateChapter1(IXLWorksheet worksheet)
         {
+            
             worksheet.Cell("A" + 1).Value = Resources.Protocol1;
             worksheet.Cell("A" + 1).Style.Font.FontSize = 10;
             worksheet.Cell("A" + 1).Style.Font.Bold = true;
