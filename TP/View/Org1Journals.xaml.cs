@@ -193,7 +193,7 @@ namespace TP.View
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             SaveChanges(_idJournal);
             Functions functions = new Functions();
-            functions.Frame.Content = new NewProtocol();
+            functions.Frame.Content = new NewProtocol(1, _idJournal, 1);
         }
 
         private void OpenCurrentJournal_Click(object sender, RoutedEventArgs e)

@@ -42,13 +42,13 @@ namespace TP.Model.Org1
 
         public CreateProtocolFile(Tuple<Dictionary<string, string>,
             Dictionary<string, string>> journal, int idOrg, int idProtocol,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals)
         {
             PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
             PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
             _journal = journal;
             //Создание excel файла
-            CreateProtocolXlsxFile(values);
+            CreateProtocolXlsxFile(additionals);
             var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
             //Получаем docx файл
             workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
@@ -73,7 +73,7 @@ namespace TP.Model.Org1
         }
 
 
-        public void CreateProtocolXlsxFile(List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+        public void CreateProtocolXlsxFile(List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals)
         {
             DBFunctions functions = new DBFunctions();
             List<string> rows = new List<string>()
@@ -91,7 +91,7 @@ namespace TP.Model.Org1
             var worksheet3 = workbook.Worksheets.Add("Концовка");
             worksheet = CreateChapter1(worksheet);
             worksheet = CreateChapter2(worksheet);
-            worksheet2 = CreateTablesTests(worksheet2, values);
+            worksheet2 = CreateTablesTests(worksheet2, additionals);
             worksheet3 = CreateLastChapter(worksheet3);
             worksheet.Style.Font.FontName = FONT;
             worksheet2.Style.Font.FontName = FONT;

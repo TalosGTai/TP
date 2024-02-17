@@ -25,7 +25,6 @@ namespace TP.View
         private string _directionFileName;
         private bool _isAdditionals;
         private DocParser _direction;
-        private DocParser _additionals;
         private List<string> _pathAdditionals;
         private Tuple<Dictionary<string, string>, Dictionary<string, string>> _directionDict;
 
@@ -38,11 +37,12 @@ namespace TP.View
             _isAdditionals = false;
         }
 
-        public NewProtocol(int idOrg, int idProtocol)
+        public NewProtocol(int idOrg, int idJournal, int idProtocol)
         {
             InitializeComponent();
             _idOrg = idOrg;
             _idProtocol = idProtocol;
+            _idJournal = idJournal;
             _isDirection = false;
             _isAdditionals = false;
         }
@@ -70,13 +70,13 @@ namespace TP.View
                 Thread threadAdditionals = new Thread(CopyAdditionals);
                 threadDirection.Start();
                 threadAdditionals.Start();
-                List<Tuple<List<string>, Dictionary<int, List<string>>>> values = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
+                List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                 for (int i = 0; i < _pathAdditionals.Count; i++)
                 {
                     ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
-                    values.Add(excelParseAdditionals.Values);
+                    additionals.Add(excelParseAdditionals.Values);
                 }
-                //CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
+                //CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, additionals);
                 MessageBox.Show("Протокол успешно создан!");
                 Functions functions = new Functions();
                 var protocols = new Protocols(_idOrg);
@@ -141,11 +141,65 @@ namespace TP.View
             }
         }
     
+        private char GetAlphaById(int id)
+        {
+            string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return alpha[id];
+        }
+
+        private Dictionary<string, string> ConvertListToDict(List<string> list)
+        {
+            Dictionary<string, string> dList = new Dictionary<string, string>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                dList[GetAlphaById(i).ToString()] = list[i];
+            }
+            return dList;
+        }
+
         private void UpdateJournal()
         {
             // _idJournal + 1
             // _idProtocol
             // A = _idProtocol
+            List<string> journal = new List<string>();
+            List<string> list1 = new List<string>()
+            {
+                journal[0],
+                _directionDict.Item1["B"],
+                _directionDict.Item1["C"],
+                _directionDict.Item1["D"],
+                _directionDict.Item1["E"],
+                _directionDict.Item1["F"],
+                journal[6],
+                journal[7],
+                journal[8],
+                journal[9],
+                journal[10],
+                journal[11],
+                journal[12],
+                journal[13],
+                journal[14],
+                journal[15],
+                _directionDict.Item1["Q"],
+                _directionDict.Item1["R"]
+            };
+            List<string> list2 = new List<string>()
+            {
+                journal[0],
+                _directionDict.Item2["B"],
+                _directionDict.Item2["C"],
+                _directionDict.Item2["D"],
+                _directionDict.Item2["E"],
+                _directionDict.Item2["F"],
+                _directionDict.Item2["G"],
+                _directionDict.Item2["H"],
+                _directionDict.Item2["I"],
+            };
+
+            // занесение в БД
+            // list1
+            // list2
         }
     }
 }
