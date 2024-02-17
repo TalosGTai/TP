@@ -17,6 +17,7 @@ using System.IO;
 using TableStyle = DocumentFormat.OpenXml.Wordprocessing.TableStyle;
 using Application = Microsoft.Office.Interop.Word.Application;
 using TP.Control;
+using Microsoft.Office.Interop.Excel;
 
 
 namespace TP.Model.Org1
@@ -31,6 +32,7 @@ namespace TP.Model.Org1
         private readonly string FONT = "Times New Roman";
         string PROTOCOL_EXCEL_PATH = "",
                 PROTOCOL_WORD_PATH = "";
+        List<string> valuesResourses;
 
         public CreateProtocolFile()
         {
@@ -38,10 +40,50 @@ namespace TP.Model.Org1
             var worksheetTitle = workbook.Worksheets.Add("Главная");      
         }
 
+        public CreateProtocolFile(Tuple<Dictionary<string, string>,
+            Dictionary<string, string>> journal, int idOrg, int idProtocol,
+            List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+        {
+            PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
+            PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+            _journal = journal;
+            //Создание excel файла
+            CreateProtocolXlsxFile(values);
+            var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
+            //Получаем docx файл
+            workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
+
+            ChangeDocFont(idOrg, idProtocol, PROTOCOL_WORD_PATH);
+            FixDocument(idOrg, idProtocol, PROTOCOL_WORD_PATH);
+
+            //Подготавливаем файлы для сохранения в БД
+            FileStream fs = new FileStream(PROTOCOL_EXCEL_PATH, FileMode.Open, FileAccess.Read);
+            byte[] protocolXls = new byte[fs.Length];
+            fs.Read(protocolXls, 0, System.Convert.ToInt32(fs.Length));
+            fs.Close();
+
+            fs = new FileStream(PROTOCOL_WORD_PATH, FileMode.Open, FileAccess.Read);
+            byte[] protocolDoc = new byte[fs.Length];
+            fs.Read(protocolDoc, 0, System.Convert.ToInt32(fs.Length));
+            fs.Close();
+
+            //Сохраняем протоколы в БД
+            var db = new DBConnection();
+            db.InsertOrUpdateOrgProtocolRow(idOrg, idProtocol, protocolDoc, protocolXls);
+        }
+
+
         public void CreateProtocolXlsxFile(List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
         {
-            GetDatas getDatas = new GetDatas();
-            var rows = getDatas.Rows;
+            DBFunctions functions = new DBFunctions();
+            List<string> rows = new List<string>()
+            {
+                functions.GetProtocolTitleByRow(1),
+                functions.GetProtocolTitleByRow(2),
+                functions.GetProtocolTitleByRow(3),
+                functions.GetProtocolTitleByRow(4),
+            };
+            valuesResourses = GetValuesFromTitle(rows);
 
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Главная");
@@ -73,51 +115,46 @@ namespace TP.Model.Org1
             workbook.Dispose();
         }
 
-        private List<string> GetValuesFromTitle(List<Tuple<string, string>> rows)
+        private List<string> GetValuesFromTitle(List<string> rows)
         {
-            List<string> values = new List<string>()
+            valuesResourses = new List<string>()
             {
-                rows[0].Item1.Substring(rows[0].Item1.IndexOf("Общество"), rows[0].Item1.IndexOf("стью") + 3),
-                rows[0].Item1.Substring(rows[0].Item1.IndexOf("Исп") - 1, rows[0].Item1.IndexOf("Вектор") + 6),
-                rows[1].Item1.Substring(rows[0].Item1.IndexOf("Исп") - 1, rows[0].Item1.IndexOf("Вектор") + 6),
-
+                rows[0].Substring(0,rows[0].IndexOf("дрес") - 1),
+                rows[0].Substring(rows[0].IndexOf("дрес") - 1,
+                                        rows[0].LastIndexOf("420000") - rows[0].IndexOf("дрес") + 1),
+                rows[0].Substring(rows[0].LastIndexOf("420000"),
+                                        GetLastIndHouse(GetStrFromToPos(rows[0], rows[0].LastIndexOf("420000"), rows[0].Length - 1))),
+                rows[0].Substring(rows[0].IndexOf("Уникальный"),
+                                        rows[0].IndexOf("телефон:") - rows[0].IndexOf("Уникальный")),
+                rows[0].Substring(rows[0].IndexOf("телефон"),
+                                        rows[0].Length - rows[0].IndexOf("телефон")),
+                rows[1],
+                rows[2],
+                rows[3]
             };
-            return values;
+            return valuesResourses;
         }
 
-        public CreateProtocolFile(Tuple<Dictionary<string, string>,
-            Dictionary<string, string>> journal, int idOrg, int idProtocol,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+        private int GetLastIndHouse(string str)
         {
-            PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
-           // PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
-            PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
-            _journal = journal;
-            //Создание excel файла
-            CreateProtocolXlsxFile(values);
-            var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
-            //Получаем docx файл
-            workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
-
-            ChangeDocFont(idOrg, idProtocol, PROTOCOL_WORD_PATH);
-            //CreateFile(PROTOCOL_WORD_PATH, ParseDocument(idOrg, idProtocol));
-            FixDocument(idOrg, idProtocol, PROTOCOL_WORD_PATH);
-
-            //Подготавливаем файлы для сохранения в БД
-            FileStream fs = new FileStream(PROTOCOL_EXCEL_PATH, FileMode.Open, FileAccess.Read);
-            byte[] protocolXls = new byte[fs.Length];
-            fs.Read(protocolXls, 0, System.Convert.ToInt32(fs.Length));
-            fs.Close();
-
-            fs = new FileStream(PROTOCOL_WORD_PATH, FileMode.Open, FileAccess.Read);
-            byte[] protocolDoc = new byte[fs.Length];
-            fs.Read(protocolDoc, 0, System.Convert.ToInt32(fs.Length));
-            fs.Close();
-
-            //Сохраняем протоколы в БД
-            var db = new DBConnection();
-            db.InsertOrUpdateOrgProtocolRow(idOrg, idProtocol, protocolDoc, protocolXls);
+            return GetLengthNumberHouse(str, str.IndexOf("здание") + 6);
         }
+
+        private string GetStrFromToPos(string str, int from, int to)
+        {
+            return str.Substring(from, to - from + 1);
+        }
+
+        private int GetLengthNumberHouse(string str, int from)
+        {
+            from++;
+            while (from < str.Length && str[from] != ' ')
+            {
+                from++;
+            }
+            return from;
+        }
+
 
         /// <summary>
         /// Изменение шрифта в документе, созданном по таблице Протокол
@@ -275,30 +312,31 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 3).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A3:G3").Merge();
-            worksheet.Cell("A" + 4).Value = Resources.Protocol4;
+            worksheet.Cell("A" + 4).Value = valuesResourses[0];
             worksheet.Cell("A" + 4).Style.Font.FontSize = 10;
             worksheet.Cell("A" + 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 4).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A4:G4").Merge();
-            worksheet.Cell("A" + 5).Value = Resources.Protocol5;
+            worksheet.Cell("A" + 5).Value = valuesResourses[1];
             worksheet.Cell("A" + 5).Style.Font.FontSize = 10;
             worksheet.Cell("A" + 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 5).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Row(4).Height = 35;
             worksheet.Range("A5:G5").Merge();
-            worksheet.Cell("A" + 6).Value = Resources.Protocol6;
+            worksheet.Cell("A" + 6).Value = valuesResourses[2];
             worksheet.Cell("A" + 6).Style.Font.FontSize = 10;
+            worksheet.Cell("A" + 6).Style.Font.Underline = XLFontUnderlineValues.Single;
             worksheet.Cell("A" + 6).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 6).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Row(5).Height = 62;
             worksheet.Row(6).Height = 45;
             worksheet.Range("A6:G6").Merge();
-            worksheet.Cell("A" + 7).Value = Resources.Protocol7;
+            worksheet.Cell("A" + 7).Value = valuesResourses[3];
             worksheet.Cell("A" + 7).Style.Font.FontSize = 10;
             worksheet.Cell("A" + 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 7).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A7:G7").Merge();
-            worksheet.Cell("A" + 8).Value = Resources.Protocol8;
+            worksheet.Cell("A" + 8).Value = valuesResourses[4];
             worksheet.Cell("A" + 8).Style.Font.FontSize = 10;
             worksheet.Cell("A" + 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 8).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
@@ -327,7 +365,7 @@ namespace TP.Model.Org1
             worksheet.Cell("B" + 14).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             worksheet.Cell("B" + 14).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("B14:G14").Merge();
-            worksheet.Cell("B" + 15).Value = Resources.Protocol13;
+            worksheet.Cell("B" + 15).Value = valuesResourses[5];
             worksheet.Cell("B" + 15).Style.Font.FontSize = 11;
             worksheet.Cell("B" + 15).Style.Font.Bold = true;
             worksheet.Cell("B" + 15).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
@@ -338,9 +376,10 @@ namespace TP.Model.Org1
             worksheet.Cell("B" + 16).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             worksheet.Cell("B" + 16).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("B16:G16").Merge();
-            worksheet.Cell("C" + 17).Value = "_________________________" + _journal.Item2["C"] + "_______________";
+            worksheet.Cell("C" + 17).Value = _journal.Item2["C"];
             worksheet.Cell("C" + 17).Style.Font.FontSize = 11;
             worksheet.Cell("C" + 17).Style.Font.Bold = true;
+            worksheet.Cell("C" + 17).Style.Font.Underline = XLFontUnderlineValues.Single;
             worksheet.Cell("C" + 17).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             worksheet.Cell("C" + 17).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("C17:G17").Merge();
@@ -393,7 +432,7 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol22;
+            worksheet.Cell("A" + idRow).Value = valuesResourses[6];
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Row(idRow).Height = 70;
@@ -451,7 +490,7 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol30 + Resources.Protocol31;
+            worksheet.Cell("A" + idRow).Value = Resources.Protocol30 + valuesResourses[7];
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;

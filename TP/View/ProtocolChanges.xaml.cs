@@ -35,6 +35,7 @@ namespace TP.View
                 TxtBoxRow4.Text,
             };
             DBConnection dBConnection = new DBConnection();
+            dBConnection.InsertProtocolOrgChangesRow(1, saveChanges);
         }
     }
 }

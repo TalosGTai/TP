@@ -131,7 +131,7 @@
         <Label x:Name="LblSaveChanges"
                Content="Изменения успешно сохранены"
                Foreground="Green"
-               Grid.Row="7" Grid.Column="3"
+               Grid.Row="8" Grid.Column="2"
                Grid.ColumnSpan="2"
                FontSize="18"
                Visibility="Hidden"/>

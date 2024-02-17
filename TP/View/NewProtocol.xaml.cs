@@ -20,13 +20,14 @@ namespace TP.View
     {
         private int _idOrg;
         private int _idProtocol;
+        private int _idJournal;
         private bool _isDirection;
         private string _directionFileName;
         private bool _isAdditionals;
         private DocParser _direction;
         private DocParser _additionals;
         private List<string> _pathAdditionals;
-        private Tuple<Dictionary<string, string>, Dictionary<string, string>> _journal;
+        private Tuple<Dictionary<string, string>, Dictionary<string, string>> _directionDict;
 
         public NewProtocol()
         {
@@ -75,10 +76,12 @@ namespace TP.View
                     ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
                     values.Add(excelParseAdditionals.Values);
                 }
-                CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
+                //CreateProtocolFile createProtocolFile = new CreateProtocolFile(_journal, 1, _idProtocol, values);
                 MessageBox.Show("Протокол успешно создан!");
                 Functions functions = new Functions();
-                functions.Frame.Content = new Protocols(_idOrg);
+                var protocols = new Protocols(_idOrg);
+                protocols.FillProtocolsView(protocols.GetCountProtocols());
+                functions.Frame.Content = protocols;
             }
         }
 
@@ -134,8 +137,15 @@ namespace TP.View
                 _isDirection = true;
                 _direction = new DocParser(openFileDialog.FileName);
                 _directionFileName = openFileDialog.FileName;
-                _journal = _direction.JournalParse;
+                _directionDict = _direction.JournalParse;
             }
+        }
+    
+        private void UpdateJournal()
+        {
+            // _idJournal + 1
+            // _idProtocol
+            // A = _idProtocol
         }
     }
 }
