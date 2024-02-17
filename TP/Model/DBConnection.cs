@@ -82,6 +82,30 @@ namespace TP.Model
             }
             return -1;
         }
+
+        public int SelectLastIdEditProtocols(int idOrg)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}editprotocol"))
+                {
+                    СreateTableEditProtocol(idOrg);
+                }
+                OpenConnection();
+                var queryString = $"SELECT COUNT(*) FROM laboratory.org{idOrg}editprotocol;";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                int result = Convert.ToInt32(command.ExecuteScalar().ToString());
+                CloseConnection();
+
+                return result;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            return -1;
+        }
+
         /// <summary>
         /// Получить строку по колонке
         /// </summary>
@@ -659,6 +683,31 @@ namespace TP.Model
                 queryString += $"\"{Properties.Resources.Org1EditJournalStartValue4_1}\", ";
                 queryString += $"\"{Properties.Resources.Org1EditJournalStartValue4_2}\", \"{Properties.Resources.Org1EditJournalStartValue5_1}\", ";
                 queryString += $"\"{Properties.Resources.Org1EditJournalStartValue5_1}\", \"{Properties.Resources.Org1EditJournalStartValue6}\")";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
+        public void InsertStartValuesEditProtocolOrg(int idOrg)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}editprotocol"))
+                {
+                    СreateTableEditProtocol(idOrg);
+                }
+                OpenConnection();
+                var queryString = $"INSERT INTO laboratory.org{idOrg}editprotocol";
+                queryString += "(Row1, Row2, Row3, Row4)";
+                queryString += $" Values (\"{Properties.Resources.Org1EditProtocolStartValue1}\", ";
+                queryString += $"\"{Properties.Resources.Org1EditProtocolStartValue2}\", \"{Properties.Resources.Org1EditProtocolStartValue3}\", ";
+                queryString += $"\"{Properties.Resources.Org1EditProtocolStartValue4}\")";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
