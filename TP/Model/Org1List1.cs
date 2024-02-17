@@ -287,24 +287,24 @@ namespace TP.Model
 
         public bool Equals(Org1List1 o)
         {
-            bool condition = this.Applicant == o.Applicant
-               && this.DateIssueSample == o.DateIssueSample
-               && this.DateReceiptSample == o.DateReceiptSample
-               && this.DateReturnSampleAfterTest == o.DateReturnSampleAfterTest
-               && this.FioInsertRecord == o.FioInsertRecord
-               && this.FioResponsiblePersonTest == o.FioResponsiblePersonTest
-               && this.Manufacturer == o.Manufacturer
-               && this.Note == o.Note
-               && this.NumberDateDirection == o.NumberDateDirection
-               && this.NumberDateUnsuitabilitySamples == o.NumberDateUnsuitabilitySamples
-               && this.NumberProduct == o.NumberProduct
-               && this.NumberProtocol == o.NumberProtocol
-               && this.NumberRegSample == o.NumberRegSample
-               && this.NumberSampleWeightCapacity == o.NumberSampleWeightCapacity
-               && this.OrganizationName == o.OrganizationName
-               && this.SampleName == o.SampleName
-               && this.ProductType == o.ProductType
-               && this.SamplingAct == o.SamplingAct;
+            bool condition = (this.Applicant ?? "") == (o.Applicant ?? "")
+               && (this.DateIssueSample ?? "") == (o.DateIssueSample ?? "")
+               && (this.DateReceiptSample ?? "") == (o.DateReceiptSample ?? "")
+               && (this.DateReturnSampleAfterTest ?? "") == (o.DateReturnSampleAfterTest ?? "")
+               && (this.FioInsertRecord ?? "") == (o.FioInsertRecord ?? "")
+               && (this.FioResponsiblePersonTest ?? "") == (o.FioResponsiblePersonTest ?? "")
+               && (this.Manufacturer ?? "") == (o.Manufacturer ?? "")
+               && (this.Note ?? "") == (o.Note ?? "")
+               && (this.NumberDateDirection ?? "") == (o.NumberDateDirection ?? "")
+               && (this.NumberDateUnsuitabilitySamples ?? "") == (o.NumberDateUnsuitabilitySamples ?? "")
+               && (this.NumberProduct ?? "") == (o.NumberProduct ?? "")
+               && (this.NumberProtocol ?? "") == (o.NumberProtocol ?? "")
+               && (this.NumberRegSample ?? "") == (o.NumberRegSample ?? "")
+               && (this.NumberSampleWeightCapacity ?? "") == (o.NumberSampleWeightCapacity ?? "")
+               && (this.OrganizationName ?? "") == (o.OrganizationName ?? "")
+               && (this.SampleName ?? "") == (o.SampleName ?? "")
+               && (this.ProductType ?? "") == (o.ProductType ?? "")
+               && (this.SamplingAct ?? "") == (o.SamplingAct ?? "");
 
             return condition;
         }

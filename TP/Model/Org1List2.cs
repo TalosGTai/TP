@@ -152,15 +152,15 @@ namespace TP.Model
 
         public bool Equals(Org1List2 o)
         {
-            bool condition = this.NumberProduct == o.NumberProduct
-               && this.NumberProtocolTest == o.NumberProtocolTest
-               && this.NumberDateDirection == o.NumberDateDirection
-               && this.DateReturnSampleAfterTest == o.DateReturnSampleAfterTest
-               && this.NumberRegSample == o.NumberRegSample
-               && this.NumberActUtil == o.NumberActUtil
-               && this.DateActUtil == o.DateActUtil
-               && this.DateReturnSample == o.DateReturnSample
-               && this.FioInsertRecord == o.FioInsertRecord;
+            bool condition = (this.NumberProduct ?? "") == (o.NumberProduct ?? "")
+               && (this.NumberProtocolTest ?? "") == (o.NumberProtocolTest ?? "")
+               && (this.NumberDateDirection ?? "") == (o.NumberDateDirection ?? "")
+               && (this.DateReturnSampleAfterTest ?? "") == (o.DateReturnSampleAfterTest ?? "")
+               && (this.NumberRegSample ?? "") == (o.NumberRegSample ?? "")
+               && (this.NumberActUtil ?? "") ==( o.NumberActUtil ?? "")
+               && (this.DateActUtil ?? "") == (o.DateActUtil ?? "")
+               && (this.DateReturnSample ?? "") == (o.DateReturnSample ?? "")
+               && (this.FioInsertRecord ?? "") == (o.FioInsertRecord ?? "");
 
             return condition;
         }

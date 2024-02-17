@@ -290,14 +290,20 @@ namespace TP.Model
         {
             try
             {
-                //idJournal += 1;
                 //Все значения из базы
                 var listTable = GetListJournalOrg(idOrg, idJournal, 1);
                 var listFromDb = GetOrgList1(idOrg, idJournal);
 
                 //значения UI которых нет в значениях базы 
-                //var difList = listFromUI.Except(listFromDb, new Org1List1Comparer()).ToList();
-                var difList = listFromUI.Intersect(listFromDb, new Org1List1Comparer()).ToList();
+
+                var difList = new List<Org1List1>();
+                foreach (var uiRow in listFromUI)
+                {
+                    if (!listFromDb.Contains(uiRow))
+                    {
+                        difList.Add(uiRow);
+                    }
+                }
                 //добавляем значения, которых нет в базе, но есть в UI
                 foreach (var dif in difList)
                 {
@@ -383,7 +389,6 @@ namespace TP.Model
         /// <returns></returns>
         public List<Org1List2> GetOrgList2 (int idOrg, int idJournal)
         {
-            //idJournal += 1;
             //Все значения из базы
             var listTable = GetListJournalOrg(idOrg, idJournal, 2);
             var listFromDb = new List<Org1List2>();
@@ -420,7 +425,14 @@ namespace TP.Model
                 var listTable = GetListJournalOrg(idOrg, idJournal, 1);
                 var listFromDb = GetOrgList2(idOrg, idJournal);
                 //значения UI которых нет в значениях базы 
-                var difList = listFromUI.Except(listFromDb, new Org1List2Comparer()).ToList();
+                var difList = new List<Org1List2>();
+                foreach (var uiRow in listFromUI)
+                {
+                    if (!listFromDb.Contains(uiRow))
+                    {
+                        difList.Add(uiRow);
+                    }
+                }
                 //добавляем значения, которых нет в базе, но есть в UI
                 foreach (var dif in difList)
                 {
