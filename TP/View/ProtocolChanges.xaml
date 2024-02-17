@@ -24,11 +24,20 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="Black"/>
         </Style>
-        <Style TargetType="TextBox">
+        <Style TargetType="TextBox" x:Key="All">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Times New Roman"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Margin" Value="5, 25, 0, 20"/>
+            <Setter Property="Padding" Value="15, 8, 15, 8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox" x:Key="Second">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Margin" Value="5, 5, 0, 5"/>
             <Setter Property="Padding" Value="15, 8, 15, 8"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -83,25 +92,37 @@
                Grid.Row="6" Grid.Column="0" 
                Grid.ColumnSpan="3" Grid.RowSpan="2"/>
         <TextBox x:Name="TxtBoxRow1"
-                 Grid.Row="1" Grid.Column="3"
-                 Grid.ColumnSpan="3" Grid.RowSpan="2"
-                 HorizontalContentAlignment="Center"
-                 VerticalContentAlignment="Center"/>
+                 Style="{StaticResource All}"
+                Grid.Row="1" Grid.Column="3"
+                Grid.ColumnSpan="3" Grid.RowSpan="2"
+                HorizontalContentAlignment="Center"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                VerticalContentAlignment="Center"/>
         <TextBox x:Name="TxtBoxRow2"
+                 Style="{StaticResource Second}"
                  Grid.Row="3" Grid.Column="3"
                  Grid.ColumnSpan="3"
                  HorizontalContentAlignment="Center"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                  VerticalContentAlignment="Center"/>
         <TextBox x:Name="TxtBoxRow3"
-                 Grid.Row="4" Grid.Column="3"
-                 Grid.ColumnSpan="3" Grid.RowSpan="2"
-                 HorizontalContentAlignment="Center"
-                 VerticalContentAlignment="Center"/>
-        <TextBox x:Name="TxtBoxRow4"
-                 Grid.Row="6" Grid.Column="3"
-                 Grid.ColumnSpan="3" Grid.RowSpan="2"
-                 HorizontalContentAlignment="Center"
-                 VerticalContentAlignment="Center"/>
+                 Style="{StaticResource All}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Grid.Row="4" Grid.Column="3"
+                     Grid.ColumnSpan="3" Grid.RowSpan="2"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"/>
+        <TextBox x:Name="TxtBoxRow4"        
+                 Style="{StaticResource All}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Grid.Row="6" Grid.Column="3"
+                     Grid.ColumnSpan="3" Grid.RowSpan="2"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"/>
         <Button x:Name="SaveAllChanges"
                 Grid.Row="9" Grid.Column="2"
                 Grid.ColumnSpan="3" Grid.RowSpan="2"
