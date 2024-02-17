@@ -166,15 +166,14 @@ namespace TP.View
         {
             // количество строк, где строка равна строке (H)
             DBConnection conn = new DBConnection();
-            conn.Select
-            string date = "";
-            string countDates = "";
+            string date = _list1[6];
+            string countDates = ;
             return $"л-/{countDates}/{date}";
         }
 
         private string GetWeekFromDate()
         {
-            var dt = DateTime.Now;            
+            var dt = DateTime.Now.Date;            
             var cal = new GregorianCalendar();
             var weekNumber = cal.GetWeekOfYear(dt, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
             return weekNumber.ToString();
