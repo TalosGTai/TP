@@ -5,7 +5,6 @@ namespace TP.Model
 {
     public class Org1List2 : NotifyPropertyChanged, IEquatable<Org1List2>
     {
-        private string _id;
         private string _numberProduct;       
         private string _numberProtocolTest;        
         private string _dateReturnSampleAfterTest;
@@ -23,30 +22,16 @@ namespace TP.Model
 
         public Org1List2(List<string> values)
         {
-            _id = values[0];
-            _numberProduct = values[1];
-            _numberProtocolTest = values[2];
-            _dateReturnSampleAfterTest = values[3];
-            _numberDateDirection = values[4];
-            _numberRegSample = values[5];
-            _numberActUtil = values[6];
-            _dateActUtil = values[7];
-            _dateReturnSample = values[8];
-            _fioInsertRecord = values[9];
-        }
-
-        /// <summary>
-        /// id
-        /// </summary>
-        public string Id
-        {
-            get => _id;
-            set
-            {
-                _numberProduct = value;
-                OnPropertyChanged();
-            }
-        }
+            _numberProduct = values[0];
+            _numberProtocolTest = values[1];
+            _dateReturnSampleAfterTest = values[2];
+            _numberDateDirection = values[3];
+            _numberRegSample = values[4];
+            _numberActUtil = values[5];
+            _dateActUtil = values[6];
+            _dateReturnSample = values[7];
+            _fioInsertRecord = values[8];
+        }       
 
         /// <summary>
         /// № п/п
