@@ -9,7 +9,7 @@ namespace TP.Model.Scripts
     /// </summary>
     public class ExcelParser
     {
-        Excel.Application app = new Excel.Application();
+        Excel.Application app;
         Excel.Workbooks workbooks = null;
         Excel.Workbook workbook = null;
         Excel.Sheets sheets = null;
@@ -19,13 +19,19 @@ namespace TP.Model.Scripts
 
         public ExcelParser(string filename, int idList)
         {
+            app = new Excel.Application();
             workbooks = app.Workbooks;
             workbook = workbooks.Open(filename, MissingObj, rOnly, MissingObj, MissingObj,
                                 MissingObj, MissingObj, MissingObj, MissingObj, MissingObj,
                                 MissingObj, MissingObj, MissingObj, MissingObj, MissingObj);
             // Получение всех страниц докуента
             sheets = workbook.Sheets;
-            GetDataFromExcel(idList);
+
+        }
+
+        public void CloseExcel()
+        {
+            app.Quit();
         }
 
         /// <summary>
@@ -75,6 +81,7 @@ namespace TP.Model.Scripts
                 // Очистка неуправляемых ресурсов
                 if (worksheet != null) Marshal.ReleaseComObject(worksheet);
             }
+            
         }
     }
 }

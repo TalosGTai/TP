@@ -154,11 +154,16 @@ namespace TP.View
             //    //localJournal.Start();
             //    //dbJournal.Start();
             //}
-            // журнал (локальный)
+            // журнал
             if (_journalsList.Count > 0)
             {
+                // локально
                 ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
                 excelWorker.SaveWorksheets();
+                // бд
+                DBConnection dBConnection = new DBConnection();
+                dBConnection.SaveTableJournalOrg1List1(1, _idJournal + 1, _journalsList[idJournal].Item1);
+                dBConnection.SaveTableJournalOrg1List2(1, _idJournal + 1, _journalsList[idJournal].Item2);
             }
             else
             {
@@ -214,26 +219,11 @@ namespace TP.View
             }
         }
 
-        private void SaveJournal(int idJournal)
-        {
-            string path = _currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
-
-            if (_journalsList.Count > 0)
-            {
-                ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
-                excelWorker.SaveWorksheets();
-            }
-            else
-            {
-                MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
-            }
-        }
-
         private void SaveJournals_Click(object sender, RoutedEventArgs e)
         {
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             _firstStart = false;
-            SaveJournal(_idJournal);
+            SaveChanges(_idJournal);
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -266,7 +256,6 @@ namespace TP.View
             {
                 MessageBox.Show($"Ошибка с выбором листа {_idList}", "Ошибка");
             }
-            Console.WriteLine(_journalsList[0].Item1[0].NumberDateDirection);
         }
     }
 }

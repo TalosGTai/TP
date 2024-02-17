@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Irony.Ast;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -295,7 +296,8 @@ namespace TP.Model
                 var listFromDb = GetOrgList1(idOrg, idJournal);
 
                 //значения UI которых нет в значениях базы 
-                var difList = listFromUI.Except(listFromDb, new Org1List1Comparer()).ToList();
+                //var difList = listFromUI.Except(listFromDb, new Org1List1Comparer()).ToList();
+                var difList = listFromUI.Intersect(listFromDb, new Org1List1Comparer()).ToList();
                 //добавляем значения, которых нет в базе, но есть в UI
                 foreach (var dif in difList)
                 {
