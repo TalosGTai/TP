@@ -1109,7 +1109,7 @@ namespace TP.Model
             {
                 if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
                 {
-                    СreateTableEditJournal(idOrg);
+                    СreateTableJournalOrg1List1(idOrg, idJournal);
                 }
                 OpenConnection();
                 var queryString = $"SELECT * FROM laboratory.org{idOrg}journal{idJournal}list1 " +
@@ -1161,13 +1161,13 @@ namespace TP.Model
         /// <param name="idJournalRow">идентификатор строки</param>
         /// <param name="idColumn">идентификатор колонки</param>
         /// <returns>строка из бд</returns>
-        public List<string> SelectOrgJournalList2ByColumnId(int idOrg, int idJournal, int idProtocol, string idColumn)
+        public List<string> SelectOrgJournalList2ByColumnId(int idOrg, int idJournal, int idProtocol)
         {
             try
             {
                 if (!CheckTable($"org{idOrg}journal{idJournal}list2"))
                 {
-                    СreateTableEditJournal(idOrg);
+                    СreateTableJournalOrg1List2(idOrg, idJournal);
                 }
                 OpenConnection();
                 var queryString = $"SELECT * FROM laboratory.org{idOrg}journal{idJournal}list2 " +
@@ -1191,6 +1191,38 @@ namespace TP.Model
                             result.Add((string)sqlQueryResult["I"]);
                         }
                 }
+                return result;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        public int GetCountColumnWithSameValue(int idOrg, int idJournal, int idList, string column, string value)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list{idList}"))
+                {
+                    switch (idList)
+                    {
+                        case 1: СreateTableJournalOrg1List1(idOrg, idJournal); break;
+                        case 2: СreateTableJournalOrg1List2(idOrg, idJournal);break;
+                    }
+                }
+                OpenConnection();
+                var queryString = $"SELECT COUNT(*) FROM laboratory.org{idOrg}journal{idJournal}list{idList} " +
+                    $"WHERE {column}=\"{value}\"";
+
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                int result = Convert.ToInt32(command.ExecuteScalar().ToString());
+                CloseConnection();
                 return result;
             }
             catch (SqlException exception)
