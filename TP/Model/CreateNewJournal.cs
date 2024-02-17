@@ -3,6 +3,7 @@ using Res = TP.Properties.Resources;
 using TP.Control;
 using System.Collections.Generic;
 using System;
+using TP.Model.Scripts;
 
 namespace TP.Model
 {
@@ -52,6 +53,7 @@ namespace TP.Model
         /// <param name="idJournal">идентификатор журнала</param>
         public CreateNewJournal(int idOrganization, int idJournal)
         {
+            var path = $"Организация{idOrganization}\\Журнал{idJournal}.xlsx";
             var workbook = new XLWorkbook();
             var worksheetTitle = workbook.Worksheets.Add("Титул");
             var worksheetList1 = workbook.Worksheets.Add("Лист1");
@@ -60,6 +62,7 @@ namespace TP.Model
             worksheetTitle = CreateTitleList(worksheetTitle);
             worksheetList1 = CreateColumnsList1(worksheetList1);
             worksheetList2 = CreateColumnsList2(worksheetList2);
+            workbook.SaveAs(path);
             try
             {
                 DBConnection dBConnection = new DBConnection();
@@ -67,6 +70,11 @@ namespace TP.Model
                 dBConnection.СreateTableJournalOrg1List0(idOrganization, idJournal);
                 dBConnection.СreateTableJournalOrg1List1(idOrganization, idJournal);
                 dBConnection.СreateTableJournalOrg1List2(idOrganization, idJournal);
+
+                var list1 = dBConnection.GetOrgList1(idOrganization, idJournal);
+                var list2 = dBConnection.GetOrgList2(idOrganization, idJournal);
+                ExcelWorker excelFiles = new ExcelWorker(path,list1,list2);
+                excelFiles.SaveWorksheets();
                 //dBConnection.InsertStartValuesOrgJournalList1(1, idJournal);
                 //dBConnection.InsertStartValuesOrgJournalList2(1, idJournal);
             }
@@ -76,7 +84,7 @@ namespace TP.Model
             }
             finally
             {
-                workbook.SaveAs($"Организация{idOrganization}\\Журнал{idJournal}.xlsx");
+                
             }
         }
 
