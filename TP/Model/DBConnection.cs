@@ -106,8 +106,8 @@ namespace TP.Model
             {
                 Console.WriteLine(exception.Message);
             }
-            finally { 
-                CloseConnection(); 
+            finally {
+                CloseConnection();
             }
             return "";
         }
@@ -121,6 +121,10 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}editprotocol"))
+                {
+                    СreateTableEditProtocol(idOrg);
+                }
                 OpenConnection();
                 var queryString = $"SELECT Row{idColumn} FROM laboratory.org{idOrg}editprotocol WHERE idOrg{idOrg}editprotocol={idJournalRow}";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
@@ -246,7 +250,7 @@ namespace TP.Model
             if (!CheckTable($"laboratory.org{idOrg}journal{idJournal}list1"))
             {
                 string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list1 (";
-                query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";               
+                query += $"org{idOrg}idjournal{idJournal}list1 int NOT NULL AUTO_INCREMENT,";
                 query += "A Text,";
                 query += "B Text,";
                 query += "C Text,";
@@ -290,6 +294,10 @@ namespace TP.Model
         {
             try
             {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+                {
+                    СreateTableJournalOrg1List1(idOrg, idJournal);
+                }
                 //Все значения из базы
                 var listTable = GetListJournalOrg(idOrg, idJournal, 1);
                 var listFromDb = GetOrgList1(idOrg, idJournal);
@@ -351,6 +359,10 @@ namespace TP.Model
         {
             //idJournal += 1;
             //Все значения из базы
+            if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+            {
+                СreateTableJournalOrg1List1(idOrg, idJournal);
+            }
             var listTable = GetListJournalOrg(idOrg, idJournal, 1);
             var listFromDb = new List<Org1List1>();
             for (int i = 0; i < listTable.Rows.Count; i++)
@@ -387,8 +399,12 @@ namespace TP.Model
         /// <param name="idOrg"></param>
         /// <param name="idJournal"></param>
         /// <returns></returns>
-        public List<Org1List2> GetOrgList2 (int idOrg, int idJournal)
+        public List<Org1List2> GetOrgList2(int idOrg, int idJournal)
         {
+            if (!CheckTable($"org{idOrg}journal{idJournal}list2"))
+            {
+                СreateTableJournalOrg1List2(idOrg, idJournal);
+            }
             //Все значения из базы
             var listTable = GetListJournalOrg(idOrg, idJournal, 2);
             var listFromDb = new List<Org1List2>();
@@ -420,7 +436,10 @@ namespace TP.Model
         {
             try
             {
-                idJournal += 1;
+                if (!CheckTable($"org{idOrg}journal{idJournal}list2"))
+                {
+                    СreateTableJournalOrg1List2(idOrg, idJournal);
+                }
                 //Все значения из базы
                 var listTable = GetListJournalOrg(idOrg, idJournal, 1);
                 var listFromDb = GetOrgList2(idOrg, idJournal);
@@ -462,8 +481,6 @@ namespace TP.Model
             finally { CloseConnection(); }
         }
 
-
-
         /// <summary>
         /// Создать таблицу для листа2 журнала
         /// </summary>
@@ -471,33 +488,30 @@ namespace TP.Model
         /// <param name="idJournal">номер журнала</param>
         public void СreateTableJournalOrg1List2(int idOrg, int idJournal)
         {
-            if (!CheckTable($"laboratory.org{idOrg}journal{idJournal}list2"))
+            string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
+            query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
+            query += "A Text,";
+            query += "B Text,";
+            query += "C Text,";
+            query += "D Text,";
+            query += "E Text,";
+            query += "F Text,";
+            query += "G Text,";
+            query += "H Text,";
+            query += "I Text,";
+            query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list2))";
+            try
             {
-                string query = $"create table if not exists  laboratory.org{idOrg}journal{idJournal}list2 (";
-                query += $"org{idOrg}idjournal{idJournal}list2 int NOT NULL AUTO_INCREMENT,";
-                query += "A Text,";
-                query += "B Text,";
-                query += "C Text,";
-                query += "D Text,";
-                query += "E Text,";
-                query += "F Text,";
-                query += "G Text,";
-                query += "H Text,";
-                query += "I Text,";
-                query += $"PRIMARY KEY (org{idOrg}idjournal{idJournal}list2))";
-                try
-                {
-                    OpenConnection();
-                    MySqlCommand command = new MySqlCommand(query, GetConnection());
-                    command.ExecuteNonQuery();
-                    CloseConnection();
-                }
-                catch (SqlException)
-                {
-
-                }
-                finally { CloseConnection(); }
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
             }
+            catch (SqlException)
+            {
+
+            }
+            finally { CloseConnection(); }
         }      
 
         public void InsertJournalOrgChangesRow(int idOrg, List<string> values)
