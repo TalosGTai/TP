@@ -357,7 +357,6 @@ namespace TP.Model
         /// <returns></returns>
         public List<Org1List1> GetOrgList1(int idOrg, int idJournal)
         {
-            //idJournal += 1;
             //Все значения из базы
             if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
             {
@@ -480,6 +479,85 @@ namespace TP.Model
             }
             finally { CloseConnection(); }
         }
+
+        /// <summary>
+        /// Обновить таблицу листа1 журнала
+        /// </summary>
+        public void UpdateTableJournalOrg1List1(int idOrg, int idJournal, Org1List1 dif)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+                {
+                    СreateTableJournalOrg1List1(idOrg, idJournal);
+                }
+                string query = $"UPDATE laboratory.org{idOrg}journal{idJournal}list1 " +
+                    $"SET " +
+                    $"B=\"{dif.NumberDateDirection}\"," +
+                    $"C=\"{dif.SamplingAct}\"," +
+                    $"D=\"{dif.SampleName}\"," +
+                    $"E=\"{dif.OrganizationName}\"," +
+                    $"F=\"{dif.NumberSampleWeightCapacity}\"," +
+                    $"G=\"{dif.NumberDateUnsuitabilitySamples}\"," +
+                    $"H=\"{dif.DateReceiptSample}\"," +
+                    $"I=\"{dif.NumberRegSample}\" " +
+                    $"J=\"{dif.FioResponsiblePersonTest}\"," +
+                    $"K=\"{dif.DateIssueSample}\"," +
+                    $"L=\"{dif.DateReturnSampleAfterTest}\"," +
+                    $"M=\"{dif.FioInsertRecord}\"," +
+                    $"N=\"{dif.Note}\"," +
+                    $"O=\"{dif.NumberProtocol}\"," +
+                    $"P=\"{dif.ProductType}\"," +
+                    $"Q=\"{dif.Applicant}\"," +
+                    $"R=\"{dif.Manufacturer}\" " +
+                    $"WHERE A = \"{dif.NumberProduct}\";";
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
+        /// <summary>
+        /// Обновить таблицу листа2 журнала
+        /// </summary>
+        public void UpdateTableJournalOrg1List2(int idOrg, int idJournal, Org1List2 dif)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list2"))
+                {
+                    СreateTableJournalOrg1List2(idOrg, idJournal);
+                }
+
+                string query = $"UPDATE laboratory.org{idOrg}journal{idJournal}list2 " +
+                    $"SET " +
+                    $"B=\"{dif.NumberProtocolTest}\"," +
+                    $"C=\"{dif.DateReturnSampleAfterTest}\"," +
+                    $"D=\"{dif.NumberDateDirection}\"," +
+                    $"E=\"{dif.NumberRegSample}\"," +
+                    $"F=\"{dif.NumberActUtil}\"," +
+                    $"G=\"{dif.DateActUtil}\"," +
+                    $"H=\"{dif.DateReturnSample}\"," +
+                    $"I=\"{dif.FioInsertRecord}\" " +
+                    $"WHERE A = \"{dif.NumberProduct}\";";
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally { CloseConnection(); }
+        }
+
 
         /// <summary>
         /// Создать таблицу для листа2 журнала
@@ -968,6 +1046,113 @@ namespace TP.Model
                 throw;
             }
             finally { CloseConnection(); }
+        }
+
+        /// <summary>
+        /// Получить строку по колонке
+        /// </summary>
+        /// <param name="idJournalRow">идентификатор строки</param>
+        /// <param name="idColumn">идентификатор колонки</param>
+        /// <returns>строка из бд</returns>
+        public List<string> SelectOrgJournalList1ByColumnId(int idOrg, int idJournal, int idProtocol, string idColumn)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+                {
+                    СreateTableEditJournal(idOrg);
+                }
+                OpenConnection();
+                var queryString = $"SELECT * FROM laboratory.org{idOrg}journal{idJournal}list1 " +
+                    $"WHERE A=\"{idProtocol}\"";
+
+                var result = new List<string>();
+                using (var sqlQuery = new MySqlCommand(queryString, GetConnection()))
+                {
+                    using (var sqlQueryResult = sqlQuery.ExecuteReader())
+                        if (sqlQueryResult != null)
+                        {
+                            sqlQueryResult.Read();
+                            result.Add((string)sqlQueryResult["A"]);
+                            result.Add((string)sqlQueryResult["B"]);
+                            result.Add((string)sqlQueryResult["C"]);
+                            result.Add((string)sqlQueryResult["D"]);
+                            result.Add((string)sqlQueryResult["E"]);
+                            result.Add((string)sqlQueryResult["F"]);
+                            result.Add((string)sqlQueryResult["G"]);
+                            result.Add((string)sqlQueryResult["H"]);
+                            result.Add((string)sqlQueryResult["I"]);
+                            result.Add((string)sqlQueryResult["J"]);
+                            result.Add((string)sqlQueryResult["K"]);
+                            result.Add((string)sqlQueryResult["L"]);
+                            result.Add((string)sqlQueryResult["M"]);
+                            result.Add((string)sqlQueryResult["N"]);
+                            result.Add((string)sqlQueryResult["O"]);
+                            result.Add((string)sqlQueryResult["P"]);
+                            result.Add((string)sqlQueryResult["Q"]);
+                            result.Add((string)sqlQueryResult["R"]);
+                        }
+                }
+                return result;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Получить строку по колонке
+        /// </summary>
+        /// <param name="idJournalRow">идентификатор строки</param>
+        /// <param name="idColumn">идентификатор колонки</param>
+        /// <returns>строка из бд</returns>
+        public List<string> SelectOrgJournalList2ByColumnId(int idOrg, int idJournal, int idProtocol, string idColumn)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}journal{idJournal}list2"))
+                {
+                    СreateTableEditJournal(idOrg);
+                }
+                OpenConnection();
+                var queryString = $"SELECT * FROM laboratory.org{idOrg}journal{idJournal}list2 " +
+                    $"WHERE A=\"{idProtocol}\"";
+
+                var result = new List<string>();
+                using (var sqlQuery = new MySqlCommand(queryString, GetConnection()))
+                {
+                    using (var sqlQueryResult = sqlQuery.ExecuteReader())
+                        if (sqlQueryResult != null)
+                        {
+                            sqlQueryResult.Read();
+                            result.Add((string)sqlQueryResult["A"]);
+                            result.Add((string)sqlQueryResult["B"]);
+                            result.Add((string)sqlQueryResult["C"]);
+                            result.Add((string)sqlQueryResult["D"]);
+                            result.Add((string)sqlQueryResult["E"]);
+                            result.Add((string)sqlQueryResult["F"]);
+                            result.Add((string)sqlQueryResult["G"]);
+                            result.Add((string)sqlQueryResult["H"]);
+                            result.Add((string)sqlQueryResult["I"]);
+                        }
+                }
+                return result;
+            }
+            catch (SqlException exception)
+            {
+                Console.WriteLine(exception.Message);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
         }
     }
 }
