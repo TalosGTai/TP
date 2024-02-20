@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
-using TP.Control;
 using TP.Model;
 using TP.Model.Scripts;
 using System.IO;
@@ -48,6 +46,7 @@ namespace TP.View
             _idJournal = idJournal;
             _isDirection = false;
             _isAdditionals = false;
+            LabelProtocolNumber.Content = LabelProtocolNumber.Content + _idProtocol.ToString();
         }
 
         private bool CheckProtocolReady()
@@ -69,10 +68,7 @@ namespace TP.View
         {
             if (CheckProtocolReady())
             {
-                Thread threadDirection = new Thread(CopyDirection);
-                Thread threadAdditionals = new Thread(CopyAdditionals);
-                threadDirection.Start();
-                threadAdditionals.Start();
+
                 List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                 for (int i = 0; i < _pathAdditionals.Count; i++)
                 {
@@ -82,7 +78,8 @@ namespace TP.View
                 UpdateJournal();
                 Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
-                MessageBox.Show("Протокол успешно создан!");
+                MessageBox.Show("Протокол успешно создан!", "Создание протокола");
+
                 Functions functions = new Functions();
                 var protocols = new Protocols(_idOrg);
                 protocols.FillProtocolsView(protocols.GetCountProtocols());
@@ -92,31 +89,54 @@ namespace TP.View
 
         private void CopyDirection()
         {
-            string PROTOCOL_EXCEL_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
-            File.Copy(_directionFileName, PROTOCOL_EXCEL_PATH + GetFileName(_directionFileName), true);
+            string PROTOCOL_DIRECTION_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+            DirectoryInfo directory = new DirectoryInfo(PROTOCOL_DIRECTION_PATH);
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
+            FileInfo fileInfo = new FileInfo(_directionFileName);
+            if (!fileInfo.Exists)
+                fileInfo.CopyTo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
         }
 
         private void CopyAdditionals()
         {
             string PROTOCOL_EXCEL_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+            DirectoryInfo directory = new DirectoryInfo(PROTOCOL_EXCEL_PATH);
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
             for (int i = 0; i < _pathAdditionals.Count; i++)
             {
-                File.Copy(_pathAdditionals[i], PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]), true);
+                FileInfo fileInfo = new FileInfo(_pathAdditionals[i]);
+                if (!fileInfo.Exists)
+                    fileInfo.CopyTo(PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]));
             }
         }
 
         private string GetFileName(string path)
         {
             string fileName = "";
-            for (int i = Math.Max(path.LastIndexOf("\\"), path.LastIndexOf("/")) + 1; i < path.Length; i++)
+            for (int i = Math.Max(path.LastIndexOf("\\"), path.LastIndexOf("/")) + 1;
+                (i < path.Length || i < path.LastIndexOf('.')); i++)
             {
-                if (path[i] != '.')
-                    fileName += path[i];
-                else
-                    break;
+                fileName += path[i];
             }
-            fileName += ".docx";
+
+            fileName += GetFileExtension(path);
             return fileName;
+        }
+
+        public string GetFileExtension(string path)
+        {
+            string ext = "";
+            for (int i = path.LastIndexOf('.'); i < path.Length; i++)
+            {
+                ext += path[i];
+            }
+            return ext;
         }
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
@@ -131,6 +151,8 @@ namespace TP.View
                 foreach (string filename in openFileDialog.FileNames)
                     _pathAdditionals.Add(filename);
             }
+            Thread threadAdditionals = new Thread(CopyAdditionals);
+            threadAdditionals.Start();
         }
 
         private void BtnDirection_Click(object sender, RoutedEventArgs e)
@@ -144,8 +166,10 @@ namespace TP.View
                 _directionFileName = openFileDialog.FileName;
                 _directionDict = _direction.JournalParse;
             }
+            Thread threadDirection = new Thread(CopyDirection);
+            threadDirection.Start();
         }
-    
+
         private char GetAlphaById(int id)
         {
             string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -164,15 +188,15 @@ namespace TP.View
 
         private string GetRegNumber()
         {
-            // количество строк, где строка равна строке (H)
             DBConnection conn = new DBConnection();
-            string date = _list1[6];
-            string countDates = ;
+            string date = _list1[7];
+            int countDates = Math.Max(conn.GetCountColumnWithSameValue(_idOrg, _idJournal + 1, 1, "H", date), 1);
             return $"л-/{countDates}/{date}";
         }
 
         private string GetWeekFromDate()
         {
+            // количество строк, где строка равна строке (H)
             var dt = DateTime.Now.Date;            
             var cal = new GregorianCalendar();
             var weekNumber = cal.GetWeekOfYear(dt, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
@@ -183,8 +207,12 @@ namespace TP.View
         {
             // количество строк, где строка равна строке (H)
             // количество строк, где строка равна строке (A)
+            DBConnection conn = new DBConnection();
+            string date = _list1[7];
+            int countDates = Math.Max(conn.GetCountColumnWithSameValue(_idOrg, _idJournal + 1, 1, "H", date), 1);
+            int countA = Math.Max(conn.GetCountColumnWithSameValue(_idOrg, _idJournal + 1, 1, "A", _list1[0]), 1);
             var dt = DateTime.Now;
-            return $"{GetWeekFromDate()}-{_idJournal + 1}-{}/{}/{dt.Year}";
+            return $"{GetWeekFromDate()}-{_idJournal + 1}-{countDates}/{countA}/{dt.Year}";
         }
 
         private void UpdateJournal()
@@ -203,28 +231,30 @@ namespace TP.View
                 _directionDict.Item1["F"],
                 journal[6],
                 journal[7],
-                GetRegNumber(),
+                "8",
                 journal[9],
                 journal[10],
                 journal[11],
                 journal[12],
                 journal[13],
-                journal[14],
+                "14",
                 journal[15],
                 _directionDict.Item1["Q"],
                 _directionDict.Item1["R"]
             };
+            _list1[8] = GetRegNumber();
+            _list1[14] = GetNumberProtocol();
             _list2 = new List<string>()
             {
                 journal[0],
-                _directionDict.Item2["B"],
-                _directionDict.Item2["C"],
-                _directionDict.Item2["D"],
-                _directionDict.Item2["E"],
-                _directionDict.Item2["F"],
-                _directionDict.Item2["G"],
-                _directionDict.Item2["H"],
-                _directionDict.Item2["I"],
+                _list1[14],
+                _list1[11],
+                _list1[1],
+                _list1[8],
+                _list1[14],
+                _list1[2],
+                _list1[2],
+                _list1[12],
             };
 
             // занесение в БД

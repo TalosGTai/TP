@@ -46,6 +46,13 @@ namespace TP.Model.Scripts
             set { _journalParse = value; }
         }
 
+        private bool isColumnB(string value)
+        {
+            if (value.IndexOf("НАПРАВЛЕНИЕ") != -1 || value.IndexOf("Направление") != -1)
+                return true;
+            return false;
+        }
+
         /// <summary>
         /// Получение колонки В
         /// </summary>
@@ -55,16 +62,16 @@ namespace TP.Model.Scripts
         {
             Regex regex = new Regex(@"\d\d.\d\d.\d{4}");
             MatchCollection match = regex.Matches(value);
-            string[] subs = value.Split(' ');
             if (match.Count > 0)
             {
+                string[] subs = value.Split(' ');
                 string num = "";
 
                 foreach (var sub in subs)
                 {
                     foreach (char c in sub)
                     {
-                        if (char.IsDigit(c))
+                        if (char.IsDigit(c) || c == '-')
                             num += c;
                     }
                     if (num.Length > 0)
@@ -111,8 +118,22 @@ namespace TP.Model.Scripts
         /// <returns>true - это колонка D; false - это не колонка D</returns>
         private bool IsColumnD(string value)
         {
-            string pattern = "Испытания провести по следующим методам, показателям:";
-            if (value.IndexOf(pattern) != -1)
+            int count = 0;
+            List<string> patterns = new List<string>()
+            {
+                "Испытания",
+                "провести",
+                "по",
+                "следующим",
+                "методам",
+                "показателям"
+            };
+            foreach (string pattern in patterns)
+            {
+                if (value.IndexOf(pattern) != -1)
+                    count++;
+            }
+            if (count > 4)
                 return true;
             return false;
         }
@@ -130,6 +151,13 @@ namespace TP.Model.Scripts
                 return value;
             }
             return "null";
+        }
+
+        private string StillColumnD(string value)
+        {
+            if (value.IndexOf("шт") != -1)
+                return "False";
+            return value;
         }
         /// <summary>
         /// Колонка Е = "null"
@@ -164,8 +192,20 @@ namespace TP.Model.Scripts
         /// <returns>true - является</returns>
         private bool IsColumnQ(string value)
         {
-            string pattern = "Образцы представлены заказчиком/заявителем:";
-            if (value.IndexOf(pattern) != -1)
+            int count = 0;
+            List<string> patterns = new List<string>()
+            {
+                "Образцы",
+                "представлены",
+                "заказчиком",
+                "заявителем"
+            };
+            foreach (string pattern in patterns)
+            {
+                if (value.IndexOf(pattern) != -1)
+                    count++;
+            }
+            if (count > 2)
                 return true;
             return false;
         }
@@ -190,15 +230,18 @@ namespace TP.Model.Scripts
         /// <returns>Значение колонки R</returns>
         private string ColumnR(string value)
         {
-            string pattern = "Изготовитель:";
-            if (value.IndexOf(pattern) != -1)
+            if (value.IndexOf("Изготовитель") != -1)
             {
+                value = value.Trim(' ');
+                int i = 0;
+                while (value[i] != ' ')
+                    i++;
                 string result = "";
-                for (int i = value.IndexOf(pattern) + 13; i < value.Length; i++)
+                i++;
+                for (; i < value.Length; i++)
                 {
                     result += value[i];
                 }
-                result = result.Trim(' ');
                 return result;
             }
             return "null";
@@ -258,15 +301,21 @@ namespace TP.Model.Scripts
         {
             Dictionary<string, string> list1Values = new Dictionary<string, string>();
             Dictionary<string, string> list2Values = new Dictionary<string, string>();
-            bool columnB, columnC, columnD, columnE, columnF, columnQ, columnR, columnDHelp, columnQHelp;
+            bool columnB, columnC, columnD, columnE, columnF, columnQ, columnR, columnDHelp, columnQHelp,
+                columnBHelp;
 
-            columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp = false;
+            columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp = 
+                columnBHelp = false;
             list1Values = SetDefaultValuesList1(list1Values);
             list2Values = SetDefaultValuesList2(list2Values);
 
             foreach (Paragraph paragraph in paragraphs)
             {
-                if (!columnB)
+                if (!columnBHelp)
+                {
+                    columnBHelp = isColumnB(paragraph.InnerText);
+                }
+                if (!columnB && columnBHelp)
                 {
                     Tuple<string, string> tuple = ColumnB(paragraph.InnerText);
                     if (tuple.Item1 != "null")
@@ -291,18 +340,16 @@ namespace TP.Model.Scripts
                 {
                     if (!columnDHelp)
                     {
-
                         columnDHelp = IsColumnD(paragraph.InnerText);
                     }
                     else
                     {
-                        list1Values["D"] = ColumnD(paragraph.InnerText, columnDHelp);
-                        columnD = true;
+                        var t = StillColumnD(paragraph.InnerText);
+                        if (t != "False")
+                            list1Values["D"] += t;
+                        else
+                            columnD = true;
                     }
-                }
-                if (!columnE)
-                {
-
                 }
                 if (!columnF)
                 {

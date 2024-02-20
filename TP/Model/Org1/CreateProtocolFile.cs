@@ -549,9 +549,12 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + idRow).Value = i.ToString();
                 worksheet.Cell("B" + idRow).Value = values[0].Item1[1];
                 worksheet.Cell("C" + idRow).Value = values[0].Item1[0];
-                worksheet.Cell("D" + idRow).Value = values[0].Item2[1][i] + " " + values[0].Item2[2][i] + " " + values[0].Item2[3][i];
-                worksheet.Cell("E" + idRow).Value = values[0].Item1[2];
-                worksheet.Cell("F" + idRow).Value = values[0].Item1[3];
+                if (values[0].Item2[1].Count > i && values[0].Item2[2].Count > i && values[0].Item2[3].Count > i)
+                    worksheet.Cell("D" + idRow).Value = values[0].Item2[1][i] + " " + values[0].Item2[2][i] + " " + values[0].Item2[3][i];
+                if (values[0].Item1.Count > 2)
+                    worksheet.Cell("E" + idRow).Value = values[0].Item1[2];
+                if (values[0].Item1.Count > 3)
+                    worksheet.Cell("F" + idRow).Value = values[0].Item1[3];
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Font.FontSize = 10;
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;

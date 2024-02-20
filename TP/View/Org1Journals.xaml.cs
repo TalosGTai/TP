@@ -137,23 +137,10 @@ namespace TP.View
             string path = _currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
             //var dialog = MessageBox.Show("Сохранить все изменения?", "Сохранение изменений", MessageBoxButton.YesNo);
             //if (dialog == MessageBoxResult.Yes)
-            //{
-            //    // журнал (локальный)
-            //    if (_journalsList.Count > 0)
-            //    {
-            //        ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
-            //        excelWorker.SaveWorksheets();
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Невозможно сохранить пустые значения.", "Ошибка");
-            //    }
-            //    // сохранение изменений в БД
             //    //Thread localJournal = new Thread();
             //    //Thread dbJournal = new Thread();
             //    //localJournal.Start();
             //    //dbJournal.Start();
-            //}
             // журнал
             if (_journalsList.Count > 0)
             {
@@ -164,6 +151,7 @@ namespace TP.View
                 DBConnection dBConnection = new DBConnection();
                 dBConnection.SaveTableJournalOrg1List1(1, _idJournal + 1, _journalsList[idJournal].Item1);
                 dBConnection.SaveTableJournalOrg1List2(1, _idJournal + 1, _journalsList[idJournal].Item2);
+                MessageBox.Show("Все изменения успешно внесены", "Сохранение");
             }
             else
             {
@@ -190,10 +178,23 @@ namespace TP.View
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
+            int idProtocol = GetCountProtocols();
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             SaveChanges(_idJournal);
             Functions functions = new Functions();
-            functions.Frame.Content = new NewProtocol(1, _idJournal, 1);
+            functions.Frame.Content = new NewProtocol(1, _idJournal, idProtocol);
+        }
+
+        public int GetCountProtocols()
+        {
+            int countProtocols = 1;
+
+            while (Directory.Exists($"Организация{1}\\Протокол{countProtocols}"))
+            {
+                countProtocols++;
+            }
+
+            return countProtocols;
         }
 
         private void OpenCurrentJournal_Click(object sender, RoutedEventArgs e)

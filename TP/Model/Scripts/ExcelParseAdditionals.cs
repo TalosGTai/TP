@@ -25,6 +25,7 @@ namespace TP.Model.Scripts
             // Получение всех страниц докуента
             sheets = workbook.Sheets;
             _values = GetDataFromExcel();
+            app.Quit();
         }
 
         public Tuple<List<string>, Dictionary<int, List<string>>> Values

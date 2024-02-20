@@ -70,7 +70,7 @@ namespace TP.View
                 {
                     id = protocols[id].NumberProtocol;
                     ex = new Excel.Application();
-                    ex.Workbooks.Open($"C:\\Users\\GTai\\source\\repos\\TP\\TP\\bin\\Debug\\Организация{_idOrg}\\Протокол{id}\\Протокол{id}.xlsx");
+                    ex.Workbooks.Open($"Организация{_idOrg}\\Протокол{id}\\Протокол{id}.xlsx");
                     ex.Visible = true;
                 }
                 catch
@@ -97,7 +97,7 @@ namespace TP.View
                 try
                 {
                     id = protocols[id].NumberProtocol;
-                    Process.Start($"C:\\Users\\GTai\\source\\repos\\TP\\TP\\bin\\Debug\\Организация{_idOrg}\\Протокол{id}\\Протокол{id}.docx");
+                    Process.Start($"Организация{_idOrg}\\Протокол{id}\\Протокол{id}.docx");
                 }
                 catch
                 {
@@ -112,12 +112,12 @@ namespace TP.View
 
             if (id == -1)
             {
-                MessageBox.Show("Протокол не выбран!\nВыберите протокол, который хотите открыть.", "Ошибка");
+                Process.Start("explorer", $"Организация{_idOrg}\\");
             }
             else
             {
                 id = protocols[id].NumberProtocol;
-                Process.Start("explorer", $"C:\\Users\\GTai\\source\\repos\\TP\\TP\\bin\\Debug\\Организация{_idOrg}\\Протокол{id}");
+                Process.Start("explorer", $"Организация{_idOrg}\\Протокол{id}");
             }
         }
 

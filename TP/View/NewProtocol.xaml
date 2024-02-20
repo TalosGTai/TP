@@ -85,7 +85,8 @@
         <Button x:Name="CreateProtocol" Click="CreateProtocol_Click"
                 Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"
                 Content="Создать протокол" HorizontalAlignment="Left" Margin="132,10,0,0"/>
-        <Label Content="Протокол № 1" x:Name="LabelProtocolNumber"
+        <Label Content="Протокол № " 
+               x:Name="LabelProtocolNumber"
                Grid.Row="1"/>
         <Label Content="Выбор приложений:"
                Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
