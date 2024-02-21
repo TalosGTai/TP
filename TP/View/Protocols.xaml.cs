@@ -137,7 +137,13 @@ namespace TP.View
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (ListProtocols.Items.Count > 0)
+            {
+                DBConnection db = new DBConnection();
+                db.DeleteTableProtocolOrgJournal(_idOrg, protocols[Convert.ToInt32(ListProtocols.SelectedIndex.ToString())].NameProtocol);
+                protocols.RemoveAt(Convert.ToInt32(ListProtocols.SelectedIndex.ToString()));
+                ListProtocols.ItemsSource = protocols;
+            }
         }
     }
 }
