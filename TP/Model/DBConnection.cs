@@ -322,48 +322,54 @@ namespace TP.Model
                 {
                     СreateTableJournalOrg1List1(idOrg, idJournal);
                 }
-                //Все значения из базы
-                var listTable = GetListJournalOrg(idOrg, idJournal, 1);
-                var listFromDb = GetOrgList1(idOrg, idJournal);
-
-                //значения UI которых нет в значениях базы 
-
-                var difList = new List<Org1List1>();
-                foreach (var uiRow in listFromUI)
+                MySqlTransaction tr = null;
+                try
                 {
-                    if (!listFromDb.Contains(uiRow))
-                    {
-                        difList.Add(uiRow);
-                    }
-                }
-                //добавляем значения, которых нет в базе, но есть в UI
-                foreach (var dif in difList)
-                {
-                    string query = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list1 " +
-                        $"(A, B, C, D, E, F, G, H , I, J, K, L, M, N, O, P, Q, R) " +
-                        $"VALUES(" +
-                        $"\"{dif.NumberProduct}\"," +
-                        $"\"{dif.NumberDateDirection}\"," +
-                        $"\"{dif.SamplingAct}\"," +
-                        $"\"{dif.SampleName}\"," +
-                        $"\"{dif.OrganizationName}\"," +
-                        $"\"{dif.NumberSampleWeightCapacity}\"," +
-                        $"\"{dif.NumberDateUnsuitabilitySamples}\"," +
-                        $"\"{dif.DateReceiptSample}\"," +
-                        $"\"{dif.NumberRegSample}\"," +
-                        $"\"{dif.FioResponsiblePersonTest}\"," +
-                        $"\"{dif.DateIssueSample}\"," +
-                        $"\"{dif.DateReturnSampleAfterTest}\"," +
-                        $"\"{dif.FioInsertRecord}\"," +
-                        $"\"{dif.Note}\"," +
-                        $"\"{dif.NumberProtocol}\"," +
-                        $"\"{dif.ProductType}\"," +
-                        $"\"{dif.Applicant}\"," +
-                        $"\"{dif.Manufacturer}\")";
                     OpenConnection();
-                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    var con = GetConnection();
+                    tr = con.BeginTransaction();
+                    string query = $"TRUNCATE laboratory.org{idOrg}journal{idJournal}list1; ";
+                    MySqlCommand command = new MySqlCommand(query, con);
                     command.ExecuteNonQuery();
-                    CloseConnection();
+                    query = "";
+                    foreach (var dif in listFromUI)
+                    {
+                        query += $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list1 " +
+                            $"(A, B, C, D, E, F, G, H , I, J, K, L, M, N, O, P, Q, R) " +
+                            $"VALUES(" +
+                            $"\"{dif.NumberProduct}\"," +
+                            $"\"{dif.NumberDateDirection}\"," +
+                            $"\"{dif.SamplingAct}\"," +
+                            $"\"{dif.SampleName}\"," +
+                            $"\"{dif.OrganizationName}\"," +
+                            $"\"{dif.NumberSampleWeightCapacity}\"," +
+                            $"\"{dif.NumberDateUnsuitabilitySamples}\"," +
+                            $"\"{dif.DateReceiptSample}\"," +
+                            $"\"{dif.NumberRegSample}\"," +
+                            $"\"{dif.FioResponsiblePersonTest}\"," +
+                            $"\"{dif.DateIssueSample}\"," +
+                            $"\"{dif.DateReturnSampleAfterTest}\"," +
+                            $"\"{dif.FioInsertRecord}\"," +
+                            $"\"{dif.Note}\"," +
+                            $"\"{dif.NumberProtocol}\"," +
+                            $"\"{dif.ProductType}\"," +
+                            $"\"{dif.Applicant}\"," +
+                            $"\"{dif.Manufacturer}\"); ";
+                    }
+                    command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    tr.Commit();
+                }
+                catch
+                {
+                    try
+                    {
+                        tr?.Rollback();
+                        CloseConnection();
+                    }
+                    catch (MySqlException ex1)
+                    {
+                    }
                 }
             }
             catch (SqlException e)
@@ -463,38 +469,49 @@ namespace TP.Model
                 {
                     СreateTableJournalOrg1List2(idOrg, idJournal);
                 }
-                //Все значения из базы
-                var listTable = GetListJournalOrg(idOrg, idJournal, 2);
-                var listFromDb = GetOrgList2(idOrg, idJournal);
-                //значения UI которых нет в значениях базы 
-                var difList = new List<Org1List2>();
-                foreach (var uiRow in listFromUI)
+                //Объявление транзакции
+                MySqlTransaction tr = null;
+                try
                 {
-                    if (!listFromDb.Contains(uiRow))
-                    {
-                        difList.Add(uiRow);
-                    }
-                }
-                //добавляем значения, которых нет в базе, но есть в UI
-                foreach (var dif in difList)
-                {
-                    string query = $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list2 " +
-                        $"(A, B, C, D, E, F, G, H , I) " +
-                        $"VALUES(" +
-                        $"\"{dif.NumberProduct}\"," +
-                        $"\"{dif.NumberProtocolTest}\"," +
-                        $"\"{dif.DateReturnSampleAfterTest}\"," +
-                        $"\"{dif.NumberDateDirection}\"," +
-                        $"\"{dif.NumberRegSample}\"," +
-                        $"\"{dif.NumberActUtil}\"," +
-                        $"\"{dif.DateActUtil}\"," +
-                        $"\"{dif.DateReturnSample}\"," +
-                        $"\"{dif.FioInsertRecord}\"" +
-                        $")";
                     OpenConnection();
-                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    var con = GetConnection();
+                    tr = con.BeginTransaction();
+                    string query = "";
+
+                    query = $"TRUNCATE laboratory.org{idOrg}journal{idJournal}list2; ";
+                    MySqlCommand command = new MySqlCommand(query, con);
                     command.ExecuteNonQuery();
-                    CloseConnection();
+                    query = "";
+                    foreach (var dif in listFromUI)
+                    {
+                        query += $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list2 " +
+                            $"(A, B, C, D, E, F, G, H , I) " +
+                            $"VALUES(" +
+                            $"\"{dif.NumberProduct}\"," +
+                            $"\"{dif.NumberProtocolTest}\"," +
+                            $"\"{dif.DateReturnSampleAfterTest}\"," +
+                            $"\"{dif.NumberDateDirection}\"," +
+                            $"\"{dif.NumberRegSample}\"," +
+                            $"\"{dif.NumberActUtil}\"," +
+                            $"\"{dif.DateActUtil}\"," +
+                            $"\"{dif.DateReturnSample}\"," +
+                            $"\"{dif.FioInsertRecord}\"" +
+                            $"); ";
+                    }
+                    command = new MySqlCommand(query, con);
+                    command.ExecuteNonQuery();
+                    tr.Commit();
+                }
+                catch
+                {
+                    try
+                    {
+                        tr?.Rollback();
+                        CloseConnection();
+                    }
+                    catch (MySqlException ex1)
+                    {
+                    }
                 }
             }
             catch (SqlException e)
@@ -1121,25 +1138,27 @@ namespace TP.Model
                     using (var sqlQueryResult = sqlQuery.ExecuteReader())
                         if (sqlQueryResult != null)
                         {
-                            sqlQueryResult.Read();
-                            result.Add((string)sqlQueryResult["A"]);
-                            result.Add((string)sqlQueryResult["B"]);
-                            result.Add((string)sqlQueryResult["C"]);
-                            result.Add((string)sqlQueryResult["D"]);
-                            result.Add((string)sqlQueryResult["E"]);
-                            result.Add((string)sqlQueryResult["F"]);
-                            result.Add((string)sqlQueryResult["G"]);
-                            result.Add((string)sqlQueryResult["H"]);
-                            result.Add((string)sqlQueryResult["I"]);
-                            result.Add((string)sqlQueryResult["J"]);
-                            result.Add((string)sqlQueryResult["K"]);
-                            result.Add((string)sqlQueryResult["L"]);
-                            result.Add((string)sqlQueryResult["M"]);
-                            result.Add((string)sqlQueryResult["N"]);
-                            result.Add((string)sqlQueryResult["O"]);
-                            result.Add((string)sqlQueryResult["P"]);
-                            result.Add((string)sqlQueryResult["Q"]);
-                            result.Add((string)sqlQueryResult["R"]);
+                            if (sqlQueryResult.Read() && sqlQueryResult.HasRows)
+                            {
+                                result.Add((string)sqlQueryResult["A"]);
+                                result.Add((string)sqlQueryResult["B"]);
+                                result.Add((string)sqlQueryResult["C"]);
+                                result.Add((string)sqlQueryResult["D"]);
+                                result.Add((string)sqlQueryResult["E"]);
+                                result.Add((string)sqlQueryResult["F"]);
+                                result.Add((string)sqlQueryResult["G"]);
+                                result.Add((string)sqlQueryResult["H"]);
+                                result.Add((string)sqlQueryResult["I"]);
+                                result.Add((string)sqlQueryResult["J"]);
+                                result.Add((string)sqlQueryResult["K"]);
+                                result.Add((string)sqlQueryResult["L"]);
+                                result.Add((string)sqlQueryResult["M"]);
+                                result.Add((string)sqlQueryResult["N"]);
+                                result.Add((string)sqlQueryResult["O"]);
+                                result.Add((string)sqlQueryResult["P"]);
+                                result.Add((string)sqlQueryResult["Q"]);
+                                result.Add((string)sqlQueryResult["R"]);
+                            }
                         }
                 }
                 return result;
