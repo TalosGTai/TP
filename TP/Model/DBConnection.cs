@@ -929,6 +929,24 @@ namespace TP.Model
             finally { CloseConnection(); }
         }
 
+        public void DeleteTableProtocolOrgJournal(int idOrg, string protocolName)
+        {
+            try
+            {
+                string query = $"DELETE FROM laboratory.org{idOrg}Protocol " +
+                $"WHERE ProtocolId = \"{protocolName}\";";
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException)
+            {
+
+            }
+            finally { CloseConnection(); }
+        }
+
         public void InsertOrUpdateOrgProtocolRow(int idOrg, int idProtocol, byte[] docFile, byte[] xlsFile)
         {
             try
@@ -1062,7 +1080,7 @@ namespace TP.Model
                 MemoryStream msXls = new MemoryStream();
                 var excludeString = String.Join(", ", excludeProtocols.ToArray());
                 var query = "";
-                if (string.IsNullOrEmpty(excludeString))
+                if (!string.IsNullOrEmpty(excludeString))
                 {
                     query = $"SELECT ProtocolId, ProtocolDoc, ProtocolXls FROM laboratory.org{idOrg}Protocol WHERE ProtocolId NOT IN ({excludeString})";
                 }
@@ -1082,19 +1100,21 @@ namespace TP.Model
                             {
                                 string protocolName = (string)sqlQueryResult["ProtocolId"];
 
-                                if (!File.Exists($"{path}\\{protocolName}.docx"))
+                                var catalog = Directory.CreateDirectory(path + protocolName).FullName;
+
+                                if (!File.Exists($"{catalog}\\{protocolName}.docx"))
                                 {
                                     byte[] colProtocolDoc = (byte[])sqlQueryResult["ProtocolDoc"];
                                     msDoc.Write(colProtocolDoc, 0, colProtocolDoc.Length);
-                                    using (var fs = new FileStream($"{path}\\{protocolName}.docx", FileMode.Create, FileAccess.Write))
+                                    using (var fs = new FileStream($"{catalog}\\{protocolName}.docx", FileMode.Create, FileAccess.Write))
                                         fs.Write(colProtocolDoc, 0, colProtocolDoc.Length);
                                 }
 
-                                if (!File.Exists($"{path}\\{protocolName}.xlsx"))
+                                if (!File.Exists($"{catalog}\\{protocolName}.xlsx"))
                                 {
                                     byte[] colProtocolXls = (byte[])sqlQueryResult["ProtocolXls"];
                                     msXls.Write(colProtocolXls, 0, colProtocolXls.Length);
-                                    using (var fs = new FileStream($"{path}\\{protocolName}.xlsx", FileMode.Create, FileAccess.Write))
+                                    using (var fs = new FileStream($"{catalog}\\{protocolName}.xlsx", FileMode.Create, FileAccess.Write))
                                         fs.Write(colProtocolXls, 0, colProtocolXls.Length);
                                 }
                             }
