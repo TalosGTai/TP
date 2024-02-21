@@ -129,11 +129,15 @@ namespace TP.View
                 var prt = (Protocol)i;
                 excludeProtocols.Add($"\"{prt.NameProtocol}\"");
             }
-            var path = "C:\\Users\\GTai\\source\\repos\\TP\\TP\\bin\\Debug\\Организация1\\Протокол1";
-            //var path = @"C:\Users\Margarita\OneDrive\Documents\TP\TP\bin\Debug\Организация1\Протокол1";
+            var path = "Организация1\\";
             DBConnection db = new DBConnection();
             db.GetPartOfOrgProtocolRow(1, path, excludeProtocols);
             FillProtocolsView(GetCountProtocols());
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

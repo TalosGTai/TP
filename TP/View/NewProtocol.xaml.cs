@@ -96,7 +96,8 @@ namespace TP.View
                 directory.Create();
             }
             FileInfo fileInfo = new FileInfo(_directionFileName);
-            if (!fileInfo.Exists)
+            FileInfo fileInfo2 = new FileInfo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
+            if (!fileInfo2.Exists)
                 fileInfo.CopyTo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
         }
 
@@ -111,7 +112,8 @@ namespace TP.View
             for (int i = 0; i < _pathAdditionals.Count; i++)
             {
                 FileInfo fileInfo = new FileInfo(_pathAdditionals[i]);
-                if (!fileInfo.Exists)
+                FileInfo fileInfo2 = new FileInfo(PROTOCOL_EXCEL_PATH + GetFileName(_directionFileName));
+                if (!fileInfo2.Exists)
                     fileInfo.CopyTo(PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]));
             }
         }
