@@ -234,7 +234,7 @@ namespace TP.Model.Scripts
             {
                 value = value.Trim(' ');
                 int i = 0;
-                while (value[i] != ' ')
+                while (i < value.Length && value[i] != ' ')
                     i++;
                 string result = "";
                 i++;
