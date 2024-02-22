@@ -104,6 +104,12 @@
                                     Width="184 " 
                                     Binding="{Binding NameProtocol, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Удалить протокол"
+                  Click="MenuItem_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
         <DataGrid x:Name="DataProtocol" Grid.Row="1"
                   Grid.Column="1" Grid.RowSpan="5"
@@ -112,12 +118,6 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Протокол"/>
             </DataGrid.Columns>
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Удалить протокол"
-                  Click="MenuItem_Click"/>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </Page>

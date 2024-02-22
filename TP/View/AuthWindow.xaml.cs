@@ -2,7 +2,7 @@
 using System.Windows;
 using System.IO;
 using TP.Model;
-using System.Collections.Generic;
+using TP.View;
 
 namespace TP
 {
@@ -54,7 +54,8 @@ namespace TP
 
         private void Parametres_Click(object sender, RoutedEventArgs e)
         {
-
+            Settings settings = new Settings();
+            settings.Show();
         }
     }
 }

@@ -140,9 +140,18 @@ namespace TP.View
             if (ListProtocols.Items.Count > 0)
             {
                 DBConnection db = new DBConnection();
-                db.DeleteTableProtocolOrgJournal(_idOrg, protocols[Convert.ToInt32(ListProtocols.SelectedIndex.ToString())].NameProtocol);
-                protocols.RemoveAt(Convert.ToInt32(ListProtocols.SelectedIndex.ToString()));
-                ListProtocols.ItemsSource = protocols;
+                string protocolName = protocols[Convert.ToInt32(ListProtocols.SelectedIndex.ToString())].NameProtocol;
+                if (db.FindProtocol(_idOrg, protocolName) != -1)
+                {
+                    db.DeleteTableProtocolOrgJournal(_idOrg, protocolName);
+                    protocols.RemoveAt(Convert.ToInt32(ListProtocols.SelectedIndex.ToString()));
+                    ListProtocols.ItemsSource = protocols;
+                }
+                else
+                {
+                    MessageBox.Show("Протокола в Базе Данных нет\n. Здесь он отображается потому что на локальном диске он присутствует.",
+                        "Протокол удалён");
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Irony.Ast;
+﻿using DocumentFormat.OpenXml.Drawing;
+using Irony.Ast;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -927,6 +928,28 @@ namespace TP.Model
 
             }
             finally { CloseConnection(); }
+        }
+
+        public int FindProtocol(int idOrg, string protocolName)
+        {
+            int res = -1;
+            try
+            {
+                string query = $"SELECT org{idOrg}ProtocolId FROM laboratory.org{idOrg}Protocol " +
+                $"WHERE ProtocolId = \"{protocolName}\";";
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                res = Convert.ToInt32(command.ExecuteScalar());
+            }
+            catch (SqlException)
+            {
+
+            }
+            finally 
+            { 
+                CloseConnection(); 
+            }
+            return res;
         }
 
         public void DeleteTableProtocolOrgJournal(int idOrg, string protocolName)
