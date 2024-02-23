@@ -66,7 +66,6 @@
                 <MenuItem x:Name="Exit" Header="_Выход"
                           Click="Exit_Click"/>
             </MenuItem>
-            <MenuItem x:Name="Settings" Header="_Настройки" Click="Settings_Click" />
             <MenuItem x:Name="About" Header="_О программе"
                       Click="About_Click" />
         </Menu>
