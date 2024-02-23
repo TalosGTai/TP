@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.IO;
 using System.Windows;
 
@@ -10,45 +10,62 @@ namespace TP.View
     /// </summary>
     public partial class Settings : Window
     {
+        private const string settingsPath = "config.json";
         public Settings()
         {
             InitializeComponent();
 
+            try
+            {
+                string json = File.ReadAllText(settingsPath);
+                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                string connectionString = jsonObj["ConnectionString"].ToString();
 
-            string json = File.ReadAllText("..\\config.json");
-            dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            string connectionString = jsonObj["ConnectionString"].ToString();
-
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            if (builder.TryGetValue("password", out var pwd)) 
-            { 
-                //builder["password"] = pwd;
-                Password.Text = pwd.ToString();
+                var builder = new MySqlConnectionStringBuilder(connectionString);
+                ServerAdress.Text = builder.Server;
+                ServerPort.Text = builder.Port.ToString();
+                Login.Text = builder.UserID.ToString();
+                Password.Text = builder.Password.ToString();
             }
-
+            catch { }
         }
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
         {
-            string json = File.ReadAllText("..\\config.json");
+            string json = "";
+            try
+            {
+                json = File.ReadAllText(settingsPath);
+            }
+            catch
+            {
+                var data = new
+                {
+                    ConnectionString = "server=localhost;port=3306;Database=laboratory;user=root;password=12345"
+                };
+                json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                File.WriteAllText(settingsPath, json);
+            }
+        
             dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
             string server = ServerAdress.Text,
-                port = ServerPort.Text,
-                user = Login.Text,
-                password = Password.Text;
+                   port = ServerPort.Text,
+                   user = Login.Text,
+                   password = Password.Text;
 
-            if (string.IsNullOrEmpty(server))
+            if (string.IsNullOrEmpty(server) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Поле сервер обязатель");
+                MessageBox.Show("Все поля должны быть заполнены.");
             }
+            else
+            {
+                jsonObj["ConnectionString"] = $"server={server};port={port};Database=laboratory;user={user};password={password}";
+                string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(settingsPath, output);
 
-            jsonObj["ConnectionString"] = $"server={server};port={port};Database=laboratory;user={user};password={password}";
-            string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText("..\\config.json", output);
-
-            MessageBox.Show("Изменения успешно внесены.", "Сохранено");
-            // добавить сохранение 
-            this.Close();
+                MessageBox.Show("Изменения успешно внесены.", "Сохранено");
+                this.Close();
+            }
         }
     }
 }
