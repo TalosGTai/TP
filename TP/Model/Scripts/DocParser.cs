@@ -209,6 +209,45 @@ namespace TP.Model.Scripts
                 return true;
             return false;
         }
+
+        private bool IsColumnQCC(string value)
+        {
+            int count = 0;
+            List<string> patterns = new List<string>()
+            {
+                "Место",
+                "нахождения",
+                "адрес юридического лица"
+            };
+            foreach (string pattern in patterns)
+            {
+                if (value.IndexOf(pattern) != -1)
+                    count++;
+            }
+            if (count == 3)
+                return true;
+            return false;
+        }
+
+        private bool IsColumnQCCStill(string value)
+        {
+            int count = 0;
+            List<string> patterns = new List<string>()
+            {
+                "адрес",
+                "электр",
+                "почт"
+            };
+            foreach (string pattern in patterns)
+            {
+                if (value.IndexOf(pattern) != -1)
+                    count++;
+            }
+            if (count == 3)
+                return true;
+            return false;
+        }
+
         /// <summary>
         /// Значение колонки Q
         /// </summary>
@@ -302,89 +341,193 @@ namespace TP.Model.Scripts
             Dictionary<string, string> list1Values = new Dictionary<string, string>();
             Dictionary<string, string> list2Values = new Dictionary<string, string>();
             bool columnB, columnC, columnD, columnE, columnF, columnQ, columnR, columnDHelp, columnQHelp,
-                columnBHelp;
+                columnBHelp, documentDC, documentCC, columnQCCHelp, columnQCC;
+            int countRow;
 
             columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp = 
-                columnBHelp = false;
+                columnBHelp = documentDC = documentCC = columnQCCHelp = columnQCC = false;
+            countRow = 0;
             list1Values = SetDefaultValuesList1(list1Values);
             list2Values = SetDefaultValuesList2(list2Values);
 
             foreach (Paragraph paragraph in paragraphs)
             {
-                if (!columnBHelp)
+                countRow++;
+                if (countRow < 2 && columnBHelp)
                 {
-                    columnBHelp = isColumnB(paragraph.InnerText);
+                    documentCC = true;
+                    break;
                 }
-                if (!columnB && columnBHelp)
+                else if (countRow >= 3)
                 {
-                    Tuple<string, string> tuple = ColumnB(paragraph.InnerText);
-                    if (tuple.Item1 != "null")
-                    {
-                        // save values to Dictionary
-                        list1Values["B"] = tuple.Item1;
-                        list2Values["D"] = tuple.Item2;
-                        columnB = true;
-                    }
+                    documentDC = true;
+                    break;
                 }
-                if (!columnC)
+                
+            }
+
+            columnBHelp = false;
+            if (documentDC)
+            {
+                foreach (Paragraph paragraph in paragraphs)
                 {
-                    string temp = ColumnС(paragraph.InnerText);
-                    if (temp != "null")
+                    if (!columnBHelp)
                     {
-                        // save values to Dictionary
-                        list1Values["C"] = temp;
-                        columnC = true;
+                        columnBHelp = isColumnB(paragraph.InnerText);
                     }
-                }
-                if (!columnD)
-                {
-                    if (!columnDHelp)
+                    if (!columnB && columnBHelp)
                     {
-                        columnDHelp = IsColumnD(paragraph.InnerText);
+                        Tuple<string, string> tuple = ColumnB(paragraph.InnerText);
+                        if (tuple.Item1 != "null")
+                        {
+                            // save values to Dictionary
+                            list1Values["B"] = tuple.Item1;
+                            list2Values["D"] = tuple.Item2;
+                            columnB = true;
+                        }
                     }
-                    else
+                    if (!columnC)
                     {
-                        var t = StillColumnD(paragraph.InnerText);
-                        if (t != "False")
-                            list1Values["D"] += t;
-                        else
-                            columnD = true;
-                    }
-                }
-                if (!columnF)
-                {
-                    if (columnD)
-                    {
-                        string temp = IsColumnF(paragraph.InnerText);
+                        string temp = ColumnС(paragraph.InnerText);
                         if (temp != "null")
                         {
-                            list1Values["F"] = IsColumnF(paragraph.InnerText);
-                            columnF = true;
+                            // save values to Dictionary
+                            list1Values["C"] = temp;
+                            columnC = true;
+                        }
+                    }
+                    if (!columnD)
+                    {
+                        if (!columnDHelp)
+                        {
+                            columnDHelp = IsColumnD(paragraph.InnerText);
+                        }
+                        else
+                        {
+                            var t = StillColumnD(paragraph.InnerText);
+                            if (t != "False")
+                                list1Values["D"] += t;
+                            else
+                                columnD = true;
+                        }
+                    }
+                    if (!columnF)
+                    {
+                        if (columnD)
+                        {
+                            string temp = IsColumnF(paragraph.InnerText);
+                            if (temp != "null")
+                            {
+                                list1Values["F"] = IsColumnF(paragraph.InnerText);
+                                columnF = true;
+                            }
+                        }
+                    }
+                    if (!columnQ)
+                    {
+                        if (!columnQHelp)
+                        {
+                            columnQHelp = IsColumnQ(paragraph.InnerText);
+                        }
+                        else
+                        {
+                            list1Values["Q"] = ColumnQ(paragraph.InnerText, columnQHelp);
+                            columnQ = true;
+                        }
+                    }
+                    if (!columnR)
+                    {
+                        string temp = ColumnR(paragraph.InnerText);
+                        if (temp != "null")
+                        {
+                            list1Values["R"] = ColumnR(paragraph.InnerText);
+                            columnR = true;
                         }
                     }
                 }
-                if (!columnQ)
+            }
+            else
+            {
+                foreach (Paragraph paragraph in paragraphs)
                 {
-                    if (!columnQHelp)
+                    if (!columnBHelp)
                     {
-                        columnQHelp = IsColumnQ(paragraph.InnerText);
+                        columnBHelp = isColumnB(paragraph.InnerText);
                     }
-                    else
+                    if (!columnB && columnBHelp)
                     {
-                        list1Values["Q"] = ColumnQ(paragraph.InnerText, columnQHelp);
-                        columnQ = true;
+                        Tuple<string, string> tuple = ColumnB(paragraph.InnerText);
+                        if (tuple.Item1 != "null")
+                        {
+                            // save values to Dictionary
+                            list1Values["B"] = tuple.Item1;
+                            list2Values["D"] = tuple.Item2;
+                            columnB = true;
+                        }
                     }
-                }
-                if (!columnR)
-                {
-                    string temp = ColumnR(paragraph.InnerText);
-                    if (temp != "null")
+                    if (!columnC)
                     {
-                        list1Values["R"] = ColumnR(paragraph.InnerText);
-                        columnR = true;
+                        string temp = ColumnС(paragraph.InnerText);
+                        if (temp != "null")
+                        {
+                            // save values to Dictionary
+                            list1Values["C"] = temp;
+                            columnC = true;
+                        }
+                    }
+                    if (!columnD)
+                    {
+                        if (!columnDHelp)
+                        {
+                            columnDHelp = IsColumnD(paragraph.InnerText);
+                        }
+                        else
+                        {
+                            var t = StillColumnD(paragraph.InnerText);
+                            if (t != "False")
+                                list1Values["D"] += t;
+                            else
+                                columnD = true;
+                        }
+                    }
+                    if (!columnF)
+                    {
+                        if (columnD)
+                        {
+                            string temp = IsColumnF(paragraph.InnerText);
+                            if (temp != "null")
+                            {
+                                list1Values["F"] = IsColumnF(paragraph.InnerText);
+                                columnF = true;
+                            }
+                        }
+                    }
+                    if (!columnQCCHelp)
+                    {
+                        if (!columnQCC)
+                        {
+                            columnQCC = IsColumnQCC(paragraph.InnerText);
+                            if (columnQCC)
+                                list1Values["Q"] += paragraph.InnerText;
+                        }
+                        else
+                        {
+                            list1Values["Q"] += paragraph.InnerText;
+                        }
+                        columnQCCHelp = IsColumnQCCStill(paragraph.InnerText);
+                    }
+                    if (!columnR)
+                    {
+                        string temp = ColumnR(paragraph.InnerText);
+                        if (temp != "null")
+                        {
+                            list1Values["R"] = ColumnR(paragraph.InnerText);
+                            columnR = true;
+                        }
                     }
                 }
             }
+
             list1Values["E"] = list1Values["Q"];
             list2Values["B"] = list1Values["O"];
             list2Values["C"] = list1Values["L"];

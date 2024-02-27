@@ -75,13 +75,16 @@ namespace TP.View
                     ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
                     additionals.Add(excelParseAdditionals.Values);
                 }
-                UpdateJournal();
+                List<string> additionalValues = UpdateJournal();
                 Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
 
-                string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\протокол{_idProtocol}.xlsx";
-                ExcelWorker excelWorker = new ExcelWorker(path);
-                excelWorker.SaveAllWorksheets("123", "12.02.2024-15.02.2024");
+                string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+                for (int i = 0; i < _pathAdditionals.Count; i++)
+                {
+                    ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
+                    excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
+                }
 
                 MessageBox.Show("Протокол успешно создан!", "Создание протокола");
 
