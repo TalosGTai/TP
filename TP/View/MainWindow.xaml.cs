@@ -29,14 +29,8 @@ namespace TP
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            InfoWindow infoWindow = new InfoWindow();
-            infoWindow.ShowDialog();
-        }
-
-        private void Settings_Click(object sender, RoutedEventArgs e)
-        {
-            Settings settings = new Settings();
-            settings.ShowDialog();
+            //InfoWindow infoWindow = new InfoWindow();
+            //infoWindow.ShowDialog();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

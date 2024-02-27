@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.IO;
 using System.Windows;
 
@@ -11,23 +12,27 @@ namespace TP.View
     public partial class Settings : Window
     {
         private const string settingsPath = "config.json";
+        
         public Settings()
         {
             InitializeComponent();
 
-            try
-            {
-                string json = File.ReadAllText(settingsPath);
-                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                string connectionString = jsonObj["ConnectionString"].ToString();
+            //try
+            //{
+            //    string json = File.ReadAllText(settingsPath);
+            //    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            //    string connectionString = jsonObj["ConnectionString"].ToString();
 
-                var builder = new MySqlConnectionStringBuilder(connectionString);
-                ServerAdress.Text = builder.Server;
-                ServerPort.Text = builder.Port.ToString();
-                Login.Text = builder.UserID.ToString();
-                Password.Text = builder.Password.ToString();
-            }
-            catch { }
+            //    var builder = new MySqlConnectionStringBuilder(connectionString);
+            //    ServerAdress.Text = builder.Server;
+            //    ServerPort.Text = builder.Port.ToString();
+            //    Login.Text = builder.UserID.ToString();
+            //    Password.Text = builder.Password.ToString();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"{ex}", "Ошибка");
+            //}
         }
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
