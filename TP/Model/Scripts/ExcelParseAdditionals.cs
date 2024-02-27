@@ -88,8 +88,6 @@ namespace TP.Model.Scripts
                 int RowsCount = urRows.Count;
                 int ColumnsCount = urColums.Count;
 
-                Console.WriteLine(worksheet.Name);
-
                 for (int i = 2; i <= RowsCount; i++)
                 {
                     for (int j = 1; j <= ColumnsCount; j++)
@@ -146,7 +144,7 @@ namespace TP.Model.Scripts
                                     }
                                 }
                             }
-                            else if (countLists == 2)
+                            else if (worksheet.Name.IndexOf("оборудов") != -1)
                             {
                                 if (((j == 1) || (j == 2) || (j == 3)) && i > 1)
                                 {
@@ -154,7 +152,7 @@ namespace TP.Model.Scripts
                                         col1.Add(CellText);
                                     else if (j == 2)
                                         col2.Add(CellText);
-                                    else
+                                    else 
                                         col3.Add(CellText);
                                 }
                             }

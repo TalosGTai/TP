@@ -78,6 +78,11 @@ namespace TP.View
                 UpdateJournal();
                 Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
+
+                string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\протокол{_idProtocol}.xlsx";
+                ExcelWorker excelWorker = new ExcelWorker(path);
+                excelWorker.SaveAllWorksheets("123", "12.02.2024-15.02.2024");
+
                 MessageBox.Show("Протокол успешно создан!", "Создание протокола");
 
                 Functions functions = new Functions();
@@ -89,16 +94,23 @@ namespace TP.View
 
         private void CopyDirection()
         {
-            string PROTOCOL_DIRECTION_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
-            DirectoryInfo directory = new DirectoryInfo(PROTOCOL_DIRECTION_PATH);
-            if (!directory.Exists)
+            try
             {
-                directory.Create();
+                string PROTOCOL_DIRECTION_PATH = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+                DirectoryInfo directory = new DirectoryInfo(PROTOCOL_DIRECTION_PATH);
+                if (!directory.Exists)
+                {
+                    directory.Create();
+                }
+                FileInfo fileInfo = new FileInfo(_directionFileName);
+                FileInfo fileInfo2 = new FileInfo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
+                if (!fileInfo2.Exists)
+                    fileInfo.CopyTo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
             }
-            FileInfo fileInfo = new FileInfo(_directionFileName);
-            FileInfo fileInfo2 = new FileInfo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
-            if (!fileInfo2.Exists)
-                fileInfo.CopyTo(PROTOCOL_DIRECTION_PATH + GetFileName(_directionFileName));
+            catch
+            {
+
+            }
         }
 
         private void CopyAdditionals()
@@ -112,7 +124,7 @@ namespace TP.View
             for (int i = 0; i < _pathAdditionals.Count; i++)
             {
                 FileInfo fileInfo = new FileInfo(_pathAdditionals[i]);
-                FileInfo fileInfo2 = new FileInfo(PROTOCOL_EXCEL_PATH + GetFileName(_directionFileName));
+                FileInfo fileInfo2 = new FileInfo(PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]));
                 if (!fileInfo2.Exists)
                     fileInfo.CopyTo(PROTOCOL_EXCEL_PATH + GetFileName(_pathAdditionals[i]));
             }
@@ -120,15 +132,23 @@ namespace TP.View
 
         private string GetFileName(string path)
         {
-            string fileName = "";
-            for (int i = Math.Max(path.LastIndexOf("\\"), path.LastIndexOf("/")) + 1;
-                (i < path.Length || i < path.LastIndexOf('.')); i++)
+            try
             {
-                fileName += path[i];
-            }
+                string fileName = "";
+                for (int i = Math.Max(path.LastIndexOf("\\"), path.LastIndexOf("/")) + 1;
+                    (i < path.Length || i < path.LastIndexOf('.')); i++)
+                {
+                    fileName += path[i];
+                }
 
-            fileName += GetFileExtension(path);
-            return fileName;
+                //fileName += GetFileExtension(path);
+                return fileName;
+            }
+            catch
+            {
+
+            }
+            return "";
         }
 
         public string GetFileExtension(string path)
@@ -217,7 +237,14 @@ namespace TP.View
             return $"{GetWeekFromDate()}-{_idJournal + 1}-{countDates}/{countA}/{dt.Year}";
         }
 
-        private void UpdateJournal()
+        private string GetNewDate(string date)
+        {
+            var newDate = DateTime.Parse(_list1[7]);
+            newDate = newDate.AddDays(3);
+            return newDate.ToString();
+        }
+
+        private List<string> UpdateJournal()
         {
             // _idJournal + 1
             // A = _idProtocol
@@ -262,6 +289,8 @@ namespace TP.View
             // занесение в БД
             conn.UpdateTableJournalOrg1List1(1, _idJournal + 1, new Org1List1(_list1));
             conn.UpdateTableJournalOrg1List2(1, _idJournal + 1, new Org1List2(_list2));
+            
+            return new List<string> { _list1[8], _list1[7] + "-" + GetNewDate(_list1[7]) };
         }
     }
 }
