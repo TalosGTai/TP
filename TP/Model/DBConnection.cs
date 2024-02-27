@@ -29,7 +29,8 @@ namespace TP.Model
 
         public DBConnection()
         {
-            string json = System.IO.File.ReadAllText("..\\..\\config.json");
+            var path = "config.json";
+            string json = System.IO.File.ReadAllText(path);
             _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
             connection = new MySqlConnection(_connectionString);
         }
@@ -38,8 +39,15 @@ namespace TP.Model
         /// </summary>
         public void OpenConnection()
         {
-            if (connection.State == System.Data.ConnectionState.Closed)
-                connection.Open();
+            try
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+            }
+            catch
+            {
+                throw new Exception("Настройте подключение к базе данных");
+            }
         }
         /// <summary>
         /// Закрыть соединение с бд
