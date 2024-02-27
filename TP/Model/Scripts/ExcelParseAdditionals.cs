@@ -34,6 +34,34 @@ namespace TP.Model.Scripts
             set => _values = value;
         }
 
+        private bool IsCell1(string value)
+        {
+            if (value.IndexOf("НД на методы испытаний") != -1)
+                return true;
+            return false;
+        }
+
+        private bool IsCell2(string value)
+        {
+            if (value.IndexOf("Показатель") != -1 && value.Split(' ').Length < 3)
+                return true;
+            return false;
+        }
+
+        private bool IsCell3(string value)
+        {
+            if (value.IndexOf("Норма") != -1 && value.Split(' ').Length < 3)
+                return true;
+            return false;
+        }
+
+        private bool IsCell4(string value)
+        {
+            if (value.IndexOf("Итоговый результат") != -1 && value.Split(' ').Length < 4)
+                return true;
+            return false;
+        }
+
         public Tuple<List<string>, Dictionary<int, List<string>>> GetDataFromExcel()
         {
             List<string> list1 = new List<string>();
@@ -42,6 +70,10 @@ namespace TP.Model.Scripts
             List<string> col3 = new List<string>();
             Dictionary<int, List<string>> list2 = new Dictionary<int, List<string>>();
             int countLists = 0;
+            bool cell1, cell1Help, cell2, cell2Help, cell3, cell3Help, cell4, cell4Help, cell4HelpT;
+
+            cell1 = cell1Help = cell2 = cell2Help = cell3 = cell3Help = cell4 = cell4Help = cell4HelpT = false;
+
             foreach (Excel.Worksheet worksheet in sheets)
             {
                 countLists++;
@@ -56,6 +88,8 @@ namespace TP.Model.Scripts
                 int RowsCount = urRows.Count;
                 int ColumnsCount = urColums.Count;
 
+                Console.WriteLine(worksheet.Name);
+
                 for (int i = 2; i <= RowsCount; i++)
                 {
                     for (int j = 1; j <= ColumnsCount; j++)
@@ -69,8 +103,48 @@ namespace TP.Model.Scripts
                         {
                             if (countLists == 1)
                             {
-                                if (isValuesList1(i, j))
-                                    list1.Add(CellText);
+                                if (!cell1)
+                                {
+                                    if (!cell1Help)
+                                        cell1Help = IsCell1(CellText);
+                                    else
+                                    {
+                                        cell1 = true;
+                                        list1.Add(CellText);
+                                    }
+                                }
+                                else if (!cell2)
+                                {
+                                    if (!cell2Help)
+                                        cell2Help = IsCell2(CellText);
+                                    else
+                                    {
+                                        cell2 = true;
+                                        list1.Add(CellText);
+                                    }
+                                }
+                                else if (!cell3)
+                                {
+                                    if (!cell3Help)
+                                        cell3Help = IsCell3(CellText);
+                                    else
+                                    {
+                                        cell3 = true;
+                                        list1.Add(CellText);
+                                    }
+                                }
+                                else if (!cell4)
+                                {
+                                    if (!cell4Help)
+                                        cell4Help = IsCell4(CellText);
+                                    else if (!cell4HelpT)
+                                        cell4HelpT = true;
+                                    else
+                                    {
+                                        cell4 = true;
+                                        list1.Add(CellText);
+                                    }
+                                }
                             }
                             else if (countLists == 2)
                             {
@@ -102,27 +176,6 @@ namespace TP.Model.Scripts
             list2[2] = col2;
             list2[3] = col3;
             return new Tuple<List<string>, Dictionary<int, List<string>>>(list1, list2);
-        }
-
-        private bool isValuesList1(int row, int col)
-        {
-            if (row == 3 && col == 3)
-            {
-                return true;
-            }
-            else if (row == 4 && col == 2)
-            {
-                return true;
-            }
-            else if (row == 45 && col == 2)
-            {
-                return true;
-            }
-            else if (row == 46 && col == 3)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }
