@@ -1,8 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Linq.Expressions;
 using System.Windows;
+using TP.Model;
 
 
 namespace TP.View
@@ -17,32 +18,29 @@ namespace TP.View
         {
             InitializeComponent();
 
-            try
+            if (File.Exists(settingsPath))
             {
                 string json = File.ReadAllText(settingsPath);
                 dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                 string connectionString = jsonObj["ConnectionString"].ToString();
 
-                var builder = new MySqlConnectionStringBuilder(connectionString);
-                ServerAdress.Text = builder.Server;
-                ServerPort.Text = builder.Port.ToString();
-                Login.Text = builder.UserID.ToString();
-                Password.Text = builder.Password.ToString();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex}", "Ошибка");
-            }
+                    var builder = new MySqlConnectionStringBuilder(connectionString);
+                    ServerAdress.Text = builder.Server;
+                    ServerPort.Text = builder.Port.ToString();
+                    Login.Text = builder.UserID.ToString();
+                    Password.Text = builder.Password.ToString();
+                }
+
         }
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
         {
             string json = "";
-            try
+            if (File.Exists(settingsPath)) 
             {
                 json = File.ReadAllText(settingsPath);
             }
-            catch
+            else
             {
                 var data = new
                 {
@@ -67,6 +65,7 @@ namespace TP.View
                 jsonObj["ConnectionString"] = $"server={server};port={port};Database=laboratory;user={user};password={password}";
                 string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(settingsPath, output);
+
                 MessageBox.Show("Изменения успешно внесены.", "Сохранено");
                 this.Close();
             }
