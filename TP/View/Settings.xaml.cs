@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.IO;
+using System.Linq.Expressions;
 using System.Windows;
 
 
@@ -11,38 +12,34 @@ namespace TP.View
     /// </summary>
     public partial class Settings : Window
     {
-        private const string settingsPath = "config.json";
-        
+        private string settingsPath = Directory.GetCurrentDirectory() + "\\" + "config.json";
         public Settings()
         {
-            InitializeComponent();
+                InitializeComponent();
 
-            //try
-            //{
-            //    string json = File.ReadAllText(settingsPath);
-            //    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            //    string connectionString = jsonObj["ConnectionString"].ToString();
+                if (File.Exists(settingsPath))
+                {
+                    string json = File.ReadAllText(settingsPath);
+                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                    string connectionString = jsonObj["ConnectionString"].ToString();
 
-            //    var builder = new MySqlConnectionStringBuilder(connectionString);
-            //    ServerAdress.Text = builder.Server;
-            //    ServerPort.Text = builder.Port.ToString();
-            //    Login.Text = builder.UserID.ToString();
-            //    Password.Text = builder.Password.ToString();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"{ex}", "Ошибка");
-            //}
+                    var builder = new MySqlConnectionStringBuilder(connectionString);
+                    ServerAdress.Text = builder.Server;
+                    ServerPort.Text = builder.Port.ToString();
+                    Login.Text = builder.UserID.ToString();
+                    Password.Text = builder.Password.ToString();
+                }
+
         }
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
         {
             string json = "";
-            try
+            if (File.Exists(settingsPath)) 
             {
                 json = File.ReadAllText(settingsPath);
             }
-            catch
+            else
             {
                 var data = new
                 {
