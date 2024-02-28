@@ -44,7 +44,7 @@ namespace TP.View
             {
                 var data = new
                 {
-                    ConnectionString = "server=localhost;port=3306;Database=laboratory;user=root;password=12345"
+                    ConnectionString = "server=localhost;port=3306;user=root;password=12345"
                 };
                 json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                 File.WriteAllText(settingsPath, json);
