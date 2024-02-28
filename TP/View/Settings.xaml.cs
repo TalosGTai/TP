@@ -62,7 +62,7 @@ namespace TP.View
             }
             else
             {
-                jsonObj["ConnectionString"] = $"server={server};port={port};Database=laboratory;user={user};password={password}";
+                jsonObj["ConnectionString"] = $"server={server};port={port};user={user};password={password}";
                 string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(settingsPath, output);
 
