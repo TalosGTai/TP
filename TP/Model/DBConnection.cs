@@ -1,5 +1,4 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
-using Irony.Ast;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -29,9 +28,12 @@ namespace TP.Model
 
         public DBConnection()
         {
-            var path = "config.json";
-            string json = System.IO.File.ReadAllText(path);
-            _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
+            var path = "config.txt";
+            //string json = System.IO.File.ReadAllText(path);
+            //_connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
+            StreamReader sr = new StreamReader(path);
+            _connectionString = sr.ReadLine();
+            sr.Close();
             connection = new MySqlConnection(_connectionString);
         }
         /// <summary>

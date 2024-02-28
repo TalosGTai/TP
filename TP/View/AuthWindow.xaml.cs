@@ -33,8 +33,8 @@ namespace TP
         {
             try
             {
-                int idOrg = 1;
                 DBConnection dBConnection = new DBConnection();
+                int idOrg = 1;
                 dBConnection.СreateTableEditJournal(idOrg);
                 dBConnection.СreateTableEditProtocol(idOrg);
                 if (dBConnection.SelectLastId(1) == 0 || dBConnection.SelectLastId(1) == -1)
@@ -57,6 +57,7 @@ namespace TP
             catch
             {
                 MessageBox.Show("Для начала проверьте настройки подключения к базе данных");
+
             }
         }
 
