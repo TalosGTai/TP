@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using Irony.Ast;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,6 +6,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Windows;
 
 namespace TP.Model
 {
@@ -29,10 +28,25 @@ namespace TP.Model
 
         public DBConnection()
         {
-            var path = Directory.GetCurrentDirectory() + "\\" + "config.json";
-            string json = System.IO.File.ReadAllText(path);
-            _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
-            connection = new MySqlConnection(_connectionString);
+            try
+            {
+                var path = "config.json";
+                string json = System.IO.File.ReadAllText(path);
+                _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
+                connection = new MySqlConnection(_connectionString);
+            }
+            catch (Exception ex)
+            {
+                var path = "log.txt";
+                var errorText = $"Ошибка подключения к базе данных. Message = {ex.Message}, " +
+                    $"StackTrace = {ex.StackTrace}";
+
+                MessageBox.Show("Ошибка подключения к базе данных. Проверьте настройки");
+                using (var sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine(errorText);
+                }
+            }
         }
         /// <summary>
         /// Открыть соединения с бд
@@ -44,8 +58,9 @@ namespace TP.Model
                 if (connection.State == System.Data.ConnectionState.Closed)
                     connection.Open();
             }
-            catch
+            catch (Exception e)
             {
+                Logger.LogDbError(e);
                 throw new Exception("Настройте подключение к базе данных");
             }
         }
@@ -85,9 +100,9 @@ namespace TP.Model
 
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             return -1;
         }
@@ -108,9 +123,9 @@ namespace TP.Model
 
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             return -1;
         }
@@ -135,9 +150,9 @@ namespace TP.Model
                 string result = command.ExecuteScalar().ToString();
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException ex)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(ex);
             }
             finally {
                 CloseConnection();
@@ -165,9 +180,9 @@ namespace TP.Model
                 CloseConnection();
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException ex)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(ex);
             }
             return "";
         }
@@ -196,15 +211,35 @@ namespace TP.Model
                 }
                 return count > 0;
             }
-            catch (SqlException exception)
+            catch (SqlException ex)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(ex);
             }
             finally
             {
                 CloseConnection();
             }
             return false;
+        }
+
+        public void CheckAndCreateSchema()
+        {
+            try
+            {
+                var query = $"create SCHEMA if not exists laboratory;";
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                //CREATE SCHEMA IF NOT EXISTS test AUTHORIZATION joe
+               // query = $"create SCHEMA if not exists laboratory CREATE SCHEMA `laboratory`; ";
+                command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+
+            }
+            catch (SqlException ex)
+            {
+                Logger.LogDbError(ex);
+            }
         }
 
         /// <summary>
@@ -231,9 +266,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException e)
+            catch (SqlException ex)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogDbError(ex);
             }
             finally { CloseConnection(); }
         }
@@ -265,9 +300,9 @@ namespace TP.Model
                     command.ExecuteNonQuery();
                     CloseConnection();
                 }
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    Console.WriteLine(e.Message);
+                    Logger.LogDbError(ex);
                 }
                 finally { CloseConnection(); }
             }
@@ -310,9 +345,9 @@ namespace TP.Model
                     command.ExecuteNonQuery();
                     CloseConnection();
                 }
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    Console.WriteLine(e.Message);
+                    Logger.LogDbError(ex);
                 }
                 finally { CloseConnection(); }
             }
@@ -378,12 +413,13 @@ namespace TP.Model
                     }
                     catch (MySqlException ex1)
                     {
+                        Logger.LogDbError(ex1);
                     }
                 }
             }
             catch (SqlException e)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -396,39 +432,47 @@ namespace TP.Model
         /// <returns></returns>
         public List<Org1List1> GetOrgList1(int idOrg, int idJournal)
         {
-            //Все значения из базы
-            if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+            try
             {
-                СreateTableJournalOrg1List1(idOrg, idJournal);
-            }
-            var listTable = GetListJournalOrg(idOrg, idJournal, 1);
-            var listFromDb = new List<Org1List1>();
-            for (int i = 0; i < listTable.Rows.Count; i++)
-            {
-                var row = listTable.Rows[i];
-                var listString = new List<string>();
-                listString.Add(row.Field<string>("A"));
-                listString.Add(row.Field<string>("B"));
-                listString.Add(row.Field<string>("C"));
-                listString.Add(row.Field<string>("D"));
-                listString.Add(row.Field<string>("E"));
-                listString.Add(row.Field<string>("F"));
-                listString.Add(row.Field<string>("G"));
-                listString.Add(row.Field<string>("H"));
-                listString.Add(row.Field<string>("I"));
-                listString.Add(row.Field<string>("J"));
-                listString.Add(row.Field<string>("K"));
-                listString.Add(row.Field<string>("L"));
-                listString.Add(row.Field<string>("M"));
-                listString.Add(row.Field<string>("N"));
-                listString.Add(row.Field<string>("O"));
-                listString.Add(row.Field<string>("P"));
-                listString.Add(row.Field<string>("Q"));
-                listString.Add(row.Field<string>("R"));
+                //Все значения из базы
+                if (!CheckTable($"org{idOrg}journal{idJournal}list1"))
+                {
+                    СreateTableJournalOrg1List1(idOrg, idJournal);
+                }
+                var listTable = GetListJournalOrg(idOrg, idJournal, 1);
+                var listFromDb = new List<Org1List1>();
+                for (int i = 0; i < listTable.Rows.Count; i++)
+                {
+                    var row = listTable.Rows[i];
+                    var listString = new List<string>();
+                    listString.Add(row.Field<string>("A"));
+                    listString.Add(row.Field<string>("B"));
+                    listString.Add(row.Field<string>("C"));
+                    listString.Add(row.Field<string>("D"));
+                    listString.Add(row.Field<string>("E"));
+                    listString.Add(row.Field<string>("F"));
+                    listString.Add(row.Field<string>("G"));
+                    listString.Add(row.Field<string>("H"));
+                    listString.Add(row.Field<string>("I"));
+                    listString.Add(row.Field<string>("J"));
+                    listString.Add(row.Field<string>("K"));
+                    listString.Add(row.Field<string>("L"));
+                    listString.Add(row.Field<string>("M"));
+                    listString.Add(row.Field<string>("N"));
+                    listString.Add(row.Field<string>("O"));
+                    listString.Add(row.Field<string>("P"));
+                    listString.Add(row.Field<string>("Q"));
+                    listString.Add(row.Field<string>("R"));
 
-                listFromDb.Add(new Org1List1(listString));
+                    listFromDb.Add(new Org1List1(listString));
+                }
+                return listFromDb;
             }
-            return listFromDb;
+            catch (Exception ex)
+            {
+                Logger.LogDbError(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -520,12 +564,13 @@ namespace TP.Model
                     }
                     catch (MySqlException ex1)
                     {
+                        Logger.LogDbError(ex1);
                     }
                 }
             }
-            catch (SqlException e)
+            catch (SqlException ex)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogDbError(ex);
             }
             finally { CloseConnection(); }
         }
@@ -568,7 +613,7 @@ namespace TP.Model
             }
             catch (SqlException e)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -603,7 +648,7 @@ namespace TP.Model
             }
             catch (SqlException e)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -635,9 +680,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
-
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }      
@@ -659,9 +704,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -682,9 +727,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -713,9 +758,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -738,9 +783,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -776,9 +821,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -810,9 +855,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -838,9 +883,9 @@ namespace TP.Model
                 CloseConnection();
                 return result;
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
-
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
             return "";
@@ -880,9 +925,9 @@ namespace TP.Model
                 CloseConnection();
                 return ds.Tables[0];
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
-
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
             return null;
@@ -911,7 +956,7 @@ namespace TP.Model
             }
             catch (SqlException e)
             {
-                Console.WriteLine(e.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -931,9 +976,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
-
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -949,9 +994,9 @@ namespace TP.Model
                 MySqlCommand command = new MySqlCommand(query, GetConnection());
                 res = Convert.ToInt32(command.ExecuteScalar());
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
-
+                Logger.LogDbError(e);
             }
             finally 
             { 
@@ -971,9 +1016,9 @@ namespace TP.Model
                 command.ExecuteNonQuery();
                 CloseConnection();
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
-
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -1017,9 +1062,9 @@ namespace TP.Model
 
                 
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
         }
@@ -1042,9 +1087,9 @@ namespace TP.Model
                 CloseConnection();
                 return count > 0;
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
                 throw;
             }
             finally { CloseConnection(); }
@@ -1072,12 +1117,6 @@ namespace TP.Model
                             sqlQueryResult.Read();
                             byte[] colProtocolDoc = (byte[])sqlQueryResult["ProtocolDoc"];
                             byte[] colProtocolXls = (byte[])sqlQueryResult["ProtocolXls"];
-                            //var blob1 = new Byte[(colProtocolDoc.GetBytes(0, 0, null, 0, int.MaxValue))];
-                            //var blob1 = new Byte[(sqlQueryResult.GetBytes(0, 0, null, 0, int.MaxValue))];
-                            //sqlQueryResult.GetBytes(0, 0, blob1, 0, blob1.Length);
-                            //using (var fs = new MemoryStream(memoryStream, FileMode.Create, FileAccess.Write)) {
-                            //msDoc.Write(blob, 0, blob.Length);
-                            //msXls.Write(blob, 0, blob.Length);
                             msDoc.Write(colProtocolDoc, 0, colProtocolDoc.Length);
                             msDoc.Write(colProtocolXls, 0, colProtocolXls.Length);
 
@@ -1088,9 +1127,9 @@ namespace TP.Model
                 CloseConnection();
                 return (msDoc, msXls);
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
                 throw;
             }
             finally { CloseConnection(); }
@@ -1157,9 +1196,9 @@ namespace TP.Model
                 CloseConnection();
                 return (msDoc, msXls);
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
                 throw;
             }
             finally { CloseConnection(); }
@@ -1214,9 +1253,9 @@ namespace TP.Model
                 }
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
                 throw;
             }
             finally
@@ -1263,9 +1302,9 @@ namespace TP.Model
                 }
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
                 throw;
             }
             finally
@@ -1295,9 +1334,9 @@ namespace TP.Model
                 CloseConnection();
                 return result;
             }
-            catch (SqlException exception)
+            catch (SqlException e)
             {
-                Console.WriteLine(exception.Message);
+                Logger.LogDbError(e);
                 throw;
             }
             finally

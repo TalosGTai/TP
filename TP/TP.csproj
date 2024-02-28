@@ -213,6 +213,7 @@
     <Compile Include="Model\DBConnection.cs" />
     <Compile Include="Model\DBFunctions.cs" />
     <Compile Include="Model\Functions.cs" />
+    <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\Org1List1.cs" />
     <Compile Include="Model\NotifyPropertyChanged.cs" />
     <Compile Include="Model\Org1List2.cs" />
