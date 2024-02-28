@@ -28,7 +28,7 @@ namespace TP.Model
 
         public DBConnection()
         {
-            var path = Directory.GetCurrentDirectory() + "\\" + "config.json";
+            var path = "config.json";
             string json = System.IO.File.ReadAllText(path);
             _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
             connection = new MySqlConnection(_connectionString);

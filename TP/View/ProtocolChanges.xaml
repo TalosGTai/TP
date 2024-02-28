@@ -92,6 +92,7 @@
                Grid.Row="6" Grid.Column="0" 
                Grid.ColumnSpan="3" Grid.RowSpan="2"/>
         <TextBox x:Name="TxtBoxRow1"
+                 Text="{}"
                  Style="{StaticResource All}"
                 Grid.Row="1" Grid.Column="3"
                 Grid.ColumnSpan="3" Grid.RowSpan="2"

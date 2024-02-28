@@ -12,27 +12,27 @@ namespace TP.View
     /// </summary>
     public partial class Settings : Window
     {
-        private string settingsPath = Directory.GetCurrentDirectory() + "\\" + "config.json";
+        private string settingsPath = "config.json";
         public Settings()
         {
             InitializeComponent();
 
-            //try
-            //{
-            //    string json = File.ReadAllText(settingsPath);
-            //    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            //    string connectionString = jsonObj["ConnectionString"].ToString();
+            try
+            {
+                string json = File.ReadAllText(settingsPath);
+                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                string connectionString = jsonObj["ConnectionString"].ToString();
 
-            //    var builder = new MySqlConnectionStringBuilder(connectionString);
-            //    ServerAdress.Text = builder.Server;
-            //    ServerPort.Text = builder.Port.ToString();
-            //    Login.Text = builder.UserID.ToString();
-            //    Password.Text = builder.Password.ToString();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"{ex}", "Ошибка");
-            //}
+                var builder = new MySqlConnectionStringBuilder(connectionString);
+                ServerAdress.Text = builder.Server;
+                ServerPort.Text = builder.Port.ToString();
+                Login.Text = builder.UserID.ToString();
+                Password.Text = builder.Password.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex}", "Ошибка");
+            }
         }
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
@@ -64,9 +64,9 @@ namespace TP.View
             }
             else
             {
-                StreamWriter sw = new StreamWriter(settingsPath);
-                sw.WriteLine(server + port + database + user + password);
-                sw.Close();
+                jsonObj["ConnectionString"] = $"server={server};port={port};Database=laboratory;user={user};password={password}";
+                string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(settingsPath, output);
                 MessageBox.Show("Изменения успешно внесены.", "Сохранено");
                 this.Close();
             }

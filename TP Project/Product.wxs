@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"><?define TP_TargetDir=$(var.TP.TargetDir)?>
+	<Product Id="*" Name="TP_Project" Language="1033" Version="1.0.0.0" Manufacturer="OkTP" UpgradeCode="7d879dc1-5a2e-4e65-ac23-e316e1026e82">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="TP_Project" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="TP_Project" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+			<Component Id="TP.exe" Guid="04a44334-9808-49e8-8039-c3fb70743c14">
+			  <File Id="TP.exe" Name="TP.exe" Source="$(var.TP_TargetDir)TP.exe" />
+			</Component>
+			<Component Id="XLParser.dll" Guid="7eea353b-34ce-4b62-8701-76eb1427d1ba">
+			  <File Id="XLParser.dll" Name="XLParser.dll" Source="$(var.TP_TargetDir)XLParser.dll" />
+			</Component>
+			<Component Id="Irony.dll" Guid="adb123c8-4b50-496e-ab3e-d4f9a9d0aa69">
+			  <File Id="Irony.dll" Name="Irony.dll" Source="$(var.TP_TargetDir)Irony.dll" />
+			</Component>
+			<Component Id="System.IO.Packaging.dll" Guid="3eb41c1e-027e-4c5a-b83a-036f9337db54">
+			  <File Id="System.IO.Packaging.dll" Name="System.IO.Packaging.dll" Source="$(var.TP_TargetDir)System.IO.Packaging.dll" />
+			</Component>
+			<Component Id="ExcelNumberFormat.dll" Guid="a0ea406f-2e8f-4120-91f2-b11942db6569">
+			  <File Id="ExcelNumberFormat.dll" Name="ExcelNumberFormat.dll" Source="$(var.TP_TargetDir)ExcelNumberFormat.dll" />
+			</Component>
+			<Component Id="System.Threading.Tasks.Extensions.dll" Guid="df712de2-5182-48e0-8a30-6c63430d637a">
+			  <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="$(var.TP_TargetDir)System.Threading.Tasks.Extensions.dll" />
+			</Component>
+			<Component Id="System.Text.Encodings.Web.dll" Guid="250975a5-23d4-4fac-bb1c-b19415710b3b">
+			  <File Id="System.Text.Encodings.Web.dll" Name="System.Text.Encodings.Web.dll" Source="$(var.TP_TargetDir)System.Text.Encodings.Web.dll" />
+			</Component>
+			<Component Id="TP.exe.config" Guid="4eacec1c-b83c-4455-ac9d-db718f7f7186">
+			  <File Id="TP.exe.config" Name="TP.exe.config" Source="$(var.TP_TargetDir)TP.exe.config" />
+			</Component>
+			<Component Id="Newtonsoft.Json.dll" Guid="b12d4dc4-d032-40a5-b731-c267f4e6fcf9">
+			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.TP_TargetDir)Newtonsoft.Json.dll" />
+			</Component>
+			<Component Id="MySql.Data.dll" Guid="89dbedf1-5465-4cc8-84d0-2567b7f21df2">
+			  <File Id="MySql.Data.dll" Name="MySql.Data.dll" Source="$(var.TP_TargetDir)MySql.Data.dll" />
+			</Component>
+			<Component Id="ClosedXML.dll" Guid="78ea2976-93f6-4811-9da7-5dd667c68b52">
+			  <File Id="ClosedXML.dll" Name="ClosedXML.dll" Source="$(var.TP_TargetDir)ClosedXML.dll" />
+			</Component>
+			<Component Id="DocumentFormat.OpenXml.dll" Guid="c9233f55-7e4c-438b-a2ca-e3b96f823279">
+			  <File Id="DocumentFormat.OpenXml.dll" Name="DocumentFormat.OpenXml.dll" Source="$(var.TP_TargetDir)DocumentFormat.OpenXml.dll" />
+			</Component>
+			<Component Id="System.Text.Json.dll" Guid="7eef7232-8e92-4fc6-a7e4-751265497a93">
+			  <File Id="System.Text.Json.dll" Name="System.Text.Json.dll" Source="$(var.TP_TargetDir)System.Text.Json.dll" />
+			</Component>
+			<Component Id="Aspose.Cells.dll" Guid="a4ef62f1-bde5-4158-bfbf-5185f1ebdec9">
+			  <File Id="Aspose.Cells.dll" Name="Aspose.Cells.dll" Source="$(var.TP_TargetDir)Aspose.Cells.dll" />
+			</Component>
+			<Component Id="Google.Protobuf.dll" Guid="135481d8-0858-4e82-936a-f8a878e8a3c2">
+			  <File Id="Google.Protobuf.dll" Name="Google.Protobuf.dll" Source="$(var.TP_TargetDir)Google.Protobuf.dll" />
+			</Component>
+			<Component Id="System.Memory.dll" Guid="b45f3a9a-f9e7-49af-b4f8-2b9a5b963a43">
+			  <File Id="System.Memory.dll" Name="System.Memory.dll" Source="$(var.TP_TargetDir)System.Memory.dll" />
+			</Component>
+			<Component Id="System.Numerics.Vectors.dll" Guid="cbe78548-c103-4f59-94d1-3880afc6d9a2">
+			  <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll" Source="$(var.TP_TargetDir)System.Numerics.Vectors.dll" />
+			</Component>
+			<Component Id="System.Runtime.CompilerServices.Unsafe.dll" Guid="f7932edb-a7c4-4932-ab3e-3a61bd242468">
+			  <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.TP_TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+			</Component>
+			<Component Id="System.Buffers.dll" Guid="abca4471-92a9-48ac-9a24-42b1b231a8fe">
+			  <File Id="System.Buffers.dll" Name="System.Buffers.dll" Source="$(var.TP_TargetDir)System.Buffers.dll" />
+			</Component>
+			<Component Id="ZstdNet.dll" Guid="d3c48ffb-d221-462b-95cf-8a035754944e">
+			  <File Id="ZstdNet.dll" Name="ZstdNet.dll" Source="$(var.TP_TargetDir)ZstdNet.dll" />
+			</Component>
+			<Component Id="K4os.Compression.LZ4.Streams.dll" Guid="76f7cd6f-6256-4420-b848-e7d78bb68426">
+			  <File Id="K4os.Compression.LZ4.Streams.dll" Name="K4os.Compression.LZ4.Streams.dll" Source="$(var.TP_TargetDir)K4os.Compression.LZ4.Streams.dll" />
+			</Component>
+			<Component Id="K4os.Compression.LZ4.dll" Guid="7065167a-5e3e-4fbc-aaf7-1d872567adef">
+			  <File Id="K4os.Compression.LZ4.dll" Name="K4os.Compression.LZ4.dll" Source="$(var.TP_TargetDir)K4os.Compression.LZ4.dll" />
+			</Component>
+			<Component Id="K4os.Hash.xxHash.dll" Guid="42cb0208-879d-47e4-8057-0aec791c81bf">
+			  <File Id="K4os.Hash.xxHash.dll" Name="K4os.Hash.xxHash.dll" Source="$(var.TP_TargetDir)K4os.Hash.xxHash.dll" />
+			</Component>
+			<Component Id="BouncyCastle.Crypto.dll" Guid="929b5886-80eb-46b2-bff4-6f5c3748a0e2">
+			  <File Id="BouncyCastle.Crypto.dll" Name="BouncyCastle.Crypto.dll" Source="$(var.TP_TargetDir)BouncyCastle.Crypto.dll" />
+			</Component>
+			<Component Id="Ubiety.Dns.Core.dll" Guid="23b4d77a-e2b8-41ad-a316-3b26961d21d6">
+			  <File Id="Ubiety.Dns.Core.dll" Name="Ubiety.Dns.Core.dll" Source="$(var.TP_TargetDir)Ubiety.Dns.Core.dll" />
+			</Component>
+			<Component Id="SixLabors.Fonts.dll" Guid="35a7263d-e7c0-4209-b108-9ccd6f4d53a9">
+			  <File Id="SixLabors.Fonts.dll" Name="SixLabors.Fonts.dll" Source="$(var.TP_TargetDir)SixLabors.Fonts.dll" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
