@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Org.BouncyCastle.Utilities.Encoders;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,11 @@ namespace TP.Model.Scripts
 
         }
 
+        public ExcelWorker(string path)
+        {
+            _path = path;
+        }
+        
         public ExcelWorker(string path, List<Org1List1> list1, List<Org1List2> list2)
         {
             _path = path;
@@ -108,6 +114,72 @@ namespace TP.Model.Scripts
             }
 
             return ws2;
+        }
+
+        public void SaveAllWorksheets(string value1, string value2)
+        {
+            var workbook = new XLWorkbook();
+            var oldworkbook = new XLWorkbook(_path);
+            int count = 0;
+            bool val1, val1Help, val2, val2Help;
+
+            val1 = val1Help = val2 = val2Help = false;
+            foreach (IXLWorksheet worksheet in oldworkbook.Worksheets)
+            {
+                count++;
+                if (count == 1)
+                {
+                    for (int i = 1; i < worksheet.RowCount(); i++)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            if (!val1)
+                            {
+                                if (!val1Help)
+                                    val1Help = IsRegNumber(worksheet.Cell(GetExcelPos(i, j)).Value.ToString());
+                                else
+                                {
+                                    val1 = true;
+                                    worksheet.Cell(GetExcelPos(i, j)).Value = value1;
+                                }
+                            }
+                            else if (!val2)
+                            {
+                                if (!val2Help)
+                                    val2Help = IsDate(worksheet.Cell(GetExcelPos(i, j)).Value.ToString());
+                                else
+                                {
+                                    val2 = true;
+                                    worksheet.Cell(GetExcelPos(i, j)).Value = value2;
+                                }
+                            }
+                        }
+                    }
+                }
+                workbook.AddWorksheet(worksheet);
+            }
+            File.Delete(_path);
+            workbook.SaveAs(_path);
+        }
+
+        private bool IsRegNumber(string value)
+        {
+            if (value.IndexOf("Рег") != -1 && value.IndexOf("номер") != -1)
+                return true;
+            return false;
+        }
+
+        private bool IsDate(string value)
+        {
+            if (value.IndexOf("Дата") != -1 && value.Split(' ').Length <= 2)
+                return true;
+            return false;
+        }
+
+        private IXLWorksheet ChangeAdditional(IXLWorksheet worksheet)
+        {
+
+            return worksheet;
         }
 
         public void SaveWorksheets()

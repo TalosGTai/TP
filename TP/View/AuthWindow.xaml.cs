@@ -16,7 +16,6 @@ namespace TP
             InitializeComponent();
 
             int idOrg = 1;
-
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -26,8 +25,8 @@ namespace TP
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            InfoWindow infoWindow = new InfoWindow();
-            infoWindow.ShowDialog();
+            //InfoWindow infoWindow = new InfoWindow();
+            //infoWindow.ShowDialog();
         }
 
         private void ButtonSendChoice_Click(object sender, RoutedEventArgs e)
@@ -59,12 +58,6 @@ namespace TP
             {
                 MessageBox.Show("Для начала проверьте настройки подключения к базе данных");
             }
-        }
-
-        private void Settings_Click(object sender, RoutedEventArgs e)
-        {
-            Settings settings = new Settings();
-            settings.ShowDialog();
         }
 
         private void Parametres_Click(object sender, RoutedEventArgs e)

@@ -15,8 +15,6 @@ namespace TP.View
         private string settingsPath = Directory.GetCurrentDirectory() + "\\" + "config.json";
         public Settings()
         {
-            try
-            {
                 InitializeComponent();
 
                 if (File.Exists(settingsPath))
@@ -31,12 +29,6 @@ namespace TP.View
                     Login.Text = builder.UserID.ToString();
                     Password.Text = builder.Password.ToString();
                 }
-            }
-            catch (Exception ex)
-            {
-                File.Create("log.txt");
-                File.AppendText(ex.Message);
-            }
 
         }
 
