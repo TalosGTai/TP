@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Org.BouncyCastle.Utilities.Encoders;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,6 +57,7 @@ namespace TP.Model.Scripts
 
         public void FileSave(string path)
         {
+            try { 
             CreateDirIfNotExist(path, true);
 
             using (XLWorkbook wb = new XLWorkbook())
@@ -81,6 +83,8 @@ namespace TP.Model.Scripts
 
                 wb.SaveAs(path);
             }
+            }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
 
         private IXLWorksheet WorkSheet1()
@@ -118,48 +122,55 @@ namespace TP.Model.Scripts
 
         public void SaveAllWorksheets(string value1, string value2)
         {
-            var workbook = new XLWorkbook();
-            var oldworkbook = new XLWorkbook(_path);
-            int count = 0;
-            bool val1, val1Help, val2, val2Help;
-
-            val1 = val1Help = val2 = val2Help = false;
-            foreach (IXLWorksheet worksheet in oldworkbook.Worksheets)
+            try
             {
-                count++;
-                if (count == 1)
+                var workbook = new XLWorkbook();
+                var oldworkbook = new XLWorkbook(_path);
+                int count = 0;
+                bool val1, val1Help, val2, val2Help;
+
+                val1 = val1Help = val2 = val2Help = false;
+                foreach (IXLWorksheet worksheet in oldworkbook.Worksheets)
                 {
-                    for (int i = 1; i < worksheet.RowCount(); i++)
+                    count++;
+                    if (count == 1)
                     {
-                        for (int j = 0; j < 4; j++)
+                        for (int i = 1; i < worksheet.RowCount(); i++)
                         {
-                            if (!val1)
+                            for (int j = 0; j < 4; j++)
                             {
-                                if (!val1Help)
-                                    val1Help = IsRegNumber(worksheet.Cell(GetExcelPos(i, j)).Value.ToString());
-                                else
+                                if (!val1)
                                 {
-                                    val1 = true;
-                                    worksheet.Cell(GetExcelPos(i, j)).Value = value1;
+                                    if (!val1Help)
+                                        val1Help = IsRegNumber(worksheet.Cell(GetExcelPos(i, j)).Value.ToString());
+                                    else
+                                    {
+                                        val1 = true;
+                                        worksheet.Cell(GetExcelPos(i, j)).Value = value1;
+                                    }
                                 }
-                            }
-                            else if (!val2)
-                            {
-                                if (!val2Help)
-                                    val2Help = IsDate(worksheet.Cell(GetExcelPos(i, j)).Value.ToString());
-                                else
+                                else if (!val2)
                                 {
-                                    val2 = true;
-                                    worksheet.Cell(GetExcelPos(i, j)).Value = value2;
+                                    if (!val2Help)
+                                        val2Help = IsDate(worksheet.Cell(GetExcelPos(i, j)).Value.ToString());
+                                    else
+                                    {
+                                        val2 = true;
+                                        worksheet.Cell(GetExcelPos(i, j)).Value = value2;
+                                    }
                                 }
                             }
                         }
                     }
+                    workbook.AddWorksheet(worksheet);
                 }
-                workbook.AddWorksheet(worksheet);
+                File.Delete(_path);
+                workbook.SaveAs(_path);
             }
-            File.Delete(_path);
-            workbook.SaveAs(_path);
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
         }
 
         private bool IsRegNumber(string value)

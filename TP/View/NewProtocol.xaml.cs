@@ -68,30 +68,36 @@ namespace TP.View
         {
             if (CheckProtocolReady())
             {
-
-                List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
-                for (int i = 0; i < _pathAdditionals.Count; i++)
+                try
                 {
-                    ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
-                    additionals.Add(excelParseAdditionals.Values);
-                }
-                List<string> additionalValues = UpdateJournal();
-                Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
-                CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
+                    List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
+                    for (int i = 0; i < _pathAdditionals.Count; i++)
+                    {
+                        ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
+                        additionals.Add(excelParseAdditionals.Values);
+                    }
+                    List<string> additionalValues = UpdateJournal();
+                    Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
+                    CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
 
-                string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
-                for (int i = 0; i < _pathAdditionals.Count; i++)
+                    string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+                    for (int i = 0; i < _pathAdditionals.Count; i++)
+                    {
+                        ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
+                        excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
+                    }
+
+                    MessageBox.Show("Протокол успешно создан!", "Создание протокола");
+
+                    Functions functions = new Functions();
+                    var protocols = new Protocols(_idOrg);
+                    protocols.FillProtocolsView(protocols.GetCountProtocols());
+                    functions.Frame.Content = protocols;
+                }
+                catch (Exception ex)
                 {
-                    ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
-                    excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
+                    Logger.LogError(ex);
                 }
-
-                MessageBox.Show("Протокол успешно создан!", "Создание протокола");
-
-                Functions functions = new Functions();
-                var protocols = new Protocols(_idOrg);
-                protocols.FillProtocolsView(protocols.GetCountProtocols());
-                functions.Frame.Content = protocols;
             }
         }
 
@@ -222,7 +228,7 @@ namespace TP.View
         private string GetWeekFromDate()
         {
             // количество строк, где строка равна строке (H)
-            var dt = DateTime.Now.Date;            
+            var dt = DateTime.Now.Date;
             var cal = new GregorianCalendar();
             var weekNumber = cal.GetWeekOfYear(dt, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
             return weekNumber.ToString();
@@ -249,12 +255,14 @@ namespace TP.View
 
         private List<string> UpdateJournal()
         {
-            // _idJournal + 1
-            // A = _idProtocol
-            DBConnection conn = new DBConnection();
-            List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProtocol);
-            _list1 = new List<string>()
+            try
             {
+                // _idJournal + 1
+                // A = _idProtocol
+                DBConnection conn = new DBConnection();
+                List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProtocol);
+                _list1 = new List<string>()
+                {
                 journal[0],
                 _directionDict.Item1["B"],
                 _directionDict.Item1["C"],
@@ -274,9 +282,9 @@ namespace TP.View
                 _directionDict.Item1["Q"],
                 _directionDict.Item1["R"]
             };
-            _list1[8] = GetRegNumber();
-            _list1[14] = GetNumberProtocol();
-            _list2 = new List<string>()
+                _list1[8] = GetRegNumber();
+                _list1[14] = GetNumberProtocol();
+                _list2 = new List<string>()
             {
                 journal[0],
                 _list1[14],
@@ -289,11 +297,17 @@ namespace TP.View
                 _list1[12],
             };
 
-            // занесение в БД
-            conn.UpdateTableJournalOrg1List1(1, _idJournal + 1, new Org1List1(_list1));
-            conn.UpdateTableJournalOrg1List2(1, _idJournal + 1, new Org1List2(_list2));
-            
-            return new List<string> { _list1[8], _list1[7] + "-" + GetNewDate(_list1[7]) };
+                // занесение в БД
+                conn.UpdateTableJournalOrg1List1(1, _idJournal + 1, new Org1List1(_list1));
+                conn.UpdateTableJournalOrg1List2(1, _idJournal + 1, new Org1List2(_list2));
+
+                return new List<string> { _list1[8], _list1[7] + "-" + GetNewDate(_list1[7]) };
+            }
+            catch (Exception ex)
+            {
+                Logger.LogDbError(ex);
+                throw;
+            }
         }
     }
 }
