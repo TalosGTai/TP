@@ -20,6 +20,7 @@ namespace TP.View
         private int _idOrg;
         private int _idProtocol;
         private int _idJournal;
+        private int _idProduct;
         private bool _isDirection;
         private string _directionFileName;
         private bool _isAdditionals;
@@ -38,11 +39,12 @@ namespace TP.View
             _isAdditionals = false;
         }
 
-        public NewProtocol(int idOrg, int idJournal, int idProtocol)
+        public NewProtocol(int idOrg, int idJournal, int idProtocol, int idProduct)
         {
             InitializeComponent();
             _idOrg = idOrg;
             _idProtocol = idProtocol;
+            _idProduct = idProduct;
             _idJournal = idJournal;
             _isDirection = false;
             _isAdditionals = false;
@@ -78,7 +80,7 @@ namespace TP.View
                 List<string> additionalValues = UpdateJournal();
                 Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
                 CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
-
+                
                 string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
                 for (int i = 0; i < _pathAdditionals.Count; i++)
                 {
@@ -152,16 +154,6 @@ namespace TP.View
 
             }
             return "";
-        }
-
-        public string GetFileExtension(string path)
-        {
-            string ext = "";
-            for (int i = path.LastIndexOf('.'); i < path.Length; i++)
-            {
-                ext += path[i];
-            }
-            return ext;
         }
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
@@ -252,7 +244,7 @@ namespace TP.View
             // _idJournal + 1
             // A = _idProtocol
             DBConnection conn = new DBConnection();
-            List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProtocol);
+            List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProduct);
             _list1 = new List<string>()
             {
                 journal[0],

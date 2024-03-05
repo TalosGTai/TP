@@ -26,13 +26,27 @@ namespace TP.Model
 
         private readonly string _connectionString;
         private MySqlConnection connection;
+        public DBConnection()
+        {
+            try
+            {
+                var path = "config.json";
+                string json = System.IO.File.ReadAllText(path);
+                _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
+                connection = new MySqlConnection(_connectionString);
+            }
+            catch (Exception ex)
+            {
+                var path = "log.txt";
+                var errorText = $"Ошибка подключения к базе данных. Message = {ex.Message}, " +
+                    $"StackTrace = {ex.StackTrace}";
 
-            var path = Directory.GetCurrentDirectory() + "\\" + "config.json";
-            string json = System.IO.File.ReadAllText(path);
-            _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
-            connection = new MySqlConnection(_connectionString);
-        }
-        }
+                MessageBox.Show("Ошибка подключения к базе данных. Проверьте настройки");
+                using (var sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine(errorText);
+                }
+            }
         }
         /// <summary>
         /// Открыть соединения с бд
@@ -1081,46 +1095,6 @@ namespace TP.Model
             finally { CloseConnection(); }
         }
 
-        public (MemoryStream docFile, MemoryStream xlsFile) GetOrgProtocolRow(int idOrg, int idProtocol)
-        {
-            try
-            {
-                if (!CheckTable($"org{idOrg}Protocol"))
-                {
-                    СreateTableProtocolOrgJournal(idOrg);
-                }
-
-                OpenConnection();
-
-                MemoryStream msDoc = new MemoryStream();
-                MemoryStream msXls = new MemoryStream();
-                using (var sqlQuery = new MySqlCommand($"SELECT ProtocolDoc, ProtocolXls FROM laboratory.org{idOrg}Protocol WHERE ProtocolId = \"{"Протокол"+idProtocol}\"", GetConnection()))
-                {
-                    sqlQuery.Parameters.AddWithValue("@varID", "Протокол"+idProtocol);
-                    using (var sqlQueryResult = sqlQuery.ExecuteReader())
-                        if (sqlQueryResult != null)
-                        {
-                            sqlQueryResult.Read();
-                            byte[] colProtocolDoc = (byte[])sqlQueryResult["ProtocolDoc"];
-                            byte[] colProtocolXls = (byte[])sqlQueryResult["ProtocolXls"];
-                            msDoc.Write(colProtocolDoc, 0, colProtocolDoc.Length);
-                            msDoc.Write(colProtocolXls, 0, colProtocolXls.Length);
-
-                            using (var fs = new FileStream(@"C:\Users\Margarita\OneDrive\Documents\TP\TP\bin\Debug\Организация1\Протокол1\test.docx", FileMode.Create, FileAccess.Write))
-                                fs.Write(colProtocolDoc, 0, colProtocolDoc.Length);
-                        }
-                }
-                CloseConnection();
-                return (msDoc, msXls);
-            }
-            catch (SqlException e)
-            {
-                Logger.LogDbError(e);
-                throw;
-            }
-            finally { CloseConnection(); }
-        }
-
         public (MemoryStream docFile, MemoryStream xlsFile) GetPartOfOrgProtocolRow(int idOrg, string path, IReadOnlyCollection<string> excludeProtocols)
         {
             try
@@ -1196,7 +1170,7 @@ namespace TP.Model
         /// <param name="idJournalRow">идентификатор строки</param>
         /// <param name="idColumn">идентификатор колонки</param>
         /// <returns>строка из бд</returns>
-        public List<string> SelectOrgJournalList1ByColumnId(int idOrg, int idJournal, int idProtocol)
+        public List<string> SelectOrgJournalList1ByColumnId(int idOrg, int idJournal, int idProduct)
         {
             try
             {
@@ -1206,16 +1180,18 @@ namespace TP.Model
                 }
                 OpenConnection();
                 var queryString = $"SELECT * FROM laboratory.org{idOrg}journal{idJournal}list1 " +
-                    $"WHERE A=\"{idProtocol}\"";
+                    $"WHERE A=\"{idProduct}\"";
 
                 var result = new List<string>();
+                int count = 0;
                 using (var sqlQuery = new MySqlCommand(queryString, GetConnection()))
                 {
                     using (var sqlQueryResult = sqlQuery.ExecuteReader())
                         if (sqlQueryResult != null)
                         {
-                            if (sqlQueryResult.Read() && sqlQueryResult.HasRows)
+                            if (sqlQueryResult.Read() && sqlQueryResult.HasRows && count < 1)
                             {
+                                count++;
                                 result.Add((string)sqlQueryResult["A"]);
                                 result.Add((string)sqlQueryResult["B"]);
                                 result.Add((string)sqlQueryResult["C"]);

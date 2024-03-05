@@ -12,6 +12,7 @@ using TP.Control;
 using System.Data.Common;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Threading;
+using System.Linq;
 
 namespace TP.View
 {
@@ -180,9 +181,11 @@ namespace TP.View
         {
             int idProtocol = GetCountProtocols();
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
+            int id = _journalsList[_idJournal].Item1.Count - 1;
+            int idProduct = Convert.ToInt32(_journalsList[_idJournal].Item1[id].NumberProduct);
             SaveChanges(_idJournal);
             Functions functions = new Functions();
-            functions.Frame.Content = new NewProtocol(1, _idJournal, idProtocol);
+            functions.Frame.Content = new NewProtocol(1, _idJournal, idProtocol, idProduct);
         }
 
         public int GetCountProtocols()
