@@ -26,6 +26,7 @@ namespace TP.Model
 
         private readonly string _connectionString;
         private MySqlConnection connection;
+
         public DBConnection()
         {
             try

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 
 namespace TP.Model
 {
@@ -11,9 +12,13 @@ namespace TP.Model
         /// <returns>Общество с ограниченной ответственностью «Испытательный Центр Вектор»</returns>
         public string GetJournalTitleRow1()
         {
+            try { 
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "1");
             return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "1");
+            }
+            catch (MySqlException e) { Logger.LogDbError(e); throw; }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
         /// <summary>
         /// Получить 2 строку заголовка журнала
@@ -21,9 +26,13 @@ namespace TP.Model
         /// <returns>"Испытательный центр"</returns>
         public string GetJournalTitleRow2()
         {
+            try { 
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "2");
             return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "2");
+            }
+            catch (MySqlException e) { Logger.LogDbError(e); throw; }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
         /// <summary>
         /// Получить 3 строку заголовка журнала
@@ -31,9 +40,13 @@ namespace TP.Model
         /// <returns>«Журнал регистрации направлений и образцов 4»</returns>
         public string GetJournalTitleRow3()
         {
+            try { 
             DBConnection dBConnection = new DBConnection();
             dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "3");
             return dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "3");
+            }
+            catch (MySqlException e) { Logger.LogDbError(e); throw; }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
         /// <summary>
         /// Получить 4 строку заголовка журнала
@@ -41,12 +54,16 @@ namespace TP.Model
         /// <returns>value1 = "Ответственный за ведение журнала", value2 = "Дата начала       « 09 »           января            2023 г.";</returns>
         public Tuple<string, string> GetJournalTitleRow4()
         {
+            try { 
             DBConnection dBConnection = new DBConnection();
             string value1, value2;
             value1 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "4_1");
             // подчёркивания для строки
             value2 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "4_2");
             return new Tuple<string, string>(value1, value2);
+            }
+            catch (MySqlException e) { Logger.LogDbError(e); throw; }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
         /// <summary>
         /// Получить 5 строку заголовка журнала
@@ -54,13 +71,18 @@ namespace TP.Model
         /// <returns>value1 = "ФИО (подпись)*    Бузулуцкова С.А. ", value2 = "Дата окончания «      »        2023 г." </returns>
         public Tuple<string, string> GetJournalTitleRow5()
         {
-            DBConnection dBConnection = new DBConnection();
-            string value1, value2;
-            // подчёркивания для строки
-            value1 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "5_1");
-            // подчёркивания для строки
-            value2 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "5_2"); ;
-            return new Tuple<string, string>(value1, value2);
+            try
+            {
+                DBConnection dBConnection = new DBConnection();
+                string value1, value2;
+                // подчёркивания для строки
+                value1 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "5_1");
+                // подчёркивания для строки
+                value2 = dBConnection.SelectJournalOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), "5_2"); ;
+                return new Tuple<string, string>(value1, value2);
+            }
+            catch (MySqlException e) { Logger.LogDbError(e); throw; }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
         /// <summary>
         /// Получить 6 строку заголовка журнала
