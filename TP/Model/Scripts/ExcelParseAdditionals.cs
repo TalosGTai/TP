@@ -64,6 +64,7 @@ namespace TP.Model.Scripts
 
         public Tuple<List<string>, Dictionary<int, List<string>>> GetDataFromExcel()
         {
+            try { 
             List<string> list1 = new List<string>();
             List<string> col1 = new List<string>();
             List<string> col2 = new List<string>();
@@ -174,6 +175,8 @@ namespace TP.Model.Scripts
             list2[2] = col2;
             list2[3] = col3;
             return new Tuple<List<string>, Dictionary<int, List<string>>>(list1, list2);
+            }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
     }
 }

@@ -18,14 +18,21 @@ namespace TP.Model
             var thisasm = Assembly.GetExecutingAssembly();
             var methodname = s.GetFrames().Select(f => f.GetMethod()).First(m => m.Module.Assembly == thisasm).Name;
 
-            var errorText = $"Ошибка при вызове {methodname}. Message = {ex.Message}, " +
+            var errorText = $"{DateTime.UtcNow}: Ошибка при вызове {methodname}. Message = {ex.Message}, " +
                        $"StackTrace = {ex.StackTrace}";
-
-            MessageBox.Show("Ошибка работы с бд");
-            using (var sw = new StreamWriter(path, true))
+           
+            try
             {
-                sw.WriteLine(errorText);
+                using (var sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine(errorText);
+                }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show("Невозможно добавить запись в лог");
+            }
+            MessageBox.Show("Ошибка работы с бд");
         }
 
         public static void LogError(Exception ex, string message = null)
@@ -34,16 +41,28 @@ namespace TP.Model
             var thisasm = Assembly.GetExecutingAssembly();
             var methodname = s.GetFrames().Select(f => f.GetMethod()).First(m => m.Module.Assembly == thisasm).Name;
 
-            var errorText = $"Ошибка при вызове {methodname}. Message = {ex.Message}, " +
+            var errorText = $"{DateTime.UtcNow}: Ошибка при вызове {methodname}. Message = {ex.Message}, " +
                        $"StackTrace = {ex.StackTrace}";
 
             if (!string.IsNullOrEmpty(message))
             {
                 MessageBox.Show(message);
             }
-            using (var sw = new StreamWriter(path, true))
+
+            try
             {
-                sw.WriteLine(errorText);
+                using (var sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine(errorText);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Невозможно добавить запись в лог");
+            }
+            if (!string.IsNullOrEmpty(message))
+            {
+                MessageBox.Show(message);
             }
         }
     }

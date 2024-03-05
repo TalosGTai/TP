@@ -17,12 +17,16 @@ namespace TP.Model.Scripts
         /// <summary>
         /// Парсим документ в JournalParse по пути по умолчанию ..\\..\\Model\\Directions\\Направление.docx
         /// </summary>
-        public DocParser() 
+        public DocParser()
         {
-            doc = WordprocessingDocument.Open("..\\..\\Model\\Directions\\Направление.docx", false);
-            // Получение всех абзацев в документе
-            IEnumerable<Paragraph> paragraphs = doc.MainDocumentPart.Document.Descendants<Paragraph>();
-            _journalParse = Org1CheckAllLists(paragraphs);
+            try
+            {
+                doc = WordprocessingDocument.Open("..\\..\\Model\\Directions\\Направление.docx", false);
+                // Получение всех абзацев в документе
+                IEnumerable<Paragraph> paragraphs = doc.MainDocumentPart.Document.Descendants<Paragraph>();
+                _journalParse = Org1CheckAllLists(paragraphs);
+            }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
 
         /// <summary>
@@ -31,10 +35,14 @@ namespace TP.Model.Scripts
         /// <param name="path">путь к файлу</param>
         public DocParser(string path)
         {
-            doc = WordprocessingDocument.Open(path, false);
-            // Получение всех абзацев в документе
-            IEnumerable<Paragraph> paragraphs = doc.MainDocumentPart.Document.Descendants<Paragraph>();
-            _journalParse = Org1CheckAllLists(paragraphs);
+            try
+            {
+                doc = WordprocessingDocument.Open(path, false);
+                // Получение всех абзацев в документе
+                IEnumerable<Paragraph> paragraphs = doc.MainDocumentPart.Document.Descendants<Paragraph>();
+                _journalParse = Org1CheckAllLists(paragraphs);
+            }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
         }
 
         /// <summary>
@@ -338,13 +346,14 @@ namespace TP.Model.Scripts
         /// <returns>Лист 1 и лист 2 со значениями колонок</returns>
         public Tuple<Dictionary<string, string>, Dictionary<string, string>> Org1CheckAllLists(IEnumerable<Paragraph> paragraphs)
         {
+            try { 
             Dictionary<string, string> list1Values = new Dictionary<string, string>();
             Dictionary<string, string> list2Values = new Dictionary<string, string>();
             bool columnB, columnC, columnD, columnE, columnF, columnQ, columnR, columnDHelp, columnQHelp,
                 columnBHelp, documentDC, documentCC, columnQCCHelp, columnQCC;
             int countRow;
 
-            columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp = 
+            columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp =
                 columnBHelp = documentDC = documentCC = columnQCCHelp = columnQCC = false;
             countRow = 0;
             list1Values = SetDefaultValuesList1(list1Values);
@@ -363,7 +372,7 @@ namespace TP.Model.Scripts
                     documentDC = true;
                     break;
                 }
-                
+
             }
 
             columnBHelp = false;
@@ -539,5 +548,8 @@ namespace TP.Model.Scripts
             list2Values["I"] = list1Values["M"];
             return new Tuple<Dictionary<string, string>, Dictionary<string, string>>(list1Values, list2Values);
         }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
+}
+
     }
 }

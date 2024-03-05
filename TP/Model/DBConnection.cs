@@ -27,12 +27,27 @@ namespace TP.Model
         private readonly string _connectionString;
         private MySqlConnection connection;
 
-            var path = Directory.GetCurrentDirectory() + "\\" + "config.json";
-            string json = System.IO.File.ReadAllText(path);
-            _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
-            connection = new MySqlConnection(_connectionString);
-        }
-        }
+        public DBConnection()
+        {
+            try
+            {
+                var path = "config.json";
+                string json = System.IO.File.ReadAllText(path);
+                _connectionString = JsonSerializer.Deserialize<Configuration>(json).ConnectionString;
+                connection = new MySqlConnection(_connectionString);
+            }
+            catch (Exception ex)
+            {
+                var path = "log.txt";
+                var errorText = $"Ошибка подключения к базе данных. Message = {ex.Message}, " +
+                    $"StackTrace = {ex.StackTrace}";
+
+                MessageBox.Show("Ошибка подключения к базе данных. Проверьте настройки");
+                using (var sw = new StreamWriter(path, true))
+                {
+                    sw.WriteLine(errorText);
+                }
+            }
         }
         /// <summary>
         /// Открыть соединения с бд
