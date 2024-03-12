@@ -101,7 +101,7 @@ namespace TP.Model
         public string GetProtocolTitleByRow(int row)
         {
             DBConnection dBConnection = new DBConnection();
-            return dBConnection.SelectProtocolOrgChangesRowByColumnId(1, dBConnection.SelectLastId(1), row.ToString());
+            return dBConnection.SelectProtocolOrgChangesRowByColumnId(1, dBConnection.SelectLastIdEditProtocols(1), row.ToString());
         }
     }
 }

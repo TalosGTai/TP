@@ -247,45 +247,47 @@ namespace TP.View
 
         private List<string> UpdateJournal()
         {
-            // _idJournal + 1
-            // A = _idProtocol
-            DBConnection conn = new DBConnection();
-            List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProtocol);
-            _list1 = new List<string>()
+            try
             {
-                journal[0],
-                _directionDict.Item1["B"],
-                _directionDict.Item1["C"],
-                _directionDict.Item1["D"],
-                _directionDict.Item1["E"],
-                _directionDict.Item1["F"],
-                journal[6],
-                journal[7],
-                "8",
-                journal[9],
-                journal[10],
-                journal[11],
-                journal[12],
-                journal[13],
-                "14",
-                journal[15],
-                _directionDict.Item1["Q"],
-                _directionDict.Item1["R"]
-            };
+                // _idJournal + 1
+                // A = _idProtocol
+                DBConnection conn = new DBConnection();
+                List<string> journal = conn.SelectOrgJournalList1ByColumnId(1, _idJournal + 1, _idProduct);
+                _list1 = new List<string>()
+                {
+                    ToStringDataBase(journal[0]),
+                    ToStringDataBase(_directionDict.Item1["B"]),
+                    ToStringDataBase(_directionDict.Item1["C"]),
+                    ToStringDataBase(_directionDict.Item1["D"]),
+                    ToStringDataBase(_directionDict.Item1["E"]),
+                    ToStringDataBase(_directionDict.Item1["F"]),
+                    ToStringDataBase(journal[6]),
+                    ToStringDataBase(journal[7]),
+                    "8",
+                    ToStringDataBase(journal[9]),
+                    ToStringDataBase(journal[10]),
+                    ToStringDataBase(journal[11]),
+                    ToStringDataBase(journal[12]),
+                    ToStringDataBase(journal[13]),
+                    "14",
+                    ToStringDataBase(journal[15]),
+                    ToStringDataBase(_directionDict.Item1["Q"]),
+                    ToStringDataBase(_directionDict.Item1["R"])
+                };
                 _list1[8] = GetRegNumber();
                 _list1[14] = GetNumberProtocol();
                 _list2 = new List<string>()
-            {
-                journal[0],
-                _list1[14],
-                _list1[11],
-                _list1[1],
-                _list1[8],
-                _list1[14],
-                _list1[2],
-                _list1[2],
-                _list1[12],
-            };
+                {
+                    ToStringDataBase(journal[0]),
+                    ToStringDataBase(_list1[14]),
+                    ToStringDataBase(_list1[11]),
+                    ToStringDataBase(_list1[1]),
+                    ToStringDataBase(_list1[8]),
+                    ToStringDataBase(_list1[14]),
+                    ToStringDataBase(_list1[2]),
+                    ToStringDataBase(_list1[2]),
+                    ToStringDataBase(_list1[12]),
+                };
 
                 // занесение в БД
                 conn.UpdateTableJournalOrg1List1(1, _idJournal + 1, new Org1List1(_list1));
@@ -298,6 +300,27 @@ namespace TP.View
                 Logger.LogDbError(ex);
                 throw;
             }
+        }
+
+        private string ToStringDataBase(string value)
+        {
+            string result = "";
+            foreach (char c in value)
+            {
+                if (c == '\'')
+                {
+                    result += "\'";
+                }
+                else if (c == '"')
+                {
+                    result += '\"';
+                }
+                else
+                {
+                    result += c;
+                }
+            }
+            return result;
         }
     }
 }

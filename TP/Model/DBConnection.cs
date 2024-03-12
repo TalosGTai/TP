@@ -161,7 +161,7 @@ namespace TP.Model
             return "";
         }
         /// <summary>
-        /// Получить строку по колонке
+        /// Получаем по одной строке из таблицу editprotocol
         /// </summary>
         /// <param name="idJournalRow">идентификатор строки</param>
         /// <param name="idColumn">идентификатор колонки</param>
@@ -175,7 +175,8 @@ namespace TP.Model
                     СreateTableEditProtocol(idOrg);
                 }
                 OpenConnection();
-                var queryString = $"SELECT Row{idColumn} FROM laboratory.org{idOrg}editprotocol WHERE idOrg{idOrg}editprotocol={idJournalRow}";
+                var queryString = $"SELECT Row{idColumn} FROM laboratory.org{idOrg}editprotocol " +
+                    $"WHERE idOrg{idOrg}editprotocol={idJournalRow}";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 string result = command.ExecuteScalar().ToString();
                 CloseConnection();
@@ -382,24 +383,24 @@ namespace TP.Model
                         query += $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list1 " +
                             $"(A, B, C, D, E, F, G, H , I, J, K, L, M, N, O, P, Q, R) " +
                             $"VALUES(" +
-                            $"\"{dif.NumberProduct}\"," +
-                            $"\"{dif.NumberDateDirection}\"," +
-                            $"\"{dif.SamplingAct}\"," +
-                            $"\"{dif.SampleName}\"," +
-                            $"\"{dif.OrganizationName}\"," +
-                            $"\"{dif.NumberSampleWeightCapacity}\"," +
-                            $"\"{dif.NumberDateUnsuitabilitySamples}\"," +
-                            $"\"{dif.DateReceiptSample}\"," +
-                            $"\"{dif.NumberRegSample}\"," +
-                            $"\"{dif.FioResponsiblePersonTest}\"," +
-                            $"\"{dif.DateIssueSample}\"," +
-                            $"\"{dif.DateReturnSampleAfterTest}\"," +
-                            $"\"{dif.FioInsertRecord}\"," +
-                            $"\"{dif.Note}\"," +
-                            $"\"{dif.NumberProtocol}\"," +
-                            $"\"{dif.ProductType}\"," +
-                            $"\"{dif.Applicant}\"," +
-                            $"\"{dif.Manufacturer}\"); ";
+                            $"\"{ToStringDataBase(dif.NumberProduct)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberDateDirection)}\"," +
+                            $"\"{ToStringDataBase(dif.SamplingAct)}\"," +
+                            $"\"{ToStringDataBase(dif.SampleName)}\"," +
+                            $"\"{ToStringDataBase(dif.OrganizationName)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberSampleWeightCapacity)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberDateUnsuitabilitySamples)}\"," +
+                            $"\"{ToStringDataBase(dif.DateReceiptSample)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberRegSample)}\"," +
+                            $"\"{ToStringDataBase(dif.FioResponsiblePersonTest)}\"," +
+                            $"\"{ToStringDataBase(dif.DateIssueSample)}\"," +
+                            $"\"{ToStringDataBase(dif.DateReturnSampleAfterTest)}\"," +
+                            $"\"{ToStringDataBase(dif.FioInsertRecord)}\"," +
+                            $"\"{ToStringDataBase(dif.Note)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberProtocol)}\"," +
+                            $"\"{ToStringDataBase(dif.ProductType)}\"," +
+                            $"\"{ToStringDataBase(dif.Applicant)}\"," +
+                            $"\"{ToStringDataBase(dif.Manufacturer)}\"); ";
                     }
                     command = new MySqlCommand(query, GetConnection());
                     command.ExecuteNonQuery();
@@ -541,15 +542,15 @@ namespace TP.Model
                         query += $"INSERT INTO laboratory.org{idOrg}journal{idJournal}list2 " +
                             $"(A, B, C, D, E, F, G, H , I) " +
                             $"VALUES(" +
-                            $"\"{dif.NumberProduct}\"," +
-                            $"\"{dif.NumberProtocolTest}\"," +
-                            $"\"{dif.DateReturnSampleAfterTest}\"," +
-                            $"\"{dif.NumberDateDirection}\"," +
-                            $"\"{dif.NumberRegSample}\"," +
-                            $"\"{dif.NumberActUtil}\"," +
-                            $"\"{dif.DateActUtil}\"," +
-                            $"\"{dif.DateReturnSample}\"," +
-                            $"\"{dif.FioInsertRecord}\"" +
+                            $"\"{ToStringDataBase(dif.NumberProduct)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberProtocolTest)}\"," +
+                            $"\"{ToStringDataBase(dif.DateReturnSampleAfterTest)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberDateDirection)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberRegSample)}\"," +
+                            $"\"{ToStringDataBase(dif.NumberActUtil)}\"," +
+                            $"\"{ToStringDataBase(dif.DateActUtil)}\"," +
+                            $"\"{ToStringDataBase(dif.DateReturnSample)}\"," +
+                            $"\"{ToStringDataBase(dif.FioInsertRecord)}\"" +
                             $"); ";
                     }
                     command = new MySqlCommand(query, con);
@@ -589,24 +590,24 @@ namespace TP.Model
                 }
                 string query = $"UPDATE laboratory.org{idOrg}journal{idJournal}list1 " +
                     $"SET " +
-                    $"B=\"{dif.NumberDateDirection}\"," +
-                    $"C=\"{dif.SamplingAct}\"," +
-                    $"D=\"{dif.SampleName}\"," +
-                    $"E=\"{dif.OrganizationName}\"," +
-                    $"F=\"{dif.NumberSampleWeightCapacity}\"," +
-                    $"G=\"{dif.NumberDateUnsuitabilitySamples}\"," +
-                    $"H=\"{dif.DateReceiptSample}\"," +
-                    $"I=\"{dif.NumberRegSample}\"," +
-                    $"J=\"{dif.FioResponsiblePersonTest}\"," +
-                    $"K=\"{dif.DateIssueSample}\"," +
-                    $"L=\"{dif.DateReturnSampleAfterTest}\"," +
-                    $"M=\"{dif.FioInsertRecord}\"," +
-                    $"N=\"{dif.Note}\"," +
-                    $"O=\"{dif.NumberProtocol}\"," +
-                    $"P=\"{dif.ProductType}\"," +
-                    $"Q=\"{dif.Applicant}\"," +
-                    $"R=\"{dif.Manufacturer}\" " +
-                    $"WHERE A = \"{dif.NumberProduct}\";";
+                    $"B=\"{ToStringDataBase(dif.NumberDateDirection)}\"," +
+                    $"C=\"{ToStringDataBase(dif.SamplingAct)}\"," +
+                    $"D=\"{ToStringDataBase(dif.SampleName)}\"," +
+                    $"E=\"{ToStringDataBase(dif.OrganizationName)}\"," +
+                    $"F=\"{ToStringDataBase(dif.NumberSampleWeightCapacity)}\"," +
+                    $"G=\"{ToStringDataBase(dif.NumberDateUnsuitabilitySamples)}\"," +
+                    $"H=\"{ToStringDataBase(dif.DateReceiptSample)}\"," +
+                    $"I=\"{ToStringDataBase(dif.NumberRegSample)}\"," +
+                    $"J=\"{ToStringDataBase(dif.FioResponsiblePersonTest)}\"," +
+                    $"K=\"{ToStringDataBase(dif.DateIssueSample)}\"," +
+                    $"L=\"{ToStringDataBase(dif.DateReturnSampleAfterTest)}\"," +
+                    $"M=\"{ToStringDataBase(dif.FioInsertRecord)}\"," +
+                    $"N=\"{ToStringDataBase(dif.Note)}\"," +
+                    $"O=\"{ToStringDataBase(dif.NumberProtocol)}\"," +
+                    $"P=\"{ToStringDataBase(dif.ProductType)}\"," +
+                    $"Q=\"{ToStringDataBase(dif.Applicant)}\"," +
+                    $"R=\"{ToStringDataBase(dif.Manufacturer)}\" " +
+                    $"WHERE A = \"{ToStringDataBase(dif.NumberProduct)}\";";
                 OpenConnection();
                 MySqlCommand command = new MySqlCommand(query, GetConnection());
                 command.ExecuteNonQuery();
@@ -617,6 +618,27 @@ namespace TP.Model
                 Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
+        }
+
+        private string ToStringDataBase(string value)
+        {
+            string result = "";
+            foreach (char c in value)
+            {
+                if (c == '\'')
+                {
+                    result += "\'";
+                }
+                else if (c == '"')
+                {
+                    result += '\"';
+                }
+                else 
+                {
+                    result += c; 
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -633,15 +655,15 @@ namespace TP.Model
 
                 string query = $"UPDATE laboratory.org{idOrg}journal{idJournal}list2 " +
                     $"SET " +
-                    $"B=\"{dif.NumberProtocolTest}\"," +
-                    $"C=\"{dif.DateReturnSampleAfterTest}\"," +
-                    $"D=\"{dif.NumberDateDirection}\"," +
-                    $"E=\"{dif.NumberRegSample}\"," +
-                    $"F=\"{dif.NumberActUtil}\"," +
-                    $"G=\"{dif.DateActUtil}\"," +
-                    $"H=\"{dif.DateReturnSample}\"," +
-                    $"I=\"{dif.FioInsertRecord}\" " +
-                    $"WHERE A = \"{dif.NumberProduct}\";";
+                    $"B=\"{ToStringDataBase(dif.NumberProtocolTest)}\"," +
+                    $"C=\"{ToStringDataBase(dif.DateReturnSampleAfterTest)}\"," +
+                    $"D=\"{ToStringDataBase(dif.NumberDateDirection)}\"," +
+                    $"E=\"{ToStringDataBase(dif.NumberRegSample)}\"," +
+                    $"F=\"{ToStringDataBase(dif.NumberActUtil)}\"," +
+                    $"G=\"{ToStringDataBase(dif.DateActUtil)}\"," +
+                    $"H=\"{ToStringDataBase(dif.DateReturnSample)}\"," +
+                    $"I=\"{ToStringDataBase(dif.FioInsertRecord)}\" " +
+                    $"WHERE A = \"{ToStringDataBase(dif.NumberProduct)}\";";
                     OpenConnection();
                     MySqlCommand command = new MySqlCommand(query, GetConnection());
                     command.ExecuteNonQuery();
@@ -699,8 +721,8 @@ namespace TP.Model
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}editjournal";
                 queryString += "(Row1, Row2, Row3, Row4_1, Row4_2, Row5_1, Row5_2, Row6)";
-                queryString += $" Values (\"{values[0]}\", \"{values[1]}\", \"{values[2]}\", \"{values[3]}\", ";
-                queryString += $"\"{values[4]}\", \"{values[5]}\", \"{values[6]}\", \"{values[7]}\")";
+                queryString += $" Values (\"{ToStringDataBase(values[0])}\", \"{ToStringDataBase(values[1])}\", \"{ToStringDataBase(values[2])}\", \"{ToStringDataBase(values[3])}\", ";
+                queryString += $"\"{ToStringDataBase(values[4])}\", \"{ToStringDataBase(values[5])}\", \"{ToStringDataBase(values[6])}\", \"{ToStringDataBase(values[7])}\")";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
@@ -723,7 +745,7 @@ namespace TP.Model
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}editprotocol";
                 queryString += "(Row1, Row2, Row3, Row4)";
-                queryString += $" Values (\"{values[0]}\", \"{values[1]}\", \"{values[2]}\", \"{values[3]}\")";
+                queryString += $" Values (\"{ToStringDataBase(values[0])}\", \"{ToStringDataBase(values[1])}\", \"{ToStringDataBase(values[2])}\", \"{ToStringDataBase(values[3])}\")";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
@@ -750,11 +772,11 @@ namespace TP.Model
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}editjournal";
                 queryString += "(Row1, Row2, Row3, Row4_1, Row4_2, Row5_1, Row5_2, Row6)";
-                queryString += $" Values (\"{Properties.Resources.Org1EditJournalStartValue1}\", ";
-                queryString += $"\"{Properties.Resources.Org1EditJournalStartValue2}\", \"{Properties.Resources.Org1EditJournalStartValue3}\", ";
-                queryString += $"\"{Properties.Resources.Org1EditJournalStartValue4_1}\", ";
-                queryString += $"\"{Properties.Resources.Org1EditJournalStartValue4_2}\", \"{Properties.Resources.Org1EditJournalStartValue5_1}\", ";
-                queryString += $"\"{Properties.Resources.Org1EditJournalStartValue5_1}\", \"{Properties.Resources.Org1EditJournalStartValue6}\")";
+                queryString += $" Values (\"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue1)}\", ";
+                queryString += $"\"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue2)}\", \"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue3)}\", ";
+                queryString += $"\"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue4_1)}\", ";
+                queryString += $"\"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue4_2)}\", \"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue5_1)}\", ";
+                queryString += $"\"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue5_1)}\", \"{ToStringDataBase(Properties.Resources.Org1EditJournalStartValue6)}\")";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
@@ -777,9 +799,9 @@ namespace TP.Model
                 OpenConnection();
                 var queryString = $"INSERT INTO laboratory.org{idOrg}editprotocol";
                 queryString += "(Row1, Row2, Row3, Row4)";
-                queryString += $" Values (\"{Properties.Resources.Org1EditProtocolStartValue1}\", ";
-                queryString += $"\"{Properties.Resources.Org1EditProtocolStartValue2}\", \"{Properties.Resources.Org1EditProtocolStartValue3}\", ";
-                queryString += $"\"{Properties.Resources.Org1EditProtocolStartValue4}\")";
+                queryString += $" Values (\"{ToStringDataBase(Properties.Resources.Org1EditProtocolStartValue1)}\", ";
+                queryString += $"\"{ToStringDataBase(Properties.Resources.Org1EditProtocolStartValue2)}\", \"{ToStringDataBase(Properties.Resources.Org1EditProtocolStartValue3)}\", ";
+                queryString += $"\"{ToStringDataBase(Properties.Resources.Org1EditProtocolStartValue4)}\")";
                 MySqlCommand command = new MySqlCommand(queryString, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
