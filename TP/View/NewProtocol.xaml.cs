@@ -66,17 +66,27 @@ namespace TP.View
             return true;
         }
 
+        private HashSet<string> MergeGosts(HashSet<string> gostsAll, HashSet<string> gostsNew)
+        {
+            foreach (string gost in gostsNew)
+                gostsAll.Add(gost);
+            return gostsAll;
+        }
+
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
             if (CheckProtocolReady())
             {
                 try
                 {
+                    // множество gosts для хранения всех гостов с приложения
+                    HashSet<string> gosts = new HashSet<string>();
                     List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                     for (int i = 0; i < _pathAdditionals.Count; i++)
                     {
                         ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
                         additionals.Add(excelParseAdditionals.Values);
+                        gosts = MergeGosts(gosts, excelParseAdditionals.Gosts);
                     }
                     List<string> additionalValues = UpdateJournal();
                     Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
@@ -212,9 +222,9 @@ namespace TP.View
         private string GetRegNumber()
         {
             DBConnection conn = new DBConnection();
-            string date = _list1[7];
-            int countDates = Math.Max(conn.GetCountColumnWithSameValue(_idOrg, _idJournal + 1, 1, "H", date), 1);
-            return $"л-/{countDates}/{date}";
+            // date = _list1[7];
+            int countDates = Math.Max(conn.GetCountColumnWithSameValue(_idOrg, _idJournal + 1, 1, "H", _list1[7]), 1);
+            return $"л-{countDates}/{_list1[7]}";
         }
 
         private string GetWeekFromDate()

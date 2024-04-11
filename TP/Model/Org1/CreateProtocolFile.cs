@@ -399,7 +399,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("B" + 16).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 worksheet.Cell("B" + 16).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("B16:G16").Merge();
-                worksheet.Cell("C" + 17).Value = _journal.Item2["C"];
+                worksheet.Cell("C" + 17).Value = _journal.Item2["C"]; // дата (исправить)
                 worksheet.Cell("C" + 17).Style.Font.FontSize = 11;
                 worksheet.Cell("C" + 17).Style.Font.Bold = true;
                 worksheet.Cell("C" + 17).Style.Font.Underline = XLFontUnderlineValues.Single;
@@ -432,13 +432,13 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + 23).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 23).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A23:G23").Merge();
-            worksheet.Cell("A" + 24).Value = _journal.Item1["O"];
+            worksheet.Cell("A" + 24).Value = "№ " + _journal.Item1["O"] + " от " + _journal.Item2["C"]; // номер (исправлено) + дата (исправить)
             worksheet.Cell("A" + 24).Style.Font.FontSize = 12;
             worksheet.Cell("A" + 24).Style.Font.Bold = true;
             worksheet.Cell("A" + 24).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + 24).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A24:G24").Merge();
-            worksheet.Cell("A" + 25).Value = Resources.Protocol19;
+            worksheet.Cell("A" + 25).Value = Resources.Protocol19; // число страниц (исправить) - значение
             worksheet.Cell("A" + 25).Style.Font.FontSize = 10;
             worksheet.Cell("A" + 25).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
             worksheet.Cell("A" + 25).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;

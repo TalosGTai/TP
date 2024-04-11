@@ -622,6 +622,8 @@ namespace TP.Model
 
         private string ToStringDataBase(string value)
         {
+            if (string.IsNullOrEmpty(value))
+                return "";
             string result = "";
             foreach (char c in value)
             {
@@ -631,7 +633,7 @@ namespace TP.Model
                 }
                 else if (c == '"')
                 {
-                    result += '\"';
+                    result += "\\\"";
                 }
                 else 
                 {
