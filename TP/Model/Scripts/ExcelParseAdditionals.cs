@@ -17,10 +17,12 @@ namespace TP.Model.Scripts
         Tuple<List<string>, Dictionary<int, List<string>>> _values;
         // множество gosts для хранения всех гостов с приложения
         HashSet<string> gosts;
+        HashSet<string> equipments;
 
         public ExcelParseAdditionals(string filename)
         {
             gosts = new HashSet<string>();
+            equipments = new HashSet<string>();
             workbooks = app.Workbooks;
             workbook = workbooks.Open(filename, MissingObj, rOnly, MissingObj, MissingObj,
                                 MissingObj, MissingObj, MissingObj, MissingObj, MissingObj,
@@ -38,6 +40,12 @@ namespace TP.Model.Scripts
         }
 
         public HashSet<string> Gosts
+        {
+            get => gosts;
+            set => gosts = value;
+        }
+
+        public HashSet<string> Equipments
         {
             get => gosts;
             set => gosts = value;
@@ -163,10 +171,13 @@ namespace TP.Model.Scripts
                                     if (((j == 1) || (j == 2) || (j == 3)) && i > 1)
                                     {
                                         if (j == 1)
+                                        {
+                                            equipments.Add(CellText);
                                             col1.Add(CellText);
+                                        }
                                         else if (j == 2)
                                             col2.Add(CellText);
-                                        else 
+                                        else
                                             col3.Add(CellText);
                                     }
                                 }

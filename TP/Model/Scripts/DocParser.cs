@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 
@@ -197,25 +198,28 @@ namespace TP.Model.Scripts
         /// Является ли эта строка колонкой Q
         /// </summary>
         /// <param name="value">строка</param>
-        /// <returns>true - является</returns>
-        private bool IsColumnQ(string value)
+        /// <returns> 1 - текущая строка является предпараграфом</returns>
+        /// <returns> 2 - текущая строка полностью подходит</returns>
+        /// <returns> 0 - не подходит</returns>
+        private int IsColumnQ(string value)
         {
-            int count = 0;
             List<string> patterns = new List<string>()
             {
                 "Образцы",
                 "представлены",
                 "заказчиком",
-                "заявителем"
+                "заявителем",
+                "Заявитель:",
             };
             foreach (string pattern in patterns)
             {
                 if (value.IndexOf(pattern) != -1)
-                    count++;
+                    if (value.Length > 15)
+                        return 2;
+                    else
+                        return 1;
             }
-            if (count > 2)
-                return true;
-            return false;
+            return 0;
         }
 
         private bool IsColumnQCC(string value)
@@ -266,10 +270,18 @@ namespace TP.Model.Scripts
         {
             if (access)
             {
-                return value;
+                return CheckChangeString(value);
             }
             return "null";
         }
+
+        private string CheckChangeString(string value)
+        {
+            if (value.IndexOf("аявитель") != -1)
+                return value.Substring(10);
+            return value;
+        }
+
         /// <summary>
         /// Значение колонки R
         /// </summary>
@@ -351,11 +363,11 @@ namespace TP.Model.Scripts
             Dictionary<string, string> list2Values = new Dictionary<string, string>();
             bool columnB, columnC, columnD, columnE, columnF, columnQ, columnR, columnDHelp, columnQHelp,
                 columnBHelp, documentDC, documentCC, columnQCCHelp, columnQCC;
-            int countRow;
+            int countRow, columnQQHelp;
 
             columnB = columnC = columnD = columnE = columnF = columnQ = columnR = columnDHelp = columnQHelp =
                 columnBHelp = documentDC = documentCC = columnQCCHelp = columnQCC = false;
-            countRow = 0;
+            countRow = columnQQHelp = 0;
             list1Values = SetDefaultValuesList1(list1Values);
             list2Values = SetDefaultValuesList2(list2Values);
 
@@ -434,13 +446,18 @@ namespace TP.Model.Scripts
                     }
                     if (!columnQ)
                     {
+                        if (columnQQHelp == 1)
+                        {
+                            list1Values["Q"] = ColumnQ(paragraph.InnerText, true);
+                            columnQ = true;
+                        }
                         if (!columnQHelp)
                         {
-                            columnQHelp = IsColumnQ(paragraph.InnerText);
+                            columnQQHelp = IsColumnQ(paragraph.InnerText);
                         }
-                        else
+                        if (columnQQHelp == 2)
                         {
-                            list1Values["Q"] = ColumnQ(paragraph.InnerText, columnQHelp);
+                            list1Values["Q"] = ColumnQ(paragraph.InnerText, true);
                             columnQ = true;
                         }
                     }

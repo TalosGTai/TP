@@ -66,11 +66,11 @@ namespace TP.View
             return true;
         }
 
-        private HashSet<string> MergeGosts(HashSet<string> gostsAll, HashSet<string> gostsNew)
+        private HashSet<string> MergeHashSets(HashSet<string> source, HashSet<string> external)
         {
-            foreach (string gost in gostsNew)
-                gostsAll.Add(gost);
-            return gostsAll;
+            foreach (string gost in external)
+                source.Add(gost);
+            return source;
         }
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
@@ -81,16 +81,19 @@ namespace TP.View
                 {
                     // множество gosts для хранения всех гостов с приложения
                     HashSet<string> gosts = new HashSet<string>();
+                    // множество наименований оборудования для хранения всех гостов с приложения
+                    HashSet<string> equipments = new HashSet<string>();
                     List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                     for (int i = 0; i < _pathAdditionals.Count; i++)
                     {
                         ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
                         additionals.Add(excelParseAdditionals.Values);
-                        gosts = MergeGosts(gosts, excelParseAdditionals.Gosts);
+                        gosts = MergeHashSets(gosts, excelParseAdditionals.Gosts);
+                        equipments = MergeHashSets(equipments, excelParseAdditionals.Equipments);
                     }
                     List<string> additionalValues = UpdateJournal();
                     Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
-                    CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals);
+                    CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals, gosts, equipments);
 
                     string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
                     for (int i = 0; i < _pathAdditionals.Count; i++)

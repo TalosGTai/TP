@@ -40,7 +40,7 @@ namespace TP.Model.Org1
 
         public CreateProtocolFile(Tuple<Dictionary<string, string>,
             Dictionary<string, string>> journal, int idOrg, int idProtocol,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals)
+            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals, HashSet<string> gosts, HashSet<string> equipments)
         {
             try
             {
@@ -458,7 +458,7 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = valuesResourses[6];
+            worksheet.Cell("A" + idRow).Value = Resources.Protocol22 + " " + valuesResourses[6];
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Row(idRow).Height = 70;
@@ -466,7 +466,7 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol23 + _journal.Item1["Q"];
+            worksheet.Cell("A" + idRow).Value = Resources.Protocol23 + " " + _journal.Item1["Q"];
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -480,7 +480,7 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol25 + " " + _journal.Item1["B"];
+            worksheet.Cell("A" + idRow).Value = Resources.Protocol25 + " № " + _journal.Item1["B"];
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -495,14 +495,21 @@ namespace TP.Model.Org1
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol27;
+            worksheet.Cell("A" + idRow).Value = Resources.Protocol26_43 + ""; // список оборудования
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
             worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range($"A{idRow}:G{idRow}").Merge();
             idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol28 + _journal.Item1["C"];
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol27;
+            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range($"A{idRow}:G{idRow}").Merge();
+            idRow++;
+            worksheet.Cell("A" + idRow).Value = Resources.Protocol28 + " № " + _journal.Item1["B"] + " " + _journal.Item1["C"];
             worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
             worksheet.Cell("A" + idRow).Style.Font.Bold = true;
             worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;

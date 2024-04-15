@@ -233,6 +233,9 @@
     <Compile Include="View\FilesPage.xaml.cs">
       <DependentUpon>FilesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Gosts.xaml.cs">
+      <DependentUpon>Gosts.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NewProtocol.xaml.cs">
       <DependentUpon>NewProtocol.xaml</DependentUpon>
     </Compile>
@@ -266,6 +269,10 @@
     <Page Include="View\About.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Gosts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Org1Journals.xaml">
       <SubType>Designer</SubType>
@@ -351,7 +358,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="View\App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Datas\Journals\" />
@@ -385,6 +392,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

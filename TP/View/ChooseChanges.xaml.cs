@@ -48,5 +48,11 @@ namespace TP.View
             functions.Frame.Content = changes;
             changes.LoadDatas();
         }
+
+        private void GostsChange_Click(object sender, RoutedEventArgs e)
+        {
+            Functions functions = new Functions();
+            functions.Frame.Content = new Gosts();
+        }
     }
 }

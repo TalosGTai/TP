@@ -74,11 +74,17 @@
         <Label Content="Протокол: основная информация " 
                Grid.Row="2" Grid.Column="0" 
                Grid.ColumnSpan="2"/>
+        <Label Content="Госты" 
+               Grid.Row="3" Grid.Column="0" 
+               Grid.ColumnSpan="2"/>
         <Button x:Name="JournalChange" Content="Выбрать" 
                Grid.Column="2" Grid.Row="1" 
                Click="JournalChange_Click"/>
         <Button x:Name="ProtocolChange" Content="Выбрать" 
                Grid.Column="2" Grid.Row="2" 
                Click="ProtocolChange_Click"/>
+        <Button x:Name="GostsChange" Content="Выбрать" 
+               Grid.Column="2" Grid.Row="3" 
+               Click="GostsChange_Click"/>
     </Grid>
 </Page>
