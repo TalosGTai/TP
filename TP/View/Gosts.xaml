@@ -9,6 +9,36 @@
       Title="Gosts">
 
     <Page.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10, 10, 10, 0"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="CanUserResizeRows" Value="True"/>
+            <Setter Property="CanUserAddRows" Value="True"/>
+            <Setter Property="IsReadOnly" Value="False"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="Button">
             <Setter Property="FontSize" Value="26"/>
             <Setter Property="FontFamily" Value="Times New Roman"/>
@@ -25,7 +55,6 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
-            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -37,22 +66,32 @@
         </Grid.RowDefinitions>
         <Button x:Name="DeleteGost"
                 Content="Удалить"
-                Grid.Row="5"
-                Grid.Column="1"
+                Grid.Row="4"
+                Grid.Column="0"
                 Click="DeleteGost_Click"/>
         <Button x:Name="ChangeGost"
                 Content="Изменить"
-                Grid.Row="5"
-                Grid.Column="2"
+                Grid.Row="4"
+                Grid.Column="1"
+                HorizontalAlignment="Left"
                 Click="ChangeGost_Click"/>
         <Button x:Name="AddGost"
                 Content="Добавить"
-                Grid.Row="5"
-                Grid.Column="3"
+                Grid.Row="4"
+                Grid.Column="2"
+                HorizontalAlignment="Left"
                 Click="AddGost_Click"/>
-        <DataGrid x:Name="TableGosts" Grid.Row="1"
-                  Grid.Column="1"
-                  Grid.ColumnSpan="3" Grid.RowSpan="4"
+        <Button x:Name="LoadFromFileGost"
+                Content="Загрузить из файла"
+                Grid.Row="4"
+                Grid.Column="2"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Right"
+                Margin="0, 0, 10, 10"
+                Click="LoadFromFileGost_Click"/>
+        <DataGrid x:Name="TableGosts" Grid.Row="0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="4" Grid.RowSpan="4"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   SelectionMode="Single"

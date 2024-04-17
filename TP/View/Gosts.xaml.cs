@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TP.Model;
 
 namespace TP.View
 {
@@ -32,10 +33,19 @@ namespace TP.View
 
         private void ChangeGost_Click(object sender, RoutedEventArgs e)
         {
-
+            GostsChange gostsChange = new GostsChange();
+            gostsChange.ChangeTitleWindow(2);
+            gostsChange.ShowDialog();
         }
 
         private void AddGost_Click(object sender, RoutedEventArgs e)
+        {
+            GostsChange gostsChange = new GostsChange();
+            gostsChange.ChangeTitleWindow(1);
+            gostsChange.ShowDialog();
+        }
+
+        private void LoadFromFileGost_Click(object sender, RoutedEventArgs e)
         {
 
         }

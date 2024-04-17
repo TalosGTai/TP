@@ -214,6 +214,9 @@
     <Compile Include="Model\DBConnection.cs" />
     <Compile Include="Model\DBFunctions.cs" />
     <Compile Include="Model\Functions.cs" />
+    <Compile Include="View\GostsChange.xaml.cs">
+      <DependentUpon>GostsChange.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\Org1List1.cs" />
     <Compile Include="Model\NotifyPropertyChanged.cs" />
@@ -254,6 +257,10 @@
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\GostsChange.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AuthWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
