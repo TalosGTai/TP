@@ -1331,5 +1331,117 @@ namespace TP.Model
                 CloseConnection();
             }
         }
+
+        /// <summary>
+        /// Создать таблицу ГОСТов
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        public void СreateTableGosts(int idOrg)
+        {
+            if (!CheckTable($"laboratory.org{idOrg}Gosts"))
+            {
+                string query = $"create table if not exists  laboratory.org{idOrg}Gosts (";
+                query += $"id int NOT NULL AUTO_INCREMENT, ";
+                query += "shortName Text, ";
+                query += "longName Text, ";
+                query += $"PRIMARY KEY (id))";
+                try
+                {
+                    OpenConnection();
+                    MySqlCommand command = new MySqlCommand(query, GetConnection());
+                    command.ExecuteNonQuery();
+                    CloseConnection();
+                }
+                catch (SqlException ex)
+                {
+                    Logger.LogDbError(ex);
+                }
+                finally { CloseConnection(); }
+            }
+        }
+
+        /// <summary>
+        /// Добавить ГОСТ
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        /// <param name="dataLeft">краткая форма ГОСТа</param>
+        /// <param name="dataRight">полная форма ГОСТа</param>
+        public void AddGostData(int idOrg, List<string> dataLeft, List<string> dataRight)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}Gosts"))
+                {
+                    СreateTableGosts(idOrg);
+                }
+
+                string queryString = $"INSERT INTO laboratory.org{idOrg}Gosts " +
+                    $"(shortName, longName) " +
+                    "VALUES(@short, @long)";
+
+                OpenConnection();
+                var conn = GetConnection();
+                using (MySqlCommand cmd = new MySqlCommand(queryString, conn))
+                {
+                    cmd.Parameters.Add("@short", MySqlDbType.Text);
+                    cmd.Parameters.Add("@long", MySqlDbType.Text);
+
+                    for (int i = 0; i < dataLeft.Count; i++)
+                    {
+                        cmd.Parameters["@short"].Value = dataLeft[i];
+                        cmd.Parameters["@long"].Value = dataRight[i];
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        public void AddGost(int idOrg, string dataLeft, string dataRight)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}Gosts"))
+                {
+                    СreateTableGosts(idOrg);
+                }
+
+                string queryString = $"INSERT INTO laboratory.org{idOrg}Gosts " +
+                    $"(shortName, longName) " +
+                    "VALUES(@short, @long)";
+
+                OpenConnection();
+                var conn = GetConnection();
+                using (MySqlCommand cmd = new MySqlCommand(queryString, conn))
+                {
+                    cmd.Parameters.Add("@short", MySqlDbType.Text);
+                    cmd.Parameters.Add("@long", MySqlDbType.Text);
+
+                    cmd.Parameters["@short"].Value = dataLeft;
+                    cmd.Parameters["@long"].Value = dataRight;
+                    cmd.ExecuteNonQuery();
+
+                }
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
     }
 }

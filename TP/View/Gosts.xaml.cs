@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,7 +9,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TP.Model;
 
 namespace TP.View
 {
@@ -47,7 +43,27 @@ namespace TP.View
 
         private void LoadFromFileGost_Click(object sender, RoutedEventArgs e)
         {
+            DBConnection db = new DBConnection();
+            //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
+            db.AddGost(_idOrg, "test1" , "test2");
+        }
+        private void AddAllGosts_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            var _pathAdditionals = new List<string>();
+            ExcelParseAdditionals data = null;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                foreach (string filename in openFileDialog.FileNames)
+                    _pathAdditionals.Add(filename);
+                data = new ExcelParseAdditionals(openFileDialog.FileName, true);
+            }
 
+            DBConnection db = new DBConnection();
+            //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
+            db.AddGostData(_idOrg, data.GostsTable[1], data.GostsTable[2]);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -15,11 +16,13 @@ namespace TP.Model.Scripts
         object rOnly = true;
         object SaveChanges = false;
         Tuple<List<string>, Dictionary<int, List<string>>> _values;
+        IDictionary<int, List<string>> _gosts;
+
         // множество gosts для хранения всех гостов с приложения
         HashSet<string> gosts;
         HashSet<string> equipments;
 
-        public ExcelParseAdditionals(string filename)
+        public ExcelParseAdditionals(string filename, bool isGosts = false)
         {
             gosts = new HashSet<string>();
             equipments = new HashSet<string>();
@@ -29,7 +32,14 @@ namespace TP.Model.Scripts
                                 MissingObj, MissingObj, MissingObj, MissingObj, MissingObj);
             // Получение всех страниц докуента
             sheets = workbook.Sheets;
-            _values = GetDataFromExcel();
+            if (isGosts)
+            {
+                _gosts = GetDataFromGostsExcel();
+            }
+            else
+            {
+                _values = GetDataFromExcel();
+            }
             app.Quit();
         }
 
@@ -43,6 +53,12 @@ namespace TP.Model.Scripts
         {
             get => gosts;
             set => gosts = value;
+        }
+
+        public IDictionary<int, List<string>> GostsTable
+        {
+            get => _gosts;
+            set => _gosts = value;
         }
 
         public HashSet<string> Equipments
@@ -201,5 +217,71 @@ namespace TP.Model.Scripts
             }
             catch (Exception ex) { Logger.LogError(ex); throw; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<int, List<string>> GetDataFromGostsExcel()
+        {
+            try
+            {
+                List<string> col1 = new List<string>();
+                List<string> col2 = new List<string>();
+                Dictionary<int, List<string>> list2 = new Dictionary<int, List<string>>();
+                Excel.Worksheet worksheet = sheets[2];
+
+                // Получаем диапазон используемых на странице ячеек
+                Excel.Range UsedRange = worksheet.UsedRange;
+                // Получаем строки в используемом диапазоне
+                Excel.Range urRows = UsedRange.Rows;
+                // Получаем столбцы в используемом диапазоне
+                Excel.Range urColums = UsedRange.Columns;
+
+                // Количества строк и столбцов
+                int RowsCount = urRows.Count;
+                int ColumnsCount = urColums.Count;
+
+                for (int i = 2; i <= RowsCount; i++)
+                {
+                    for (int j = 1; j <= ColumnsCount; j++)
+                    {
+                        Excel.Range CellRange = UsedRange.Cells[i, j];
+                        // Получение текста ячейки
+                        string CellText = (CellRange == null || CellRange.Value2 == null) ? null :
+                                            (CellRange as Excel.Range).Value2.ToString();
+
+                        if (CellText != null)
+                        {
+                            if (((j == 1) || (j == 2) || (j == 3)) && i > 1)
+                            {
+                                if (j == 1)
+                                {
+                                    equipments.Add(CellText);
+                                    col1.Add(CellText);
+                                }
+                                else if (j == 2)
+                                    col2.Add(CellText);
+                            }
+                        }
+                    }
+                }
+                // Очистка неуправляемых ресурсов
+                if (urRows != null) Marshal.ReleaseComObject(urRows);
+                if (urColums != null) Marshal.ReleaseComObject(urColums);
+                if (UsedRange != null) Marshal.ReleaseComObject(UsedRange);
+
+                // Очистка неуправляемых ресурсов
+                if (worksheet != null) Marshal.ReleaseComObject(worksheet);
+                list2[1] = col1;
+                list2[2] = col2;
+                return new Dictionary<int, List<string>>(list2);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                throw;
+            }
+        }       
     }
 }
