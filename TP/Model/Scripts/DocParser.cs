@@ -74,19 +74,9 @@ namespace TP.Model.Scripts
             if (match.Count > 0)
             {
                 string[] subs = value.Split(' ');
-                string num = "";
-
-                foreach (var sub in subs)
-                {
-                    foreach (char c in sub)
-                    {
-                        if (char.IsDigit(c) || c == '-')
-                            num += c;
-                    }
-                    if (num.Length > 0)
-                        break;
-                }
-                return new Tuple<string, string>(num, match[0].ToString());
+                for (int i = 0; i < subs.Length; i++)
+                    if (subs[i].IndexOf("№") != -1)
+                        return new Tuple<string, string>(subs[i + 1], match[0].ToString());
             }
             return new Tuple<string, string>("null", "null");
         }
@@ -401,7 +391,6 @@ namespace TP.Model.Scripts
                         Tuple<string, string> tuple = ColumnB(paragraph.InnerText);
                         if (tuple.Item1 != "null")
                         {
-                            // save values to Dictionary
                             list1Values["B"] = tuple.Item1;
                             list2Values["D"] = tuple.Item2;
                             columnB = true;
@@ -412,7 +401,6 @@ namespace TP.Model.Scripts
                         string temp = ColumnС(paragraph.InnerText);
                         if (temp != "null")
                         {
-                            // save values to Dictionary
                             list1Values["C"] = temp;
                             columnC = true;
                         }

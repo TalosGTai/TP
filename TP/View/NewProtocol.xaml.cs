@@ -81,6 +81,19 @@ namespace TP.View
             return res.Substring(0, res.Length - 3);
         }
 
+        private string GostsShortToLong(string gosts)
+        {
+            string res = "";
+            foreach (var gost in gosts.Split(','))
+            {
+                // gost.Trim();
+                // longGost = DB.checkGost()
+                // if (longGost != -1)
+                // res += longGost + ", ";
+            }
+            return res.Substring(0, res.Length - 3);
+        }
+
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
             if (CheckProtocolReady())

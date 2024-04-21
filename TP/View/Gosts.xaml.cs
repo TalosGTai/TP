@@ -23,12 +23,6 @@ namespace TP.View
             gosts = new List<Gost>();
         }
 
-        private void LoadGostsFromDB()
-        {
-            // код загрузки протокол и формирования их в объект Gost,
-            // а после в список gosts
-        }
-
         private int GetIdRow()
         {
             return Convert.ToInt32(TableGosts.SelectedIndex.ToString());
@@ -77,10 +71,8 @@ namespace TP.View
 
         private void LoadFromFileGost_Click(object sender, RoutedEventArgs e)
         {
-            // заполнение в gosts
             DBConnection db = new DBConnection();
             //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
-            //db.AddGost(_idOrg, "test1" , "test2");
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
             openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
@@ -89,6 +81,8 @@ namespace TP.View
             {
                 data = new ExcelParseAdditionals(openFileDialog.FileName, true);
             }
+            // заполнение в gosts
+            //db.AddGost(_idOrg, "test1" , "test2");
         }
     }
 }

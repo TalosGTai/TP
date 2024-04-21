@@ -555,61 +555,82 @@ namespace TP.Model.Org1
             catch (Exception ex) { Logger.LogError(ex); throw; }
         }
 
+        private IXLWorksheet MergeColumns(IXLWorksheet worksheet, int countRows)
+        {
+            try
+            {
+                int iRow, i;
+                
+                iRow = 4;
+                for (i = 5; i <= countRows; i++)
+                {
+                    if (worksheet.Cell("C" + iRow).Value.ToString() != worksheet.Cell("C" + i).Value.ToString())
+                    {
+                        worksheet.Range($"C{iRow}:C{i - 1}").Merge();
+                        iRow = i;
+                    }
+                }
+            }
+            catch (Exception ex) { Logger.LogError(ex); throw; }
+            return worksheet;
+        }
+
         private IXLWorksheet CreateTablesTests(IXLWorksheet worksheet, List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
         {
-            try { 
-            idRow = 1;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol36;
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:F{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol37;
-            worksheet.Cell("B" + idRow).Value = Resources.Protocol38;
-            worksheet.Cell("C" + idRow).Value = Resources.Protocol39;
-            worksheet.Cell("D" + idRow).Value = Resources.Protocol40;
-            worksheet.Cell("E" + idRow).Value = Resources.Protocol41;
-            worksheet.Cell("F" + idRow).Value = Resources.Protocol42;
-            worksheet.Row(idRow).Height = 80;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Font.FontSize = 10;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = "1";
-            worksheet.Cell("B" + idRow).Value = "2";
-            worksheet.Cell("C" + idRow).Value = "3";
-            worksheet.Cell("D" + idRow).Value = "4";
-            worksheet.Cell("E" + idRow).Value = "5";
-            worksheet.Cell("F" + idRow).Value = "6";
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Font.FontSize = 10;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            idRow++;
-            for (int i = 0; i < values[0].Item2[1].Count; i++)
-            {
-                worksheet.Cell("A" + idRow).Value = i.ToString();
-                worksheet.Cell("B" + idRow).Value = values[0].Item1[1];
-                worksheet.Cell("C" + idRow).Value = values[0].Item1[0];
-                if (values[0].Item2[1].Count > i && values[0].Item2[2].Count > i && values[0].Item2[3].Count > i)
-                    worksheet.Cell("D" + idRow).Value = values[0].Item2[1][i] + " " + values[0].Item2[2][i] + " " + values[0].Item2[3][i];
-                if (values[0].Item1.Count > 2)
-                    worksheet.Cell("E" + idRow).Value = values[0].Item1[2];
-                if (values[0].Item1.Count > 3)
-                    worksheet.Cell("F" + idRow).Value = values[0].Item1[3];
+            try 
+            { 
+                idRow = 1;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol36;
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:F{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol37;
+                worksheet.Cell("B" + idRow).Value = Resources.Protocol38;
+                worksheet.Cell("C" + idRow).Value = Resources.Protocol39;
+                worksheet.Cell("D" + idRow).Value = Resources.Protocol40;
+                worksheet.Cell("E" + idRow).Value = Resources.Protocol41;
+                worksheet.Cell("F" + idRow).Value = Resources.Protocol42;
+                worksheet.Row(idRow).Height = 80;
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Font.FontSize = 10;
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 idRow++;
-            }
-            idRow++;
+                worksheet.Cell("A" + idRow).Value = "1";
+                worksheet.Cell("B" + idRow).Value = "2";
+                worksheet.Cell("C" + idRow).Value = "3";
+                worksheet.Cell("D" + idRow).Value = "4";
+                worksheet.Cell("E" + idRow).Value = "5";
+                worksheet.Cell("F" + idRow).Value = "6";
+                worksheet.Range($"A{idRow}:F{idRow}").Style.Font.FontSize = 10;
+                worksheet.Range($"A{idRow}:F{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                idRow++;
+                for (int i = 0; i < values[0].Item2[1].Count; i++)
+                {
+                    worksheet.Cell("A" + idRow).Value = i.ToString();
+                    worksheet.Cell("B" + idRow).Value = values[0].Item1[1];
+                    worksheet.Cell("C" + idRow).Value = values[0].Item1[0];
+                    if (values[0].Item2[1].Count > i && values[0].Item2[2].Count > i && values[0].Item2[3].Count > i)
+                        worksheet.Cell("D" + idRow).Value = values[0].Item2[1][i] + " " + values[0].Item2[2][i] + " " + values[0].Item2[3][i];
+                    if (values[0].Item1.Count > 2)
+                        worksheet.Cell("E" + idRow).Value = values[0].Item1[2];
+                    if (values[0].Item1.Count > 3)
+                        worksheet.Cell("F" + idRow).Value = values[0].Item1[3];
+                    worksheet.Range($"A{idRow}:F{idRow}").Style.Font.FontSize = 10;
+                    worksheet.Range($"A{idRow}:F{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Range($"A{idRow}:F{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    idRow++;
+                }
+                idRow++;
 
-            return worksheet;
+                return MergeColumns(worksheet, idRow);
             }
             catch (Exception ex) { Logger.LogError(ex); throw; }
         }
