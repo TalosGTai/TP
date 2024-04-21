@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using TP.Model;
+using TP.Model.Scripts;
 using Ubiety.Dns.Core.Common;
 
 
@@ -80,25 +81,14 @@ namespace TP.View
             DBConnection db = new DBConnection();
             //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
             //db.AddGost(_idOrg, "test1" , "test2");
-        }
-
-        private void AddAllGosts_Click(object sender, RoutedEventArgs e)
-        {
-            //OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.Multiselect = false;
-            //openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            //var _pathAdditionals = new List<string>();
-            //ExcelParseAdditionals data = null;
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-            //    foreach (string filename in openFileDialog.FileNames)
-            //        _pathAdditionals.Add(filename);
-            //    data = new ExcelParseAdditionals(openFileDialog.FileName, true);
-            //}
-
-            //DBConnection db = new DBConnection();
-            ////1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
-            //db.AddGostData(_idOrg, data.GostsTable[1], data.GostsTable[2]);
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            ExcelParseAdditionals data = null;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                data = new ExcelParseAdditionals(openFileDialog.FileName, true);
+            }
         }
     }
 }

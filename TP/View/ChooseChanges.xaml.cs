@@ -22,17 +22,9 @@ namespace TP.View
     /// </summary>
     public partial class ChooseChanges : Page
     {
-        int _idOrg;
-
         public ChooseChanges()
         {
             InitializeComponent();
-        }
-
-        public ChooseChanges(int idOrg)
-        {
-            InitializeComponent();
-            _idOrg = idOrg;
         }
 
         private void JournalChange_Click(object sender, RoutedEventArgs e)

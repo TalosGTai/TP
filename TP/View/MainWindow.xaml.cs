@@ -83,7 +83,7 @@ namespace TP
 
         private void EditJournalsTitul_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ViewPages.Content = new ChooseChanges(_idOrg);
+            ViewPages.Content = new ChooseChanges();
         }
     }
 }
