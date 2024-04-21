@@ -279,7 +279,7 @@
     <value>Регистрационный (условный) номер, характеристика испытуемого образца:</value>
   </data>
   <data name="Protocol21" xml:space="preserve">
-    <value>Дата получения образца:</value>
+    <value>Дата получения образца: </value>
   </data>
   <data name="Protocol22" xml:space="preserve">
     <value>Место проведения испытаний:</value>

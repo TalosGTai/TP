@@ -31,6 +31,8 @@ namespace TP.Model.Org1
         string PROTOCOL_EXCEL_PATH = "",
                 PROTOCOL_WORD_PATH = "";
         List<string> valuesResourses;
+        private string _gosts;
+        private string _equipments;
 
         public CreateProtocolFile()
         {
@@ -40,13 +42,15 @@ namespace TP.Model.Org1
 
         public CreateProtocolFile(Tuple<Dictionary<string, string>,
             Dictionary<string, string>> journal, int idOrg, int idProtocol,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals, HashSet<string> gosts, HashSet<string> equipments)
+            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals, string gosts, string equipments)
         {
             try
             {
                 PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
                 PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
                 _journal = journal;
+                _gosts = gosts;
+                _equipments = equipments;
                 //Создание excel файла
                 CreateProtocolXlsxFile(additionals);
                 var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
@@ -357,6 +361,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + 7).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + 7).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Cell("A" + 7).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(7).Height = 25;
                 worksheet.Range("A7:G7").Merge();
                 worksheet.Cell("A" + 8).Value = valuesResourses[4];
                 worksheet.Cell("A" + 8).Style.Font.FontSize = 10;
@@ -426,121 +431,126 @@ namespace TP.Model.Org1
         private IXLWorksheet CreateChapter2(IXLWorksheet worksheet)
         {
             try { 
-            worksheet.Cell("A" + 23).Value = Resources.Protocol18;
-            worksheet.Cell("A" + 23).Style.Font.FontSize = 12;
-            worksheet.Cell("A" + 23).Style.Font.Bold = true;
-            worksheet.Cell("A" + 23).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("A" + 23).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range("A23:G23").Merge();
-            worksheet.Cell("A" + 24).Value = "№ " + _journal.Item1["O"] + " от " + _journal.Item2["C"]; // номер (исправлено) + дата (исправить)
-            worksheet.Cell("A" + 24).Style.Font.FontSize = 12;
-            worksheet.Cell("A" + 24).Style.Font.Bold = true;
-            worksheet.Cell("A" + 24).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("A" + 24).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range("A24:G24").Merge();
-            worksheet.Cell("A" + 25).Value = Resources.Protocol19; // число страниц (исправить) - значение
-            worksheet.Cell("A" + 25).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + 25).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + 25).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range("A25:G25").Merge();
-            worksheet.Cell("A" + 26).Value = Resources.Protocol20;
-            worksheet.Cell("A" + 26).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + 26).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + 26).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range("A26:G26").Merge();
-            // образцы
-            idRow = 27; // который свободен для записи номер строки
+                worksheet.Cell("A" + 23).Value = Resources.Protocol18;
+                worksheet.Cell("A" + 23).Style.Font.FontSize = 12;
+                worksheet.Cell("A" + 23).Style.Font.Bold = true;
+                worksheet.Cell("A" + 23).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("A" + 23).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range("A23:G23").Merge();
+                worksheet.Cell("A" + 24).Value = "№ " + _journal.Item1["O"] + " от " + _journal.Item1["H"]; 
+                worksheet.Cell("A" + 24).Style.Font.FontSize = 12;
+                worksheet.Cell("A" + 24).Style.Font.Bold = true;
+                worksheet.Cell("A" + 24).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("A" + 24).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range("A24:G24").Merge();
+                worksheet.Cell("A" + 25).Value = Resources.Protocol19; // число страниц (исправить) - значение
+                worksheet.Cell("A" + 25).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + 25).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + 25).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range("A25:G25").Merge();
+                worksheet.Cell("A" + 26).Value = Resources.Protocol20;
+                worksheet.Cell("A" + 26).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + 26).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + 26).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range("A26:G26").Merge();
+                // образцы
+                idRow = 27; // который свободен для записи номер строки
 
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol21 + _journal.Item1["H"];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol22 + " " + valuesResourses[6];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Row(idRow).Height = 70;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol23 + " " + _journal.Item1["Q"];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol24 + " " + _journal.Item1["R"];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol25 + " № " + _journal.Item1["B"];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol26;
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol26_43 + ""; // список оборудования
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol21 + _journal.Item1["H"];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol22 + " " + valuesResourses[6];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Row(idRow).Height = 80;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol23 + " " + _journal.Item1["Q"];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(idRow).Height = 55; // 29
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol24 + " " + _journal.Item1["R"];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(idRow).Height = 45; // 30
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol25 + " № " + _journal.Item1["B"];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol26 + " " + _gosts;
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                worksheet.Row(idRow).Height = 45; // 33
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol26_43 + " " + _equipments; // список оборудования
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(idRow).Height = 105; // 34
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
                 worksheet.Cell("A" + idRow).Value = Resources.Protocol27;
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol28 + " № " + _journal.Item1["B"] + " " + _journal.Item1["C"];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol29 + _journal.Item1["H"] + "-" + _journal.Item2["C"];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol30 + valuesResourses[7];
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            worksheet.Row(idRow).Height = 27;
-            idRow++;
-            worksheet.Cell("A" + idRow).Value = Resources.Protocol32;
-            worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
-            worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-            worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{idRow}:G{idRow}").Merge();
-            idRow++;
-            idRow++;
-
-            return worksheet;
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol28 + " № " + _journal.Item1["B"] + " " + _journal.Item1["C"];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Row(idRow).Height = 20; // 36
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol29 + _journal.Item1["H"] + "-" + _journal.Item2["C"];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(idRow).Height = 20;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol30 + valuesResourses[7];
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                worksheet.Row(idRow).Height = 50;
+                idRow++;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol32;
+                worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
+                worksheet.Cell("A" + idRow).Style.Font.Bold = true;
+                worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range($"A{idRow}:G{idRow}").Merge();
+                idRow++;
+                idRow++;
+                return worksheet;
             }
             catch (Exception ex) { Logger.LogError(ex); throw; }
         }

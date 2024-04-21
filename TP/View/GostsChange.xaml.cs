@@ -19,7 +19,15 @@ namespace TP.Model
     /// </summary>
     public partial class GostsChange : Window
     {
+        int _idGost;
+
         public GostsChange()
+        {
+            InitializeComponent();
+            _idGost = 1;
+        }
+
+        public GostsChange(int idGost)
         {
             InitializeComponent();
         }
@@ -44,10 +52,23 @@ namespace TP.Model
             LongFormTextBox.Text = longForm;
         }
 
+        private bool CheckFields()
+        {
+            if (ShortFormTextBox.Text.Length > 0 && LongFormTextBox.Text.Length > 0)
+                return true;
+            return false;
+        }
+
         private void SaveChangesBtn_Click(object sender, RoutedEventArgs e)
         {
-
-            Close();
+            if (!CheckFields())
+                MessageBox.Show("Не все данные заполнены.", "Ошибка!");
+            else
+            {
+                this.DialogResult = true;
+                // save to DB by id (_idGost)
+                Close();
+            }
         }
     }
 }

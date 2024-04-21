@@ -73,6 +73,14 @@ namespace TP.View
             return source;
         }
 
+        private string HashSetToString(HashSet<string> source)
+        {
+            string res = "";
+            foreach (var s in source)
+                res += s + ", ";
+            return res.Substring(0, res.Length - 3);
+        }
+
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
             if (CheckProtocolReady())
@@ -92,8 +100,10 @@ namespace TP.View
                         equipments = MergeHashSets(equipments, excelParseAdditionals.Equipments);
                     }
                     List<string> additionalValues = UpdateJournal();
-                    Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>, Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
-                    CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol, additionals, gosts, equipments);
+                    Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>,
+                        Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
+                    CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol,
+                        additionals, HashSetToString(gosts), HashSetToString(equipments));
 
                     string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
                     for (int i = 0; i < _pathAdditionals.Count; i++)

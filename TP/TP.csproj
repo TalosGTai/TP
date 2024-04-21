@@ -214,6 +214,7 @@
     <Compile Include="Model\DBConnection.cs" />
     <Compile Include="Model\DBFunctions.cs" />
     <Compile Include="Model\Functions.cs" />
+    <Compile Include="Model\Gost.cs" />
     <Compile Include="View\GostsChange.xaml.cs">
       <DependentUpon>GostsChange.xaml</DependentUpon>
     </Compile>

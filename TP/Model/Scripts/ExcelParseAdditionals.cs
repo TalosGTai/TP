@@ -63,8 +63,8 @@ namespace TP.Model.Scripts
 
         public HashSet<string> Equipments
         {
-            get => gosts;
-            set => gosts = value;
+            get => equipments;
+            set => equipments = value;
         }
 
         private bool IsCell1(string value)
