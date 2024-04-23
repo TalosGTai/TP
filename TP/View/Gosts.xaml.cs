@@ -79,7 +79,7 @@ namespace TP.View
                 data = new ExcelParseAdditionals(openFileDialog.FileName, true);
             }
             // добавление в DB
-            db.AddAllGostsData(data?.GostsTable[1], data?.GostsTable[2]);
+            db.AddAllGostsData(data?.GostsTuples);
             LoadToGosts(data.GostsTuples);
         }
         

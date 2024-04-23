@@ -1365,10 +1365,7 @@ namespace TP.Model
         /// <summary>
         /// Добавить все ГОСТы из файла
         /// </summary>
-        /// <param name="idOrg">номер организации</param>
-        /// <param name="dataLeft">краткая форма ГОСТа</param>
-        /// <param name="dataRight">полная форма ГОСТа</param>
-        public void AddAllGostsData(List<string> dataLeft, List<string> dataRight)
+        public void AddAllGostsData(List<Tuple<string,string>> data)
         {
             try
             {
@@ -1388,10 +1385,10 @@ namespace TP.Model
                     cmd.Parameters.Add("@short", MySqlDbType.Text);
                     cmd.Parameters.Add("@long", MySqlDbType.Text);
 
-                    for (int i = 0; i < dataLeft.Count; i++)
+                    for (int i = 0; i < data.Count; i++)
                     {
-                        cmd.Parameters["@short"].Value = dataLeft[i];
-                        cmd.Parameters["@long"].Value = dataRight[i];
+                        cmd.Parameters["@short"].Value = data[i].Item1;
+                        cmd.Parameters["@long"].Value = data[i].Item2;
                         cmd.ExecuteNonQuery();
                     }
                 }
