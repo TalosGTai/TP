@@ -19,12 +19,9 @@ namespace TP.Model
     /// </summary>
     public partial class GostsChange : Window
     {
-        int _idGost;
-
         public GostsChange()
         {
             InitializeComponent();
-            _idGost = 1;
         }
 
         public GostsChange(int idGost)

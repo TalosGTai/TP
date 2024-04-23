@@ -30,8 +30,10 @@ namespace TP.View
 
         private void DeleteGost_Click(object sender, RoutedEventArgs e)
         {
-            gosts.RemoveAt(GetIdRow());
-            // delete in DB this row by id
+            DBConnection db = new DBConnection();
+            var id = GetIdRow();
+            gosts.RemoveAt(id);
+            db.DeleteGost(id);
         }
 
         private void ChangeGost_Click(object sender, RoutedEventArgs e)
@@ -42,11 +44,11 @@ namespace TP.View
 
             if (gostsChange.ShowDialog() == true)
             {
-                // GetIdRow() - строка, которую меняем
-                // gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text - новые значения
-                // заносим в ДБ
                 gosts[GetIdRow()].ShortNameGost = gostsChange.ShortFormTextBox.Text;
-                gosts[GetIdRow()].ShortNameGost = gostsChange.LongFormTextBox.Text;
+                gosts[GetIdRow()].LongNameGost = gostsChange.LongFormTextBox.Text;
+
+                DBConnection db = new DBConnection();
+                db.UpdateGost(GetIdRow(), gosts[GetIdRow()].ShortNameGost, gosts[GetIdRow()].LongNameGost);
             }
         }
 
@@ -60,18 +62,24 @@ namespace TP.View
             GostsChange gostsChange = new GostsChange();
             gostsChange.ChangeTitleWindow(1);
 
+            Gost newGost = NewGost(gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text);
             if (gostsChange.ShowDialog() == true)
             {
                 // GetIdRow() - строка, которую меняем
                 // gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text - новые значения
                 // заносим в ДБ
-                gosts.Add(NewGost(gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text));
+                gosts.Add(newGost);
             }
+
+            DBConnection db = new DBConnection();
+            db.AddGost(newGost.ShortNameGost, newGost.LongNameGost);
+
         }
 
         private void LoadFromFileGost_Click(object sender, RoutedEventArgs e)
         {
             DBConnection db = new DBConnection();
+
             //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
@@ -81,8 +89,8 @@ namespace TP.View
             {
                 data = new ExcelParseAdditionals(openFileDialog.FileName, true);
             }
-            // заполнение в gosts
-            //db.AddGost(_idOrg, "test1" , "test2");
+            //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
+            db.AddAllGostsData(data?.GostsTable[1], data?.GostsTable[2]);
         }
     }
 }

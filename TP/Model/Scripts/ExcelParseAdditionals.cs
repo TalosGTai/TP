@@ -219,7 +219,7 @@ namespace TP.Model.Scripts
         }
 
         /// <summary>
-        /// 
+        /// Получить все ГОСТы из таблицы
         /// </summary>
         /// <returns></returns>
         public IDictionary<int, List<string>> GetDataFromGostsExcel()

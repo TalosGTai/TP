@@ -3,11 +3,13 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows;
+using TP.View;
 
 namespace TP.Model
 {
@@ -1336,11 +1338,11 @@ namespace TP.Model
         /// Создать таблицу ГОСТов
         /// </summary>
         /// <param name="idOrg">номер организации</param>
-        public void СreateTableGosts(int idOrg)
+        public void СreateTableGosts()
         {
-            if (!CheckTable($"laboratory.org{idOrg}Gosts"))
+            if (!CheckTable($"laboratory.Gosts"))
             {
-                string query = $"create table if not exists  laboratory.org{idOrg}Gosts (";
+                string query = $"create table if not exists  laboratory.Gosts (";
                 query += $"id int NOT NULL AUTO_INCREMENT, ";
                 query += "shortName Text, ";
                 query += "longName Text, ";
@@ -1361,21 +1363,21 @@ namespace TP.Model
         }
 
         /// <summary>
-        /// Добавить ГОСТ
+        /// Добавить все ГОСТы из файла
         /// </summary>
         /// <param name="idOrg">номер организации</param>
         /// <param name="dataLeft">краткая форма ГОСТа</param>
         /// <param name="dataRight">полная форма ГОСТа</param>
-        public void AddGostData(int idOrg, List<string> dataLeft, List<string> dataRight)
+        public void AddAllGostsData(List<string> dataLeft, List<string> dataRight)
         {
             try
             {
-                if (!CheckTable($"org{idOrg}Gosts"))
+                if (!CheckTable($"Gosts"))
                 {
-                    СreateTableGosts(idOrg);
+                    СreateTableGosts();
                 }
 
-                string queryString = $"INSERT INTO laboratory.org{idOrg}Gosts " +
+                string queryString = $"INSERT INTO laboratory.Gosts " +
                     $"(shortName, longName) " +
                     "VALUES(@short, @long)";
 
@@ -1400,24 +1402,39 @@ namespace TP.Model
                 Logger.LogDbError(e);
                 throw;
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Ошибка в AddGostData");
+            }
             finally
             {
                 CloseConnection();
             }
         }
 
-        public void AddGost(int idOrg, string dataLeft, string dataRight)
+        /// <summary>
+        /// Добавить один новый гост
+        /// </summary>
+        /// <param name="dataLeft">short gost name</param>
+        /// <param name="dataRight">long gost name</param>
+        public void AddGost(string dataLeft, string dataRight)
         {
             try
             {
-                if (!CheckTable($"org{idOrg}Gosts"))
+                if (!CheckTable($"orgGosts"))
                 {
-                    СreateTableGosts(idOrg);
+                    СreateTableGosts();
                 }
 
-                string queryString = $"INSERT INTO laboratory.org{idOrg}Gosts " +
+                string queryString = $"INSERT INTO laboratory.Gosts " +
                     $"(shortName, longName) " +
                     "VALUES(@short, @long)";
+
+                var shortNamesGosts = GetAllShortNameGostsFromDb();
+                if (shortNamesGosts.Contains(dataLeft))
+                {
+                    return;
+                }
 
                 OpenConnection();
                 var conn = GetConnection();
@@ -1429,8 +1446,120 @@ namespace TP.Model
                     cmd.Parameters["@short"].Value = dataLeft;
                     cmd.Parameters["@long"].Value = dataRight;
                     cmd.ExecuteNonQuery();
+                }
+                CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+
+        /// <summary>
+        /// Получить все короткие названия ГОСТов из таблицы
+        /// </summary>
+        /// <returns>Список коротких названий ГОСТов</returns>
+        public List<string> GetAllShortNameGostsFromDb()
+        {
+            try
+            {
+                if (!CheckTable($"Gosts"))
+                {
+                    СreateTableGosts();
+                }
+
+                string queryString = $"SELECT shortName laboratory.Gosts; ";
+
+
+                using (MySqlCommand cmd = new MySqlCommand(queryString))
+                {
+                    OpenConnection();
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    var shortNamesList = new List<string>();
+                    while (dataReader.Read())
+                    {
+                        shortNamesList.Add(dataReader["shortName"].ToString());
+                    }
+                    CloseConnection();
+
+                    return shortNamesList;
 
                 }
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Изменение существующего ГОСТа
+        /// </summary>
+        /// <param name="id">id ГОСТа</param>
+        /// <param name="sGost">новое короткое название</param>
+        /// <param name="lGost">новое полное название</param>
+        public void UpdateGost(int id, string sGost, string lGost)
+        {
+            try
+            {
+                if (!CheckTable($"Gosts"))
+                {
+                    СreateTableGosts();
+                }
+
+                string queryString = $"UPDATE Gosts SET shortName = {sGost}, longName = {lGost} WHERE id = {id};";
+
+                OpenConnection();
+                using (MySqlCommand cmd = new MySqlCommand(queryString, GetConnection()))
+                {
+
+                    cmd.ExecuteNonQuery();
+                    CloseConnection();
+                }
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Удаление ГОСТа из таблицы
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="sGost"></param>
+        /// <param name="lGost"></param>
+        public void DeleteGost(int id)
+        {
+            try
+            {
+                if (!CheckTable($"Gosts"))
+                {
+                    СreateTableGosts();
+                }
+
+                string query = $"DELETE FROM Gosts WHERE id = {id};";
+
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
                 CloseConnection();
             }
             catch (SqlException e)
