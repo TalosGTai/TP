@@ -22,6 +22,11 @@ namespace TP.View
             gosts = new List<Gost>();
         }
 
+        public void LoadFromDBToGosts()
+        {
+            DBConnection db = new DBConnection();
+        }
+
         private int GetIdRow()
         {
             return Convert.ToInt32(TableGosts.SelectedIndex.ToString());
@@ -39,7 +44,6 @@ namespace TP.View
         {
             GostsChange gostsChange = new GostsChange();
             gostsChange.ChangeTitleWindow(2);
-            //gostsChange.StartValues(gosts[GetIdRow()].ShortNameGost, gosts[GetIdRow()].LongNameGost);
 
             if (gostsChange.ShowDialog() == true)
             {

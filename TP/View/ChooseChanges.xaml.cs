@@ -45,6 +45,7 @@ namespace TP.View
         {
             Functions functions = new Functions();
             functions.Frame.Content = new Gosts();
+
         }
     }
 }
