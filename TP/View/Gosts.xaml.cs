@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using TP.Model;
 using TP.Model.Scripts;
-using Ubiety.Dns.Core.Common;
 
 
 namespace TP.View
@@ -45,10 +44,7 @@ namespace TP.View
             if (gostsChange.ShowDialog() == true)
             {
                 gosts[GetIdRow()].ShortNameGost = gostsChange.ShortFormTextBox.Text;
-                gosts[GetIdRow()].LongNameGost = gostsChange.LongFormTextBox.Text;
-
-                DBConnection db = new DBConnection();
-                db.UpdateGost(GetIdRow(), gosts[GetIdRow()].ShortNameGost, gosts[GetIdRow()].LongNameGost);
+                gosts[GetIdRow()].LongNameGost = gostsChange.LongFormTextBox.Text;   
             }
         }
 
@@ -65,15 +61,8 @@ namespace TP.View
             Gost newGost = NewGost(gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text);
             if (gostsChange.ShowDialog() == true)
             {
-                // GetIdRow() - строка, которую меняем
-                // gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text - новые значения
-                // заносим в ДБ
                 gosts.Add(newGost);
             }
-
-            DBConnection db = new DBConnection();
-            db.AddGost(newGost.ShortNameGost, newGost.LongNameGost);
-
         }
 
         private void LoadFromFileGost_Click(object sender, RoutedEventArgs e)
@@ -89,8 +78,17 @@ namespace TP.View
             {
                 data = new ExcelParseAdditionals(openFileDialog.FileName, true);
             }
-            //1 - первая колонка, краткий ГОСТ; 2 - второй столбец, полный ГОСТ)
+            // добавление в DB
             db.AddAllGostsData(data?.GostsTable[1], data?.GostsTable[2]);
+            LoadToGosts(data.GostsTuples);
+        }
+        
+        private void LoadToGosts(List<Tuple<string, string>> values)
+        {
+            foreach (var item in values)
+            {
+                gosts.Add(NewGost(item.Item1, item.Item2));
+            }
         }
     }
 }

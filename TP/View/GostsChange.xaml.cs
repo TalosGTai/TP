@@ -19,6 +19,8 @@ namespace TP.Model
     /// </summary>
     public partial class GostsChange : Window
     {
+        int _idGost;
+
         public GostsChange()
         {
             InitializeComponent();
@@ -27,6 +29,7 @@ namespace TP.Model
         public GostsChange(int idGost)
         {
             InitializeComponent();
+            _idGost = idGost;
         }
 
         public void ChangeTitleWindow(int value)
@@ -62,8 +65,18 @@ namespace TP.Model
                 MessageBox.Show("Не все данные заполнены.", "Ошибка!");
             else
             {
+                if (Title == "Изменение ГОСТа")
+                {
+                    DBConnection db = new DBConnection();
+                    db.UpdateGost(_idGost, ShortFormTextBox.Text, LongFormTextBox.Text);
+                }
+                else
+                {
+                    // добавление
+                    DBConnection db = new DBConnection();
+                    db.AddGost(ShortFormTextBox.Text, LongFormTextBox.Text);
+                }
                 this.DialogResult = true;
-                // save to DB by id (_idGost)
                 Close();
             }
         }
