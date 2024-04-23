@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -16,7 +17,9 @@ namespace TP.Model.Scripts
         object rOnly = true;
         object SaveChanges = false;
         Tuple<List<string>, Dictionary<int, List<string>>> _values;
-        IDictionary<int, List<string>> _gosts;
+
+        List<Tuple<string, string>> _gostTuples;
+
 
         // множество gosts для хранения всех гостов с приложения
         HashSet<string> gosts;
@@ -34,7 +37,7 @@ namespace TP.Model.Scripts
             sheets = workbook.Sheets;
             if (isGosts)
             {
-                _gosts = GetDataFromGostsExcel();
+                _gostTuples = GetDataFromGostsExcel();
             }
             else
             {
@@ -55,10 +58,10 @@ namespace TP.Model.Scripts
             set => gosts = value;
         }
 
-        public IDictionary<int, List<string>> GostsTable
+        public List<Tuple<string, string>> GostsTuples
         {
-            get => _gosts;
-            set => _gosts = value;
+            get => _gostTuples;
+            set => _gostTuples = value;
         }
 
         public HashSet<string> Equipments
@@ -222,7 +225,7 @@ namespace TP.Model.Scripts
         /// Получить все ГОСТы из таблицы
         /// </summary>
         /// <returns></returns>
-        public IDictionary<int, List<string>> GetDataFromGostsExcel()
+        public List<Tuple<string, string>> GetDataFromGostsExcel()
         {
             try
             {
@@ -273,9 +276,15 @@ namespace TP.Model.Scripts
 
                 // Очистка неуправляемых ресурсов
                 if (worksheet != null) Marshal.ReleaseComObject(worksheet);
-                list2[1] = col1;
-                list2[2] = col2;
-                return new Dictionary<int, List<string>>(list2);
+
+                //list2[1] = col1;
+                //list2[2] = col2;
+
+                var shortG = col1;
+                var longG = col2;
+                var result = shortG.Zip(longG, (x, y) => new Tuple<string, string>(x, y))
+                                .ToList();
+                return result;
             }
             catch (Exception ex)
             {
