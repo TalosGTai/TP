@@ -103,25 +103,27 @@
             Grid.ColumnSpan="4"
             HorizontalContentAlignment="Center"
             CanUserReorderColumns="False"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
             SelectionMode="Single"
             SelectionUnit="FullRow">
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    Width="35"
-                    MinWidth="35"
-                    MaxWidth="45"
+                    Width="55"
+                    MinWidth="55"
+                    MaxWidth="65"
                     Binding="{Binding NumberGost, UpdateSourceTrigger=PropertyChanged}"
                     Header="№" />
                 <DataGridTextColumn
-                    Width="120 "
-                    MinWidth="120"
-                    MaxWidth="140"
+                    Width="150 "
+                    MinWidth="150"
+                    MaxWidth="190"
                     Binding="{Binding ShortNameGost, UpdateSourceTrigger=PropertyChanged}"
                     Header="Краткая форма" />
                 <DataGridTextColumn
-                    Width="240 "
-                    MinWidth="240"
-                    MaxWidth="240"
+                    Width="260 "
+                    MinWidth="260"
+                    MaxWidth="300"
                     Binding="{Binding LongNameGost, UpdateSourceTrigger=PropertyChanged}"
                     Header="Полное наименование" />
             </DataGrid.Columns>

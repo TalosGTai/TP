@@ -1550,7 +1550,7 @@ namespace TP.Model
                     СreateTableGosts();
                 }
 
-                string queryString = $"UPDATE laboratory.Gosts SET shortName = {sGost}, longName = {lGost} WHERE id = {id};";
+                string queryString = $"UPDATE laboratory.Gosts SET shortName = \"{sGost}\", longName = \"{lGost}\" WHERE id = {id};";
 
                 OpenConnection();
                 using (MySqlCommand cmd = new MySqlCommand(queryString, GetConnection()))

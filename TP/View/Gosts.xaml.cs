@@ -33,7 +33,8 @@ namespace TP.View
                 gosts.Add(NewGost(row[1].ToString(), row[2].ToString()));
             }
 
-            TableGosts.ItemsSource = gosts;
+            TableGosts.ItemsSource = gosts; 
+            DataContext = this;
         }
 
         private int GetIdRow()
@@ -51,6 +52,13 @@ namespace TP.View
             DBConnection db = new DBConnection();
             db.DeleteGost(gosts[GetIdRow()]);
             gosts.RemoveAt(GetIdRow());
+            ChangeSourceTable();
+        }
+        
+        private void ChangeSourceTable()
+        {
+            List<Gost> temp = new List<Gost>();
+            TableGosts.ItemsSource = temp;
             TableGosts.ItemsSource = gosts;
         }
 
@@ -58,11 +66,13 @@ namespace TP.View
         {
             GostsChange gostsChange = new GostsChange(GetIdGost());
             gostsChange.ChangeTitleWindow(2);
+            gostsChange.StartValues(gosts[GetIdRow()].ShortNameGost, gosts[GetIdRow()].LongNameGost);
 
             if (gostsChange.ShowDialog() == true)
             {
                 gosts[GetIdRow()].ShortNameGost = gostsChange.ShortFormTextBox.Text;
-                gosts[GetIdRow()].LongNameGost = gostsChange.LongFormTextBox.Text;   
+                gosts[GetIdRow()].LongNameGost = gostsChange.LongFormTextBox.Text;
+                ChangeSourceTable();
             }
         }
 
@@ -76,10 +86,11 @@ namespace TP.View
             GostsChange gostsChange = new GostsChange();
             gostsChange.ChangeTitleWindow(1);
 
-            Gost newGost = NewGost(gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text);
             if (gostsChange.ShowDialog() == true)
             {
+                Gost newGost = NewGost(gostsChange.ShortFormTextBox.Text, gostsChange.LongFormTextBox.Text);
                 gosts.Add(newGost);
+                ChangeSourceTable();
             }
         }
 
@@ -98,7 +109,7 @@ namespace TP.View
 
                 db.AddAllGostsData(data?.GostsTuples);
                 LoadToGosts(data.GostsTuples);
-
+                ChangeSourceTable();
             }
         }
         

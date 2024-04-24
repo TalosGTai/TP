@@ -348,7 +348,7 @@ namespace TP.Model.Org1
                     //runProp.Append(runFont);
                     //runProp.Append(runText);
                     //run.PrependChild(runProp);
-                    var newChild = new Paragraph(new Run(new DocumentFormat.OpenXml.Drawing.Text(line));
+                    var newChild = new Paragraph(new Run(new DocumentFormat.OpenXml.Drawing.Text(line)));
 
                     doc.MainDocumentPart.Document.Body.ReplaceChild(newChild, oldChild);
                     doc.Save();
