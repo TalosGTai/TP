@@ -1471,12 +1471,12 @@ namespace TP.Model
                     СreateTableGosts();
                 }
 
-                string queryString = $"SELECT shortName laboratory.Gosts; ";
+                string queryString = $"SELECT shortName FROM laboratory.Gosts; ";
 
 
-                using (MySqlCommand cmd = new MySqlCommand(queryString))
+                OpenConnection();
+                using (MySqlCommand cmd = new MySqlCommand(queryString, GetConnection()))
                 {
-                    OpenConnection();
                     MySqlDataReader dataReader = cmd.ExecuteReader();
 
                     var shortNamesList = new List<string>();
@@ -1489,6 +1489,40 @@ namespace TP.Model
                     return shortNamesList;
 
                 }
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Получить ГОСТы
+        /// </summary>
+        /// <returns>Список названий ГОСТов</returns>
+        public DataTable GetAllGostsFromDb()
+        {
+            try
+            {
+                if (!CheckTable($"Gosts"))
+                {
+                    СreateTableGosts();
+                }
+
+                OpenConnection();
+                string query = $"SELECT * FROM laboratory.Gosts; ";
+                MySqlDataAdapter mySqlDataAdapter = new MySqlDataAdapter(query, GetConnection());
+                DataSet ds = new DataSet();
+                mySqlDataAdapter.Fill(ds);
+                CloseConnection();
+                return ds.Tables[0];
+
+
             }
             catch (SqlException e)
             {
@@ -1516,7 +1550,7 @@ namespace TP.Model
                     СreateTableGosts();
                 }
 
-                string queryString = $"UPDATE Gosts SET shortName = {sGost}, longName = {lGost} WHERE id = {id};";
+                string queryString = $"UPDATE laboratory.Gosts SET shortName = {sGost}, longName = {lGost} WHERE id = {id};";
 
                 OpenConnection();
                 using (MySqlCommand cmd = new MySqlCommand(queryString, GetConnection()))
@@ -1543,7 +1577,7 @@ namespace TP.Model
         /// <param name="id"></param>
         /// <param name="sGost"></param>
         /// <param name="lGost"></param>
-        public void DeleteGost(int id)
+        public void DeleteGost(Gost gost)
         {
             try
             {
@@ -1551,8 +1585,7 @@ namespace TP.Model
                 {
                     СreateTableGosts();
                 }
-
-                string query = $"DELETE FROM Gosts WHERE id = {id};";
+                string query = $"DELETE FROM laboratory.Gosts WHERE shortName = \"{gost.ShortNameGost}\" AND longName = \"{gost.LongNameGost}\" ;";
 
                 OpenConnection();
                 MySqlCommand command = new MySqlCommand(query, GetConnection());

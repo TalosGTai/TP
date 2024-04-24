@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using TP.Model;
@@ -25,6 +26,14 @@ namespace TP.View
         public void LoadFromDBToGosts()
         {
             DBConnection db = new DBConnection();
+            var dt = db.GetAllGostsFromDb();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                gosts.Add(NewGost(row[1].ToString(), row[2].ToString()));
+            }
+
+            TableGosts.ItemsSource = gosts;
         }
 
         private int GetIdRow()
@@ -32,17 +41,22 @@ namespace TP.View
             return Convert.ToInt32(TableGosts.SelectedIndex.ToString());
         }
 
+        private int GetIdGost()
+        {
+            return gosts[Convert.ToInt32(TableGosts.SelectedIndex.ToString())].NumberGost;
+        }
+
         private void DeleteGost_Click(object sender, RoutedEventArgs e)
         {
             DBConnection db = new DBConnection();
-            var id = GetIdRow();
-            gosts.RemoveAt(id);
-            db.DeleteGost(id);
+            db.DeleteGost(gosts[GetIdRow()]);
+            gosts.RemoveAt(GetIdRow());
+            TableGosts.ItemsSource = gosts;
         }
 
         private void ChangeGost_Click(object sender, RoutedEventArgs e)
         {
-            GostsChange gostsChange = new GostsChange();
+            GostsChange gostsChange = new GostsChange(GetIdGost());
             gostsChange.ChangeTitleWindow(2);
 
             if (gostsChange.ShowDialog() == true)
@@ -54,7 +68,7 @@ namespace TP.View
 
         private Gost NewGost(string shortForm, string longForm)
         {
-            return new Gost(shortForm, longForm);
+            return new Gost(gosts.Count + 1, shortForm, longForm);
         }
 
         private void AddGost_Click(object sender, RoutedEventArgs e)
@@ -81,10 +95,11 @@ namespace TP.View
             if (openFileDialog.ShowDialog() == true)
             {
                 data = new ExcelParseAdditionals(openFileDialog.FileName, true);
+
+                db.AddAllGostsData(data?.GostsTuples);
+                LoadToGosts(data.GostsTuples);
+
             }
-            // добавление в DB
-            db.AddAllGostsData(data?.GostsTuples);
-            LoadToGosts(data.GostsTuples);
         }
         
         private void LoadToGosts(List<Tuple<string, string>> values)

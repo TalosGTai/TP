@@ -20,6 +20,13 @@ namespace TP.Model
             _longNameGost = longName;
         }
 
+        public Gost(int numberGost, string shortName, string longName)
+        {
+            _numberGost = numberGost;
+            _shortNameGost = shortName;
+            _longNameGost = longName;
+        }
+
         public int NumberGost
         {
             get => _numberGost;

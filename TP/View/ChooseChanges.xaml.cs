@@ -44,8 +44,9 @@ namespace TP.View
         private void GostsChange_Click(object sender, RoutedEventArgs e)
         {
             Functions functions = new Functions();
-            functions.Frame.Content = new Gosts();
-
+            Gosts gost = new Gosts();
+            functions.Frame.Content = gost;
+            gost.LoadFromDBToGosts();
         }
     }
 }
