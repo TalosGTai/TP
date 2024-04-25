@@ -240,6 +240,9 @@
     <Compile Include="View\Gosts.xaml.cs">
       <DependentUpon>Gosts.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\WaitScreen.xaml.cs">
+      <DependentUpon>WaitScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NewProtocol.xaml.cs">
       <DependentUpon>NewProtocol.xaml</DependentUpon>
     </Compile>
@@ -279,6 +282,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Gosts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\WaitScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

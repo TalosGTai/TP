@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TP.View"
+    xmlns:lc="clr-namespace:TP.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Gosts"
     d:DesignHeight="450"
@@ -106,7 +107,9 @@
             CanUserAddRows="False"
             CanUserDeleteRows="False"
             SelectionMode="Single"
-            SelectionUnit="FullRow">
+            SelectionUnit="FullRow"
+            ColumnWidth="*"
+            AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="55"
@@ -115,18 +118,25 @@
                     Binding="{Binding NumberGost, UpdateSourceTrigger=PropertyChanged}"
                     Header="№" />
                 <DataGridTextColumn
-                    Width="150 "
-                    MinWidth="150"
-                    MaxWidth="190"
                     Binding="{Binding ShortNameGost, UpdateSourceTrigger=PropertyChanged}"
                     Header="Краткая форма" />
                 <DataGridTextColumn
-                    Width="260 "
-                    MinWidth="260"
-                    MaxWidth="300"
                     Binding="{Binding LongNameGost, UpdateSourceTrigger=PropertyChanged}"
                     Header="Полное наименование" />
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="MenuAddGost"
+                              Header="Добавить ГОСТ"
+                              Click="MenuAddGost_Click"/>
+                    <MenuItem x:Name="MenuChangeGost"
+                              Header="Изменить ГОСТ"
+                              Click="MenuChangeGost_Click"/>
+                    <MenuItem x:Name="MenuDeleteGost"
+                              Header="Удалить ГОСТ"
+                              Click="MenuDeleteGost_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
     </Grid>
 </Page>

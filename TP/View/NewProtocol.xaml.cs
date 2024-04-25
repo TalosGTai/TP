@@ -9,6 +9,7 @@ using System.IO;
 using TP.Model.Org1;
 using System.Threading;
 using System.Globalization;
+using Ubiety.Dns.Core;
 
 namespace TP.View
 {
@@ -77,16 +78,16 @@ namespace TP.View
         {
             string res = "";
             foreach (var s in source)
-                res += s + ", ";
-            return res.Substring(0, res.Length - 3);
+                res += s + "\n";
+            return res;
         }
 
         private string GostsShortToLong(string gosts)
         {
             string res = "";
-            foreach (var gost in gosts.Split(','))
+            foreach (var gost in gosts.Split('\n'))
             {
-                // gost.Trim();
+                gost.Trim();
                 // longGost = DB.checkGost()
                 // if (longGost != -1)
                 // res += longGost + ", ";
@@ -115,15 +116,15 @@ namespace TP.View
                     List<string> additionalValues = UpdateJournal();
                     Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>,
                         Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
-                    CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol,
-                        additionals, HashSetToString(gosts), HashSetToString(equipments));
 
-                    string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
-                    for (int i = 0; i < _pathAdditionals.Count; i++)
-                    {
-                        ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
-                        excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
-                    }
+                    // создание ожидания
+                    Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, additionals, gosts,
+                        equipments, additionalValues));
+                    threadCreatProtocol.Start();
+                    WaitScreen waitScreen = new WaitScreen(threadCreatProtocol, 2);
+                    waitScreen.StartLoading();
+                    waitScreen.SetWaitMsg();
+                    waitScreen.ShowDialog();
 
                     MessageBox.Show("Протокол успешно создан!", "Создание протокола");
 
@@ -136,6 +137,21 @@ namespace TP.View
                 {
                     Logger.LogError(ex);
                 }
+            }
+        }
+
+        private void ThreadCreateProtocol(Tuple<Dictionary<string, string>, Dictionary<string, string>> journal,
+            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals,
+            HashSet<string> gosts, HashSet<string> equipments, List<string> additionalValues)
+        {
+            CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol,
+                        additionals, HashSetToString(gosts), HashSetToString(equipments));
+
+            string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+            for (int i = 0; i < _pathAdditionals.Count; i++)
+            {
+                ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
+                excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
             }
         }
 
@@ -292,8 +308,8 @@ namespace TP.View
                 _list1 = new List<string>()
                 {
                     ToStringDataBase(journal[0]),
-                    ToStringDataBase(_directionDict.Item1["B"]),
-                    ToStringDataBase(_directionDict.Item1["C"]),
+                    ToStringDataBase(_directionDict.Item1["B"] + " " + _directionDict.Item1["C"]),
+                    ToStringDataBase(_directionDict.Item1["B"] + " " + _directionDict.Item1["C"]),
                     ToStringDataBase(_directionDict.Item1["D"]),
                     ToStringDataBase(_directionDict.Item1["E"]),
                     ToStringDataBase(_directionDict.Item1["F"]),
