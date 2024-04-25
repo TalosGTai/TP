@@ -121,7 +121,7 @@ namespace TP.View
                     Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, additionals, gosts,
                         equipments, additionalValues));
                     threadCreatProtocol.Start();
-                    WaitScreen waitScreen = new WaitScreen(threadCreatProtocol, 2);
+                    WaitScreen waitScreen = new WaitScreen(threadCreatProtocol, 2, 1);
                     waitScreen.StartLoading();
                     waitScreen.SetWaitMsg();
                     waitScreen.ShowDialog();

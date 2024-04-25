@@ -133,7 +133,7 @@ namespace TP.View
             {
                 Thread threadLoadGost = new Thread(ThreadLoadGosts);
                 threadLoadGost.Start();
-                WaitScreen waitScreen = new WaitScreen(threadLoadGost, 1);
+                WaitScreen waitScreen = new WaitScreen(threadLoadGost, 1, 0);
                 waitScreen.StartLoading();
                 waitScreen.SetWaitMsg();
                 waitScreen.ShowDialog();
