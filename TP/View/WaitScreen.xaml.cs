@@ -59,12 +59,20 @@ namespace TP.View
                 case 11:
                     LoadingPgBar.LargeChange = 1;
                     break;
+                case 12:
+                    LoadingPgBar.LargeChange = 1;
+                    break;
+                case 13:
+                    LoadingPgBar.LargeChange = 1;
+                    break;
+                case 14:
+                    LoadingPgBar.LargeChange = 1;
+                    break;
                 default:
                     LoadingPgBar.LargeChange = 1;
                     break;
             }
         }
-
 
         public void SetWaitMsg()
         {

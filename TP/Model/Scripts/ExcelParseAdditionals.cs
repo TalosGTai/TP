@@ -24,11 +24,13 @@ namespace TP.Model.Scripts
         // множество gosts для хранения всех гостов с приложения
         HashSet<string> gosts;
         HashSet<string> equipments;
+        HashSet<string> numberEquipments;
 
         public ExcelParseAdditionals(string filename, bool isGosts = false)
         {
             gosts = new HashSet<string>();
             equipments = new HashSet<string>();
+            numberEquipments = new HashSet<string>();
             workbooks = app.Workbooks;
             workbook = workbooks.Open(filename, MissingObj, rOnly, MissingObj, MissingObj,
                                 MissingObj, MissingObj, MissingObj, MissingObj, MissingObj,
@@ -68,6 +70,12 @@ namespace TP.Model.Scripts
         {
             get => equipments;
             set => equipments = value;
+        }
+
+        public HashSet<string> NumberEquipments
+        {
+            get => numberEquipments;
+            set => numberEquipments = value;
         }
 
         private bool IsCell1(string value)
@@ -197,7 +205,10 @@ namespace TP.Model.Scripts
                                         else if (j == 2)
                                             col2.Add(CellText);
                                         else
+                                        {
+
                                             col3.Add(CellText);
+                                        }
                                     }
                                 }
                                 //Console.Write($"{i}, {j}  | ");

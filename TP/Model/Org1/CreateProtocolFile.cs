@@ -602,7 +602,7 @@ namespace TP.Model.Org1
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 idRow++;
                 idRow++;
-                worksheet.Cell("A" + idRow).Value = Resources.Protocol26 + " " + _gosts;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol26 + "\n" + _gosts;
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = false;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -610,7 +610,7 @@ namespace TP.Model.Org1
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 worksheet.Row(idRow).Height = 45; // 33
                 idRow++;
-                worksheet.Cell("A" + idRow).Value = Resources.Protocol26_43 + " " + _equipments; // список оборудования
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol26_43 + "\n" + _equipments; 
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = true;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
