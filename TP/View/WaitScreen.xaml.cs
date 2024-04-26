@@ -98,7 +98,6 @@ namespace TP.View
         {
             if (_thread.IsAlive)
             {
-                Console.WriteLine(_thread.IsAlive);
                 LoadingPgBar.Value += LoadingPgBar.LargeChange;
             }
             else

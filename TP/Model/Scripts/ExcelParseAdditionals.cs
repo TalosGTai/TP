@@ -115,11 +115,11 @@ namespace TP.Model.Scripts
                 List<string> col2 = new List<string>();
                 List<string> col3 = new List<string>();
                 Dictionary<int, List<string>> list2 = new Dictionary<int, List<string>>();
-                int countLists = 0;
-
+                int countLists, zavNumber;
                 bool cell1, cell1Help, cell2, cell2Help, cell3, cell3Help, cell4, cell4Help, cell4HelpT;
 
                 cell1 = cell1Help = cell2 = cell2Help = cell3 = cell3Help = cell4 = cell4Help = cell4HelpT = false;
+                countLists = zavNumber = 0;
 
                 foreach (Excel.Worksheet worksheet in sheets)
                 {
@@ -195,6 +195,25 @@ namespace TP.Model.Scripts
                                 }
                                 else if (worksheet.Name.ToLower().IndexOf("оборудов") != -1)
                                 {
+                                    for (int k = 1; k < 2; k++)
+                                    {
+                                        for (int z = 1; z < 7; z++)
+                                        {
+                                            Excel.Range CellRange2 = UsedRange.Cells[k, z];
+                                            // Получение текста ячейки
+                                            string CellText2 = (CellRange2 == null || CellRange2.Value2 == null) ? null :
+                                                                (CellRange2 as Excel.Range).Value2.ToString();
+
+                                            if (zavNumber == 0 && CellText2 == "Зав№")
+                                            {
+                                                zavNumber = z;
+                                                break;
+                                            }
+                                        }
+                                        if (zavNumber != 0)
+                                            break;
+                                    }
+                                   
                                     if (((j == 1) || (j == 2) || (j == 3)) && i > 1)
                                     {
                                         if (j == 1)
@@ -209,6 +228,8 @@ namespace TP.Model.Scripts
 
                                             col3.Add(CellText);
                                         }
+                                        if (j == zavNumber)
+                                            numberEquipments.Add(CellText);
                                     }
                                 }
                                 //Console.Write($"{i}, {j}  | ");

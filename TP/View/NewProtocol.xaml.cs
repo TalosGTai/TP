@@ -82,6 +82,26 @@ namespace TP.View
             return res;
         }
 
+        private List<string> HashSetToList(HashSet<string> source)
+        {
+            List<string> res = new List<string>();
+            foreach(var s in source)
+                res.Add(s);
+            return res;
+        }
+
+        private string HashSetToString(HashSet<string> source, List<string> sourceSecond)
+        {
+            string res = "";
+            int i = 0;
+            foreach (var s in source)
+            {
+                res += s + " №" + sourceSecond[i] + "\n";
+                i++;
+            }
+            return res;
+        }
+
         private string GostsShortToLong(string gosts)
         {
             string res = "";
@@ -105,6 +125,8 @@ namespace TP.View
                     HashSet<string> gosts = new HashSet<string>();
                     // множество наименований оборудования для хранения всех гостов с приложения
                     HashSet<string> equipments = new HashSet<string>();
+                    // множество всех номеров для оборудования
+                    HashSet<string> numberEquipments = new HashSet<string>();
                     List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
                     for (int i = 0; i < _pathAdditionals.Count; i++)
                     {
@@ -112,6 +134,7 @@ namespace TP.View
                         additionals.Add(excelParseAdditionals.Values);
                         gosts = MergeHashSets(gosts, excelParseAdditionals.Gosts);
                         equipments = MergeHashSets(equipments, excelParseAdditionals.Equipments);
+                        numberEquipments = MergeHashSets(numberEquipments, excelParseAdditionals.NumberEquipments);
                     }
                     List<string> additionalValues = UpdateJournal();
                     Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>,
@@ -119,7 +142,7 @@ namespace TP.View
 
                     // создание ожидания
                     Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, additionals, gosts,
-                        equipments, additionalValues));
+                        equipments, additionalValues, numberEquipments, _pathAdditionals.Count));
                     threadCreatProtocol.Start();
                     WaitScreen waitScreen = new WaitScreen(threadCreatProtocol, 2, 1);
                     waitScreen.StartLoading();
@@ -142,10 +165,12 @@ namespace TP.View
 
         private void ThreadCreateProtocol(Tuple<Dictionary<string, string>, Dictionary<string, string>> journal,
             List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals,
-            HashSet<string> gosts, HashSet<string> equipments, List<string> additionalValues)
+            HashSet<string> gosts, HashSet<string> equipments, List<string> additionalValues,
+            HashSet<string> numberEquipments, int countAdditionals)
         {
             CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol,
-                        additionals, HashSetToString(gosts), HashSetToString(equipments));
+                        additionals, HashSetToString(gosts), HashSetToString(equipments, HashSetToList(numberEquipments)),
+                        countAdditionals);
 
             string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
             for (int i = 0; i < _pathAdditionals.Count; i++)
