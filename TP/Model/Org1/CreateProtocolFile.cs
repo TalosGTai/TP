@@ -14,15 +14,10 @@ using Paragraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 using DocumentWord = Microsoft.Office.Interop.Word.Document;
 using ParagraphWord = Microsoft.Office.Interop.Word.Paragraph;
 using System.IO;
-using TableStyle = DocumentFormat.OpenXml.Wordprocessing.TableStyle;
 using Application = Microsoft.Office.Interop.Word.Application;
 using System.Text;
-using MySqlX.XDevAPI;
-using System.Windows;
-using System.Windows.Controls;
-using DocumentFormat.OpenXml.Spreadsheet;
-using HeaderFooter = DocumentFormat.OpenXml.Spreadsheet.HeaderFooter;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using Header = DocumentFormat.OpenXml.Wordprocessing.Header;
+using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 
 
 namespace TP.Model.Org1
@@ -41,6 +36,7 @@ namespace TP.Model.Org1
         List<string> valuesResourses;
         private string _gosts;
         private string _equipments;
+        private string ColontitulText = "";
 
         public CreateProtocolFile()
         {
@@ -67,8 +63,8 @@ namespace TP.Model.Org1
                 //Получаем docx файл
                 workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
 
-                ChangeDocFont(idOrg, idProtocol, PROTOCOL_WORD_PATH);
                 FixDocument(idOrg, idProtocol, PROTOCOL_WORD_PATH);
+                ChangeDocFont(idOrg, idProtocol, PROTOCOL_WORD_PATH);
 
                 //Подготавливаем файлы для сохранения в БД
                 FileStream fs = new FileStream(PROTOCOL_EXCEL_PATH, FileMode.Open, FileAccess.Read);
@@ -84,6 +80,7 @@ namespace TP.Model.Org1
                 //Сохраняем протоколы в БД
                 var db = new DBConnection();
                 db.InsertOrUpdateOrgProtocolRow(idOrg, idProtocol, protocolDoc, protocolXls);
+
             }
             catch (Exception ex)
             {
@@ -185,6 +182,7 @@ namespace TP.Model.Org1
             return from;
         }
 
+        int CountPages = 0;
         /// <summary>
         /// Изменение шрифта в документе, созданном по таблице Протокол
         /// </summary>
@@ -192,13 +190,13 @@ namespace TP.Model.Org1
         /// <param name="idProtocol"></param>
         private void ChangeDocFont(int idOrg, int idProtocol, string path)
         {
-            try { 
-            Application wordApp = new Application();
-            string filename = $"{Directory.GetCurrentDirectory()}\\"+ path;
-
-            DocumentWord myDoc = wordApp.Documents.Open(filename);
-            myDoc.PageSetup.TopMargin = 0;
-            myDoc.PageSetup.BottomMargin = 0;
+            try
+            {
+                Application wordApp = new Application();
+                string filename = $"{Directory.GetCurrentDirectory()}\\" + path;
+                DocumentWord myDoc = wordApp.Documents.Open(filename);
+                myDoc.PageSetup.TopMargin = 0;
+                myDoc.PageSetup.BottomMargin = 0;
                 try
                 {
                     if (myDoc.Paragraphs.Count > 0)
@@ -212,8 +210,11 @@ namespace TP.Model.Org1
                             var wTable = t;
                             wTable.Range.Cells.HeightRule = WdRowHeightRule.wdRowHeightAuto;
                         }
-
                     }
+
+                    object missing = System.Reflection.Missing.Value;
+                    Microsoft.Office.Interop.Word.WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
+                    CountPages = myDoc.ComputeStatistics(stat, ref missing); 
                 }
                 finally
                 {
@@ -240,85 +241,118 @@ namespace TP.Model.Org1
                 List<Paragraph> paragraphItems = new List<Paragraph>();
                 string prev = null;
                 Table tbl;
-                using (var doc = WordprocessingDocument.Open(path, true))
+                var doc = WordprocessingDocument.Open(path, true);
+
+
+                var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
+                //Получаем таблицу с испытаниямиzn
+                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[4];
+                //Исключаем копирайтинг строки
+                paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
+                        && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
+
+                //Параграфы берем без значений таблицы
+                var flagForTable = false;
+
+                Body body = new Body();
+
+                foreach (var el in paragraphs)
                 {
-                    var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
-                    //Получаем таблицу с испытаниямиzn
-                    tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[4];
-                    //Исключаем копирайтинг строки
-                    paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
-                            && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
-
-                    //Параграфы берем без значений таблицы
-                    var flagForTable = false;
-
-                    Body body = new Body();
-
-                    foreach (var el in paragraphs)
+                    //исключаем пустые параграфы, если их более одного подряд
+                    if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
                     {
-                        //исключаем пустые параграфы, если их более одного подряд
-                        if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
+                        if (el.InnerText.Contains("Результаты испытаний:"))
                         {
-                            if (el.InnerText.Contains("Результаты испытаний:"))
-                            {
-                                var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                                body.AppendChild(p);
-                                flagForTable = true;
+                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
+                            body.AppendChild(p);
+                            flagForTable = true;
 
-                                body.AppendChild(el.CloneNode(true));
-                            }
-                            if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
-                            {
-                                var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                                //paragraphItems.Add(p);
-                                body.AppendChild(p);
-                            }
-                            if (el.InnerText.Contains("Внимание!"))
-                            {
-                                flagForTable = false;
-                            }
-                            if (!flagForTable)
-                            {
-                                body.AppendChild(el.CloneNode(true));
-                            }
-                            if ((prev != null && prev.Contains(Resources.Protocol19)))
-                            {
-                                var elContString = el;
-                            }
-
-                            if ((prev != null && prev.Contains("Результаты испытаний:")))
-                            {
-                                Table t = new Table();
-                                OpenXmlElementList oxl = tbl.ChildElements;
-                                TableProperties props = new TableProperties();
-                                TableWidth tw = new TableWidth() { Width = "1000", Type = TableWidthUnitValues.Auto };
-                                TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
-                                props.Append(tw, th);
-
-                                t.Append(props);
-                                foreach (var c in oxl)
-                                {
-                                    if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
-                                    {
-                                        OpenXmlElement child = c.CloneNode(true);
-                                        t.AppendChild(child);
-                                    }
-                                }
-                                body.AppendChild(t);
-                            }
+                            body.AppendChild(el.CloneNode(true));
                         }
-                        prev = el.InnerText;
+                        if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
+                        {
+                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
+                            //paragraphItems.Add(p);
+                            body.AppendChild(p);
+                        }
+                        if (el.InnerText.Contains("Внимание!"))
+                        {
+                            flagForTable = false;
+                        }
+                        //if (el.InnerText.Contains(Resources.Protocol19))
+                        //{
+                        //    string line = Resources.Protocol19 + $" {CountPages}";
+                        //    var newChild = new Paragraph(new Run(new DocumentFormat.OpenXml.Drawing.Text(line)));
+                        //    body.AppendChild(newChild);
+                        //}
+                        if (!flagForTable)
+                        {
+                            body.AppendChild(el.CloneNode(true));
+                        }
+                        if ((prev != null && prev.Contains(Resources.Protocol19)))
+                        {
+                            var elContString = el;
+                        }
+
+                        if ((prev != null && prev.Contains("Результаты испытаний:")))
+                        {
+                            Table t = new Table();
+                            OpenXmlElementList oxl = tbl.ChildElements;
+                            TableProperties props = new TableProperties();
+                            TableWidth tw = new TableWidth() { Width = "1000", Type = TableWidthUnitValues.Auto };
+                            TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
+                            props.Append(tw, th);
+
+                            t.Append(props);
+                            foreach (var c in oxl)
+                            {
+                                if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
+                                {
+                                    OpenXmlElement child = c.CloneNode(true);
+                                    t.AppendChild(child);
+                                }
+                            }
+                            body.AppendChild(t);
+                        }
                     }
-
-                    //Очищаем весь файл
-                    doc.MainDocumentPart.Document.Body.Remove();
-                    doc.MainDocumentPart.Document.AppendChild(body);
-
-                    doc.Save();
+                    prev = el.InnerText;
                 }
-                //WritePageCount(path);
+
+                //Очищаем весь файл
+                doc.MainDocumentPart.Document.Body.Remove();
+                doc.MainDocumentPart.Document.AppendChild(body);
+
+                ApplyHeader(doc);
+                doc.Save();
+                doc.Close();
             }
             catch (Exception ex) { Logger.LogError(ex); throw; }
+        }
+
+        private void ApplyHeader(WordprocessingDocument doc)
+        {
+            MainDocumentPart mainDocPart = doc.MainDocumentPart;
+
+            HeaderPart headerPart1 = mainDocPart.AddNewPart<HeaderPart>("r97");
+            Header header1 = new Header();
+
+            Paragraph paragraph1 = new Paragraph() { };
+            Run run1 = new Run();
+            Text text1 = new Text();
+            text1.Text = ColontitulText;
+
+            run1.Append(text1);
+            paragraph1.Append(run1);
+            header1.Append(paragraph1);
+            headerPart1.Header = header1;
+            SectionProperties sectionProperties1 = mainDocPart.Document.Body.Descendants<SectionProperties>().FirstOrDefault();
+            if (sectionProperties1 == null)
+            {
+                sectionProperties1 = new SectionProperties() { };
+                mainDocPart.Document.Body.Append(sectionProperties1);
+            }
+            HeaderReference headerReference1 = new HeaderReference() { Type = HeaderFooterValues.Default, Id = "r97" };
+            sectionProperties1.InsertAt(headerReference1, 0);
         }
 
         private void WritePageCount(string path)
@@ -547,7 +581,8 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + 23).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Cell("A" + 23).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("A23:G23").Merge();
-                worksheet.Cell("A" + 24).Value = "№ " + _journal.Item1["O"] + " от " + _journal.Item1["H"]; 
+                ColontitulText = "№ " + _journal.Item1["O"] + " от " + _journal.Item1["H"];
+                worksheet.Cell("A" + 24).Value = ColontitulText; 
                 worksheet.Cell("A" + 24).Style.Font.FontSize = 12;
                 worksheet.Cell("A" + 24).Style.Font.Bold = true;
                 worksheet.Cell("A" + 24).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
