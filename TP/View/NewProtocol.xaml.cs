@@ -137,6 +137,8 @@ namespace TP.View
                         numberEquipments = MergeHashSets(numberEquipments, excelParseAdditionals.NumberEquipments);
                     }
                     List<string> additionalValues = UpdateJournal();
+                    // Номер и Дата
+                    // journal.Item1["O"] + " от " + journal.Item1["H"]; 
                     Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>,
                         Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
 
