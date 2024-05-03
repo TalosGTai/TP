@@ -58,7 +58,6 @@ namespace TP.View
         private void OpenProtocolExcel_Click(object sender, RoutedEventArgs e)
         {
             int id = Convert.ToInt32(ListProtocols.SelectedIndex.ToString());
-            Excel.Application ex = null;
 
             if (id == -1)
             {
@@ -69,17 +68,11 @@ namespace TP.View
                 try
                 {
                     id = protocols[id].NumberProtocol;
-                    ex = new Excel.Application();
-                    ex.Workbooks.Open($"Организация{_idOrg}\\Протокол{id}\\Протокол{id}.xlsx");
-                    ex.Visible = true;
+                    Process.Start($"Организация{_idOrg}\\Протокол{id}\\Протокол{id}.xlsx");
                 }
                 catch
                 {
-                    MessageBox.Show("", "Ошибка");
-                }
-                finally
-                {
-                    Marshal.ReleaseComObject(ex);
+                    MessageBox.Show("Протокол не найден.", "Ошибка");
                 }
             }
         }
@@ -101,7 +94,7 @@ namespace TP.View
                 }
                 catch
                 {
-
+                    MessageBox.Show("Протокол не найден.", "Ошибка");
                 }
             }
         }

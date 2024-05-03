@@ -162,6 +162,7 @@ namespace TP.Model
             }
             return "";
         }
+
         /// <summary>
         /// Получаем по одной строке из таблицу editprotocol
         /// </summary>
@@ -1455,6 +1456,33 @@ namespace TP.Model
             {
                 CloseConnection();
             }
+        }
+
+        public string GetGost(string shortName)
+        {
+            try
+            {
+                if (!CheckTable($"orgGosts"))
+                {
+                    СreateTableGosts();
+                }
+
+                OpenConnection();
+
+                var queryString = $"SELECT longName FROM laboratory.Gosts Where shortName=\"{shortName}\"";
+                MySqlCommand command = new MySqlCommand(queryString, GetConnection());
+                string result = command.ExecuteScalar()?.ToString();
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                Logger.LogDbError(ex);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+            return "";
         }
 
 

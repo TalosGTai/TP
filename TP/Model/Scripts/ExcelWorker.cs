@@ -156,7 +156,8 @@ namespace TP.Model.Scripts
                                     else
                                     {
                                         val2 = true;
-                                        worksheet.Cell(GetExcelPos(i, j)).Value = value2;
+                                        worksheet.Cell(GetExcelPos(i, j)).Value = value2.Split('-')[0];
+                                        worksheet.Cell(GetExcelPos(i, j + 1)).Value = value2.Split('-')[1].Split()[0];
                                     }
                                 }
                             }

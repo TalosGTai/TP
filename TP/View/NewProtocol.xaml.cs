@@ -104,15 +104,18 @@ namespace TP.View
 
         private string GostsShortToLong(string gosts)
         {
+            DBConnection dBConnection = new DBConnection();
             string res = "";
             foreach (var gost in gosts.Split('\n'))
             {
                 gost.Trim();
-                // longGost = DB.checkGost()
-                // if (longGost != -1)
-                // res += longGost + ", ";
+                var longGost = dBConnection.GetGost(ToStringToDataBase(gost));
+                if (!string.IsNullOrEmpty(longGost))
+                    res += longGost + "\n";
+                else
+                    res += gost + "\n";
             }
-            return res.Substring(0, res.Length - 3);
+            return res;
         }
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
@@ -171,10 +174,11 @@ namespace TP.View
             HashSet<string> numberEquipments, int countAdditionals)
         {
             CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol,
-                        additionals, HashSetToString(gosts), HashSetToString(equipments, HashSetToList(numberEquipments)),
+                        additionals, GostsShortToLong(HashSetToString(gosts)), HashSetToString(equipments, HashSetToList(numberEquipments)),
                         countAdditionals);
 
             string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
+            // замена приложений (рег. номер и дата)
             for (int i = 0; i < _pathAdditionals.Count; i++)
             {
                 ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
@@ -400,6 +404,11 @@ namespace TP.View
                 }
             }
             return result;
+        }
+
+        private string ToStringToDataBase(string value)
+        {
+            return value.Replace("\"", "\\\"");
         }
     }
 }
