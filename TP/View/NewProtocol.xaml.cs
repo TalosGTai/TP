@@ -10,6 +10,7 @@ using TP.Model.Org1;
 using System.Threading;
 using System.Globalization;
 using Ubiety.Dns.Core;
+using System.Text;
 
 namespace TP.View
 {
@@ -76,10 +77,10 @@ namespace TP.View
 
         private string HashSetToString(HashSet<string> source)
         {
-            string res = "";
+            StringBuilder res = new StringBuilder();
             foreach (var s in source)
-                res += s + "\n";
-            return res;
+                res.Append(s + "\n");
+            return res.ToString();
         }
 
         private List<string> HashSetToList(HashSet<string> source)

@@ -30,9 +30,9 @@ namespace TP.Model
             }
             catch (Exception e)
             {
-                MessageBox.Show("Невозможно добавить запись в лог");
+                MessageBox.Show("Невозможно добавить запись в лог.");
             }
-            MessageBox.Show("Ошибка работы с бд");
+            MessageBox.Show("Ошибка работы с базой данных.");
         }
 
         public static void LogError(Exception ex, string message = null)

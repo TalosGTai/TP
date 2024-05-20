@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TP"
         mc:Ignorable="d"
-        Title="Организация " Height="800" Width="1200" WindowStartupLocation="CenterScreen">
+        Title="Организация " Height="800" Width="1200" 
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="Label" x:Key="TitleSlideMenu">
             <Setter Property="FontSize" Value="24"/>
@@ -116,8 +117,7 @@
                 </StackPanel>
                 <Label Content="Организация "
                        x:Name="LabelLab"
-                       Style="{StaticResource TitleSlideMenu}"
-                       />
+                       Style="{StaticResource TitleSlideMenu}"/>
             </Grid>
             <Grid>
                 <Border BorderBrush="Black"

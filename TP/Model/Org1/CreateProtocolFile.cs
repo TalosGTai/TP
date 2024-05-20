@@ -19,7 +19,6 @@ using System.Text;
 using Header = DocumentFormat.OpenXml.Wordprocessing.Header;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 
-
 namespace TP.Model.Org1
 {
     /// <summary>
@@ -107,6 +106,7 @@ namespace TP.Model.Org1
                 var worksheet = workbook.Worksheets.Add("Главная");
                 var worksheet2 = workbook.Worksheets.Add("Таблицы");
                 var worksheet3 = workbook.Worksheets.Add("Концовка");
+
                 worksheet = CreateChapter1(worksheet);
                 worksheet = CreateChapter2(worksheet);
                 worksheet2 = CreateTablesTests(worksheet2, additionals);
@@ -761,14 +761,10 @@ namespace TP.Model.Org1
                 for (int i = 0; i < _countAdditionals; i++)
                 {
                     worksheet.Cell("A" + idRow).Value = i.ToString();
-                    worksheet.Cell("B" + idRow).Value = values[0].Item1[1];
-                    worksheet.Cell("C" + idRow).Value = values[0].Item1[0];
-                    //if (values[0].Item2[1].Count > i && values[0].Item2[2].Count > i && values[0].Item2[3].Count > i)
-                    //    worksheet.Cell("D" + idRow).Value = values[0].Item2[1][i] + " " + values[0].Item2[2][i] + " " + values[0].Item2[3][i];
-                    if (values[0].Item1.Count > 2)
-                        worksheet.Cell("D" + idRow).Value = values[0].Item1[2];
-                    if (values[0].Item1.Count > 3)
-                        worksheet.Cell("E" + idRow).Value = values[0].Item1[3];
+                    worksheet.Cell("B" + idRow).Value = values[i].Item1[1];
+                    worksheet.Cell("C" + idRow).Value = values[i].Item1[0];
+                    worksheet.Cell("D" + idRow).Value = values[i].Item1[2];
+                    worksheet.Cell("E" + idRow).Value = values[i].Item1[3];
                     worksheet.Range($"A{idRow}:E{idRow}").Style.Font.FontSize = 10;
                     worksheet.Range($"A{idRow}:E{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                     worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
