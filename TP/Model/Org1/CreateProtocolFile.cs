@@ -31,11 +31,11 @@ namespace TP.Model.Org1
         private int _countAdditionals;
         private readonly string FONT = "Times New Roman";
         string PROTOCOL_EXCEL_PATH = "",
-                PROTOCOL_WORD_PATH = "";
+               PROTOCOL_WORD_PATH  = "";
         List<string> valuesResourses;
         private string _gosts;
         private string _equipments;
-        private string ColontitulText = "";
+        private string ColontitulText = "Протокол испытаний ";
 
         public CreateProtocolFile()
         {
@@ -198,7 +198,7 @@ namespace TP.Model.Org1
                 myDoc.PageSetup.TopMargin = 0;
                 myDoc.PageSetup.BottomMargin = 0;
                 try
-                {
+                {     
                     if (myDoc.Paragraphs.Count > 0)
                     {
                         foreach (ParagraphWord p in myDoc.Paragraphs)
@@ -210,11 +210,19 @@ namespace TP.Model.Org1
                             var wTable = t;
                             wTable.Range.Cells.HeightRule = WdRowHeightRule.wdRowHeightAuto;
                         }
-                    }
 
-                    object missing = System.Reflection.Missing.Value;
-                    Microsoft.Office.Interop.Word.WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
-                    CountPages = myDoc.ComputeStatistics(stat, ref missing); 
+                        object missing = System.Reflection.Missing.Value;
+                        WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
+                        CountPages = myDoc.ComputeStatistics(stat, ref missing);
+                        foreach (ParagraphWord p in myDoc.Paragraphs)
+                        {
+                            if (p.Range.Text.Contains("Число страниц"))
+                            {
+                                p.Range.Text = $"Число страниц: {CountPages}\r";
+                                break;
+                            }
+                        }
+                    }
                 }
                 finally
                 {
@@ -243,9 +251,8 @@ namespace TP.Model.Org1
                 Table tbl;
                 var doc = WordprocessingDocument.Open(path, true);
 
-
                 var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
-                //Получаем таблицу с испытаниямиzn
+                //Получаем таблицу с испытаниями
                 tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[4];
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
@@ -253,9 +260,8 @@ namespace TP.Model.Org1
 
                 //Параграфы берем без значений таблицы
                 var flagForTable = false;
-
                 Body body = new Body();
-
+                bool isNeedAligement = false;
                 foreach (var el in paragraphs)
                 {
                     //исключаем пустые параграфы, если их более одного подряд
@@ -279,19 +285,30 @@ namespace TP.Model.Org1
                         {
                             flagForTable = false;
                         }
-                        //if (el.InnerText.Contains(Resources.Protocol19))
-                        //{
-                        //    string line = Resources.Protocol19 + $" {CountPages}";
-                        //    var newChild = new Paragraph(new Run(new DocumentFormat.OpenXml.Drawing.Text(line)));
-                        //    body.AppendChild(newChild);
-                        //}
+                        // Параграфы, которые не входят в таблицы
                         if (!flagForTable)
                         {
-                            body.AppendChild(el.CloneNode(true));
-                        }
-                        if ((prev != null && prev.Contains(Resources.Protocol19)))
-                        {
-                            var elContString = el;
+                            Paragraph cloneNode = (Paragraph)el.CloneNode(true);
+                            //Выравниваем текст по ширине после "Число страниц"
+                            if (prev !=null && prev.Contains(Resources.Protocol19))
+                            {
+                                isNeedAligement = true;
+                            }
+                            //Перестаем выравнивать по ширине, если дошли до строки "Конец протокола..."
+                            if (el.InnerText.Contains("Конец"))
+                            {
+                                isNeedAligement = false;
+                            }
+                            if (isNeedAligement)
+                            {
+                                Justification justification1 = new Justification() { Val = JustificationValues.Both };
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    Justification = justification1
+                                };
+                            }
+                            body.AppendChild(cloneNode);
+                            
                         }
 
                         if ((prev != null && prev.Contains("Результаты испытаний:")))
@@ -581,7 +598,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + 23).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Cell("A" + 23).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("A23:G23").Merge();
-                ColontitulText = "№ " + _journal.Item1["O"] + " от " + _journal.Item1["H"];
+                ColontitulText += "№ " + _journal.Item1["O"] + " от " + _journal.Item1["H"];
                 worksheet.Cell("A" + 24).Value = ColontitulText; 
                 worksheet.Cell("A" + 24).Style.Font.FontSize = 12;
                 worksheet.Cell("A" + 24).Style.Font.Bold = true;
