@@ -946,7 +946,8 @@ namespace TP.Model
                     }
                 }
                 OpenConnection();
-                string query = $"select * from laboratory.org{idOrg}journal{idJournal}list{idList}";
+                string query = $"select * from laboratory.org{idOrg}journal{idJournal}list{idList} " +
+                    $"ORDER BY STR_TO_DATE(H, \'%e.%c.%Y\') ";
                 MySqlDataAdapter mySqlDataAdapter = new MySqlDataAdapter(query, GetConnection());
                 DataSet ds = new DataSet("list");
                 mySqlDataAdapter.Fill(ds);
