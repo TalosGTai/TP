@@ -265,7 +265,7 @@ namespace TP.Model.Org1
                 foreach (var el in paragraphs)
                 {
                     //исключаем пустые параграфы, если их более одного подряд
-                    if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
+                    if (!(string.IsNullOrEmpty(el.InnerText)))
                     {
                         if (el.InnerText.Contains("Результаты испытаний:"))
                         {
@@ -306,6 +306,11 @@ namespace TP.Model.Org1
                                 {
                                     Justification = justification1
                                 };
+                            }
+                            if (el.InnerText.Contains("Список применяемого оборудования и средств измерений"))
+                            {
+                                var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
+                                body.AppendChild(p);
                             }
                             body.AppendChild(cloneNode);
                             
