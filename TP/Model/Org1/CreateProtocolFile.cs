@@ -624,6 +624,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + 27).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + 27).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + 27).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(27).Height = 65;
                 worksheet.Range("A27:G27").Merge();
                 // образцы
                 idRow = 28; // который свободен для записи номер строки
@@ -646,7 +647,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + idRow).Value = Resources.Protocol22;
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = true;
-                worksheet.Row(idRow).Height = 80;
+                worksheet.Row(idRow).Height = 20;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
@@ -654,26 +655,25 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + idRow).Value = valuesResourses[6];
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = false;
-                worksheet.Row(idRow).Height = 80;
+                worksheet.Row(idRow).Height = 90;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 idRow++;
 
-                worksheet.Cell("A" + idRow).Value = Resources.Protocol23;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol23;// 29
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = true;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Row(idRow).Height = 55; // 29
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 idRow++;
-                worksheet.Cell("A" + idRow).Value = _journal.Item1["Q"];
+                worksheet.Cell("A" + idRow).Value = _journal.Item1["Q"];// 29
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = false;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Row(idRow).Height = 55; // 29
+                worksheet.Row(idRow).Height = 55; 
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 idRow++;
 
@@ -732,7 +732,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + idRow).Style.Font.Bold = true;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Row(idRow).Height = 105; // 34
+                worksheet.Row(idRow).Height = 20; // 34
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 idRow++;
                 worksheet.Cell("A" + idRow).Value = _equipments;
@@ -740,7 +740,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + idRow).Style.Font.Bold = false;
                 worksheet.Cell("A" + idRow).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
                 worksheet.Cell("A" + idRow).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Row(idRow).Height = 105; // 34
+                worksheet.Row(idRow).Height = 125; // 34
                 worksheet.Range($"A{idRow}:G{idRow}").Merge();
                 idRow++;
 
