@@ -68,7 +68,11 @@
         <Label Content="Выбор файла подписи: " Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
         <Button x:Name="SignatureFile" Content="Выбрать" 
                 Grid.Column="2" Grid.Row="1" Click="SignatureFile_Click"/>
-        <Label x:Name="LabelDirection" Content="Направление успешно загружено"
+        <Label Content="Выбор файла штампа: " 
+               Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
+        <Button x:Name="StampFileButton" Content="Выбрать" 
+                Grid.Column="2" Grid.Row="2" Click="StampFileButton_Click"/>
+        <Label x:Name="LabelStamp" Content="Штамп успешно загружен"
                Visibility="Hidden" Grid.Row="1" Grid.Column="3"
                Grid.ColumnSpan="2"
                Style="{StaticResource OpenFile}"/>

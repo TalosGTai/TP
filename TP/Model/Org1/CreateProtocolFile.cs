@@ -846,7 +846,7 @@ namespace TP.Model.Org1
             try 
             { 
                 idRow = 1;
-                worksheet.Cell("A" + idRow).Value = Resources.Protocol36;
+                worksheet.Cell("A" + idRow).Value = Resources.Protocol36 + "№ " + _journal.Item1["O"] + "):";
                 worksheet.Cell("A" + idRow).Style.Font.FontSize = 10;
                 worksheet.Cell("A" + idRow).Style.Font.Bold = true;
                 worksheet.Cell("A" + idRow).Style.Border.InsideBorder = XLBorderStyleValues.Thin;

@@ -152,6 +152,13 @@ namespace TP.View
                 DBConnection dBConnection = new DBConnection();
                 dBConnection.SaveTableJournalOrg1List1(1, _idJournal + 1, _journalsList[idJournal].Item1);
                 dBConnection.SaveTableJournalOrg1List2(1, _idJournal + 1, _journalsList[idJournal].Item2);
+
+                //_journalsList[0].Item1.OrderBy(c => {
+                //    var d = DateTime.Parse(c.DateReceiptSample);
+                //    return d;
+                //    });
+                //TableJournals.ItemsSource = _journalsList1;
+
                 MessageBox.Show("Все изменения успешно внесены", "Сохранение");
             }
             else
@@ -181,7 +188,8 @@ namespace TP.View
         {
             int idProtocol = GetCountProtocols();
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
-            int id = _journalsList[_idJournal].Item1.Count - 1;
+            int id = TableJournals.SelectedIndex;
+            if (id == -1) id = _journalsList[_idJournal].Item1.Count - 1;
             int idProduct = Convert.ToInt32(_journalsList[_idJournal].Item1[id].NumberProduct);
             SaveChanges(_idJournal);
             Functions functions = new Functions();
@@ -260,6 +268,19 @@ namespace TP.View
             {
                 MessageBox.Show($"Ошибка с выбором листа {_idList}", "Ошибка");
             }
+        }
+
+        private void Image_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Sorted By in SaveBtn
+            // by дата регистрации
+            _firstStart = true;
+            if (_journalsList == null)
+                _journalsList = new List<(List<Org1List1>, List<Org1List2>)>();
+            TableJournals.ItemsSource = _journalsList1;
+            DataContext = this;
+            _currentDirectory = Environment.CurrentDirectory;
+            CreateJournalsFoldersDB();
         }
     }
 }

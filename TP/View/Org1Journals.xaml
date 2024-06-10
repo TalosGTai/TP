@@ -92,6 +92,10 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Image Source="/update.png" 
+               MouseLeftButtonDown="Image_MouseLeftButtonDown"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"/>
         <Label x:Name="LabelJournalNumber"
                Content="Журнал 1"  Grid.Row="0" Grid.Column="1"/>
         <Label Content="Выберите Журнал"
