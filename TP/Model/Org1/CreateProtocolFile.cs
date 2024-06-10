@@ -6,6 +6,8 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Linq;
 using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
+using RunProperties = DocumentFormat.OpenXml.Wordprocessing.RunProperties;
+using Italic = DocumentFormat.OpenXml.Wordprocessing.Italic;
 using DocumentFormat.OpenXml;
 using Break = DocumentFormat.OpenXml.Wordprocessing.Break;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
@@ -18,6 +20,7 @@ using Application = Microsoft.Office.Interop.Word.Application;
 using System.Text;
 using Header = DocumentFormat.OpenXml.Wordprocessing.Header;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TP.Model.Org1
 {
@@ -262,21 +265,25 @@ namespace TP.Model.Org1
                 var flagForTable = false;
                 Body body = new Body();
                 bool isNeedAligement = false;
+                bool isTitulPage = true;
+                bool isHeaderProtocolIspinatii = false;
                 foreach (var el in paragraphs)
                 {
                     //исключаем пустые параграфы, если их более одного подряд
-                    if (!(string.IsNullOrEmpty(el.InnerText)))
+                    if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
                     {
-                        if (el.InnerText.Contains("Результаты испытаний:"))
+                        if (el.InnerText.Contains("Результаты испытаний") && !flagForTable && !isHeaderProtocolIspinatii)
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             body.AppendChild(p);
                             flagForTable = true;
+                            isHeaderProtocolIspinatii = true;
 
                             body.AppendChild(el.CloneNode(true));
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
+                            isTitulPage = false;
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             //paragraphItems.Add(p);
                             body.AppendChild(p);
@@ -312,29 +319,95 @@ namespace TP.Model.Org1
                                 var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                                 body.AppendChild(p);
                             }
-                            body.AppendChild(cloneNode);
                             
-                        }
-
-                        if ((prev != null && prev.Contains("Результаты испытаний:")))
-                        {
-                            Table t = new Table();
-                            OpenXmlElementList oxl = tbl.ChildElements;
-                            TableProperties props = new TableProperties();
-                            TableWidth tw = new TableWidth() { Width = "1000", Type = TableWidthUnitValues.Auto };
-                            TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
-                            props.Append(tw, th);
-
-                            t.Append(props);
-                            foreach (var c in oxl)
+                            if (isTitulPage) //&& !string.IsNullOrEmpty(prev)
                             {
-                                if (!c.InnerText.Contains("Evaluation Only") && !c.InnerText.Contains("Результаты испытаний:"))
+                                if (!string.IsNullOrEmpty(el.InnerText))
                                 {
-                                    OpenXmlElement child = c.CloneNode(true);
-                                    t.AppendChild(child);
+                                    SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0", After = "0" };
+                                    cloneNode.ParagraphProperties.Append(spacing);
+                                    body.AppendChild(cloneNode);
                                 }
                             }
+                            else if (!string.IsNullOrEmpty(prev) && prev.Contains("Список применяемого оборудования"))
+                            {
+                                var equipList = _equipments.Split('\n').Where(s => s != "").ToList();
+                                
+                                for (int i=0; i<equipList.Count; i++)
+                                {
+                                    if (i == equipList.Count - 1)
+                                    {
+                                        var txt = new Paragraph(new Run(new Text(equipList[i])));
+                                        SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0"};
+                                        ParagraphProperties paragraphProperties = new ParagraphProperties();
+                                        paragraphProperties.Append(spacing);
+                                        txt.ParagraphProperties = paragraphProperties;
+                                        body.AppendChild(txt);
+                                    }
+                                    else
+                                    {
+                                        var txt = new Paragraph(new Run(new Text(equipList[i])));
+                                        SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0", After = "0" };
+                                        ParagraphProperties paragraphProperties = new ParagraphProperties();
+                                        paragraphProperties.Append(spacing);
+                                        txt.ParagraphProperties = paragraphProperties;
+                                        body.AppendChild(txt);
+                                    }
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(prev) && prev.Contains("Обозначения и наименования нормативных документов, устанавливающих методы испытаний:"))
+                            {
+                                var gostList = _gosts.Split('\n').Where(s => s != "").ToList();
+
+                                for (int i = 0; i < gostList.Count; i++)
+                                {
+                                    if (i == gostList.Count - 1)
+                                    {
+                                        var txt = new Paragraph(new Run(new Text(gostList[i])));
+                                        SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0" };
+                                        ParagraphProperties paragraphProperties = new ParagraphProperties();
+                                        paragraphProperties.Append(spacing);
+                                        txt.ParagraphProperties = paragraphProperties;
+                                        body.AppendChild(txt);
+                                    }
+                                    else
+                                    {
+                                        var txt = new Paragraph(new Run(new Text(gostList[i])));
+                                        SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0", After = "0" };
+                                        ParagraphProperties paragraphProperties = new ParagraphProperties();
+                                        paragraphProperties.Append(spacing);
+                                        txt.ParagraphProperties = paragraphProperties;
+                                        body.AppendChild(txt);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                body.AppendChild(cloneNode);
+                            }
+
+                        }
+
+                        if ((prev != null && prev.Contains("Результаты испытаний (")))
+                        {
+                            Table t = new Table();
+                            var oxl = tbl.ChildElements;
+                            TableProperties props = new TableProperties();
+                            TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
+                            props.Append(th);
+                            
+                            t.Append(props);
+                            for (int i = 3; i < oxl.Count; i++)
+                            {
+                                //!oxl[i].InnerText.Contains("Evaluation Only") && 
+                                if (!oxl[i].InnerText.Contains("Результаты испытаний ("))
+                                {
+                                    OpenXmlElement child = oxl[i].CloneNode(true);
+                                    t.AppendChild(child);
+                               }
+                            }
                             body.AppendChild(t);
+                            //flagForTable = false;
                         }
                     }
                     prev = el.InnerText;
@@ -362,6 +435,11 @@ namespace TP.Model.Org1
             Run run1 = new Run();
             Text text1 = new Text();
             text1.Text = ColontitulText;
+
+            var runProp = new RunProperties();
+            var test = new Italic() { };
+            runProp.Append(test);
+            run1.PrependChild(runProp);
 
             run1.Append(text1);
             paragraph1.Append(run1);
