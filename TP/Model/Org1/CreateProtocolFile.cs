@@ -123,11 +123,12 @@ namespace TP.Model.Org1
                 worksheet.Column(5).Width = 14;
                 worksheet.Column(6).Width = 8;
 
-                worksheet2.Column(2).Width = 25;
-                worksheet2.Column(3).Width = 15;
-                worksheet2.Column(4).Width = 10;
-                worksheet2.Column(5).Width = 10;
-                worksheet2.Column(6).Width = 8;
+                // ? 25 15 10 10 8
+                worksheet2.Column(1).Width = 13.71;
+                worksheet2.Column(2).Width = 13.71;
+                worksheet2.Column(3).Width = 13.71;
+                worksheet2.Column(4).Width = 13.71;
+                worksheet2.Column(5).Width = 13.71;
                 //Создаем excel файлл
                 workbook.SaveAs(PROTOCOL_EXCEL_PATH);
                 workbook.Dispose();
@@ -843,7 +844,9 @@ namespace TP.Model.Org1
 
         private IXLWorksheet CreateTablesTests(IXLWorksheet worksheet, List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
         {
-            try 
+            // 64 + 180 + 110 + 75 + 75 = 260 + 244 = 504 / 5 = 101
+
+            try
             { 
                 idRow = 1;
                 worksheet.Cell("A" + idRow).Value = Resources.Protocol36 + "№ " + _journal.Item1["I"] + "):";
