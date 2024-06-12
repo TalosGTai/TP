@@ -687,7 +687,9 @@ namespace TP.Model.Org1
                 worksheet.Range("E15:G15").Merge();
 
                 // вставка в D15 картинки
-                worksheet.AddPicture().MoveTo(worksheet.Cell("D" + 15));
+                DBConnection db = new DBConnection();
+                var img = db.GetImage(1);
+                worksheet.AddPicture(img.Item1).MoveTo(worksheet.Cell("D" + 15));
 
                 worksheet.Cell("B" + 16).Value = Resources.Protocol14;
                 worksheet.Cell("B" + 16).Style.Font.FontSize = 8;
