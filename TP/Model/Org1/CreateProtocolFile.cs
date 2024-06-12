@@ -686,11 +686,14 @@ namespace TP.Model.Org1
                 worksheet.Cell("E" + 15).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("E15:G15").Merge();
 
-                // вставка в D15 картинки
+                // вставка картинки
+                // непрозрачность 32%
                 DBConnection db = new DBConnection();
                 var img = db.GetImage(1);
-                worksheet.AddPicture(img.Item1).MoveTo(worksheet.Cell("E" + 15)).ScaleHeight(0.6);
-                worksheet.AddPicture(img.Item2).MoveTo(worksheet.Cell("F" + 19));
+                worksheet.AddPicture(img.Item2).MoveTo(worksheet.Cell("E" + 15)).ScaleHeight(0.6);
+                worksheet.AddPicture(img.Item1).MoveTo(worksheet.Cell("F" + 16));
+                img.Item1.Close();
+                img.Item2.Close();
 
                 worksheet.Cell("B" + 16).Value = Resources.Protocol14;
                 worksheet.Cell("B" + 16).Style.Font.FontSize = 8;

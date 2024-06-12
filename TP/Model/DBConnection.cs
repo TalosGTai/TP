@@ -1735,7 +1735,7 @@ namespace TP.Model
                             if (imageStamp != null)
                                 stream1.Write(imageStamp, 0, imageStamp.Length);
                             if (imageSignature != null)
-                                stream1.Write(imageSignature, 0, imageSignature.Length);
+                                stream2.Write(imageSignature, 0, imageSignature.Length);
 
                             return (stream1, stream2);
                         }
