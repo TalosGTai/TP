@@ -215,6 +215,7 @@
     <Compile Include="Model\DBFunctions.cs" />
     <Compile Include="Model\Functions.cs" />
     <Compile Include="Model\Gost.cs" />
+    <Compile Include="Model\ImageNameType.cs" />
     <Compile Include="View\GostsChange.xaml.cs">
       <DependentUpon>GostsChange.xaml</DependentUpon>
     </Compile>
