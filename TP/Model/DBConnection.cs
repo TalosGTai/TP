@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -235,7 +236,7 @@ namespace TP.Model
                 OpenConnection();
                 MySqlCommand command = new MySqlCommand(query, GetConnection());
                 //CREATE SCHEMA IF NOT EXISTS test AUTHORIZATION joe
-               // query = $"create SCHEMA if not exists laboratory CREATE SCHEMA `laboratory`; ";
+                // query = $"create SCHEMA if not exists laboratory CREATE SCHEMA `laboratory`; ";
                 command = new MySqlCommand(query, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
@@ -277,6 +278,7 @@ namespace TP.Model
             }
             finally { CloseConnection(); }
         }
+
 
         /// <summary>
         /// Создать таблицу для листа0 журнала
@@ -638,9 +640,9 @@ namespace TP.Model
                 {
                     result += "\\\"";
                 }
-                else 
+                else
                 {
-                    result += c; 
+                    result += c;
                 }
             }
             return result;
@@ -669,10 +671,10 @@ namespace TP.Model
                     $"H=\"{ToStringDataBase(dif.DateReturnSample)}\"," +
                     $"I=\"{ToStringDataBase(dif.FioInsertRecord)}\" " +
                     $"WHERE A = \"{ToStringDataBase(dif.NumberProduct)}\";";
-                    OpenConnection();
-                    MySqlCommand command = new MySqlCommand(query, GetConnection());
-                    command.ExecuteNonQuery();
-                    CloseConnection();
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
             }
             catch (SqlException e)
             {
@@ -713,7 +715,7 @@ namespace TP.Model
                 Logger.LogDbError(e);
             }
             finally { CloseConnection(); }
-        }      
+        }
 
         public void InsertJournalOrgChangesRow(int idOrg, List<string> values)
         {
@@ -1027,9 +1029,9 @@ namespace TP.Model
             {
                 Logger.LogDbError(e);
             }
-            finally 
-            { 
-                CloseConnection(); 
+            finally
+            {
+                CloseConnection();
             }
             return res;
         }
@@ -1089,7 +1091,7 @@ namespace TP.Model
                     CloseConnection();
                 }
 
-                
+
             }
             catch (SqlException e)
             {
@@ -1181,7 +1183,7 @@ namespace TP.Model
                     }
 
                 }
-                
+
                 CloseConnection();
                 return (msDoc, msXls);
             }
@@ -1313,7 +1315,7 @@ namespace TP.Model
                     switch (idList)
                     {
                         case 1: СreateTableJournalOrg1List1(idOrg, idJournal); break;
-                        case 2: СreateTableJournalOrg1List2(idOrg, idJournal);break;
+                        case 2: СreateTableJournalOrg1List2(idOrg, idJournal); break;
                     }
                 }
                 OpenConnection();
@@ -1367,7 +1369,7 @@ namespace TP.Model
         /// <summary>
         /// Добавить все ГОСТы из файла
         /// </summary>
-        public void AddAllGostsData(List<Tuple<string,string>> data)
+        public void AddAllGostsData(List<Tuple<string, string>> data)
         {
             try
             {
@@ -1620,6 +1622,173 @@ namespace TP.Model
                 MySqlCommand command = new MySqlCommand(query, GetConnection());
                 command.ExecuteNonQuery();
                 CloseConnection();
+            }
+            catch (SqlException e)
+            {
+                Logger.LogDbError(e);
+                throw;
+            }
+            finally
+            {
+                CloseConnection();
+            }
+        }
+
+        /// <summary>
+        /// Создать таблицу для хранения печатей и подписей
+        /// </summary>
+        /// <param name="idOrg">номер организации</param>
+        public void СreateTableImages(int idOrg)
+        {
+            string query = $"create table if not exists laboratory.org{idOrg}images (";
+            query += $"idorg{idOrg}images int NOT NULL AUTO_INCREMENT,";
+            query += "imageStamp longblob null,";
+            query += "imageSignature longblob NULL,";
+            query += $"PRIMARY KEY (idorg{idOrg}image))";
+
+            try
+            {
+                OpenConnection();
+                MySqlCommand command = new MySqlCommand(query, GetConnection());
+                command.ExecuteNonQuery();
+                CloseConnection();
+            }
+            catch (SqlException ex)
+            {
+                Logger.LogDbError(ex);
+            }
+            finally { CloseConnection(); }
+        }
+
+        public void SaveImage(byte[] image, int idOrg, string imageName)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}images"))
+                {
+                    СreateTableImages(idOrg);
+                }
+
+                OpenConnection();
+
+                var query = "";
+                if (ImageNameType.Stamp == imageName)
+                {
+                    query = $"INSERT INTO laboratory.org{idOrg}images(idorg{idOrg}images, imageStamp) VALUES (1, @imageByte) ON DUPLICATE KEY UPDATE imageStamp = (@imageByte)";
+                }
+                else
+                {
+                    query = $"INSERT INTO laboratory.org{idOrg}images(idorg{idOrg}images, imageSignature) VALUES (1, @imageByte) ON DUPLICATE KEY UPDATE imageSignature = (@imageByte)";
+                }
+
+                var sqlWrite = new MySqlCommand(query, GetConnection());
+
+                sqlWrite.Parameters.Add("@imageByte", MySqlDbType.LongBlob).Value = image;
+                sqlWrite.ExecuteNonQuery();
+
+                CloseConnection();
+            }
+            catch (SqlException ex)
+            {
+                Logger.LogDbError(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogDbError(ex);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+
+        }
+
+        public (MemoryStream, MemoryStream) GetImage(int idOrg)
+        {
+            try
+            {
+                if (!CheckTable($"org{idOrg}images"))
+                {
+                    СreateTableImages(idOrg);
+                }
+                string query = $"SELECT imageStamp, imageSignature FROM laboratory.org{idOrg}images;";
+                OpenConnection();
+                var sqlQuery = new MySqlCommand(query, GetConnection());
+                using (var sqlQueryResult = sqlQuery.ExecuteReader())
+                {
+                    if (sqlQueryResult != null)
+                    {
+                        sqlQueryResult.Read();
+                        if (sqlQueryResult.HasRows)
+                        {
+                            var t1 = Convert.IsDBNull(sqlQueryResult["imageStamp"]);
+                            var t2 = Convert.IsDBNull(sqlQueryResult["imageSignature"]);
+
+                            var imageStamp = t1 ? null : (byte[])sqlQueryResult["imageStamp"];
+                            var imageSignature = t2 ? null : (byte[])sqlQueryResult["imageSignature"];
+                            //если понадобится картинку получать
+                            //var x = imageStamp == null ? null : (Bitmap)((new ImageConverter()).ConvertFrom(imageStamp));
+
+                            byte[] myByteArray = new byte[10];
+                            MemoryStream stream1 = new MemoryStream();
+                            MemoryStream stream2 = new MemoryStream();
+                            if (imageStamp != null)
+                                stream1.Write(imageStamp, 0, imageStamp.Length);
+                            if (imageSignature != null)
+                                stream1.Write(imageSignature, 0, imageSignature.Length);
+
+                            return (stream1, stream2);
+                        }
+                    }
+
+                }
+                throw new Exception("Изображение не найдено");
+            }
+            catch (SqlException ex)
+            {
+                Logger.LogDbError(ex);
+                return (null, null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogDbError(ex);
+                return (null, null);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+
+        }
+
+        /// <summary>
+        /// Обновление печати или штампа
+        /// </summary>
+        /// <param name="id">id ГОСТа</param>
+        /// <param name="sGost">новое короткое название</param>
+        /// <param name="lGost">новое полное название</param>
+        public void UpdateSignatureStamp(int idOrg, byte[] image, string typeImg)
+        {
+            try
+            {
+                string queryString = "";
+                if (typeImg == ImageNameType.Stamp)
+                {
+                    queryString = $"UPDATE laboratory.org1images SET imageStamp = (@imageByte) WHERE id = 1;";
+                }
+                else
+                {
+                    queryString = $"UPDATE laboratory.org1images SET imageSignature = (@imageByte) WHERE id = 1;";
+                }
+
+                OpenConnection();
+                using (MySqlCommand cmd = new MySqlCommand(queryString, GetConnection()))
+                {
+                    cmd.Parameters.Add("@imageByte", MySqlDbType.LongBlob).Value = image;
+                    cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                    CloseConnection();
+                }
             }
             catch (SqlException e)
             {
