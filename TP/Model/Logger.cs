@@ -18,7 +18,7 @@ namespace TP.Model
             var thisasm = Assembly.GetExecutingAssembly();
             var methodname = s.GetFrames().Select(f => f.GetMethod()).First(m => m.Module.Assembly == thisasm).Name;
 
-            var errorText = $"{DateTime.UtcNow}: Ошибка при вызове {methodname}. Message = {ex.Message}, " +
+            var errorText = $"{DateTime.Now}: Ошибка при вызове {methodname}. Message = {ex.Message}, " +
                        $"StackTrace = {ex.StackTrace}";
            
             try
@@ -41,7 +41,7 @@ namespace TP.Model
             var thisasm = Assembly.GetExecutingAssembly();
             var methodname = s.GetFrames().Select(f => f.GetMethod()).First(m => m.Module.Assembly == thisasm).Name;
 
-            var errorText = $"{DateTime.UtcNow}: Ошибка при вызове {methodname}. Message = {ex.Message}, " +
+            var errorText = $"{DateTime.Now}: Ошибка при вызове {methodname}. Message = {ex.Message}, " +
                        $"StackTrace = {ex.StackTrace}";
 
             if (!string.IsNullOrEmpty(message))
