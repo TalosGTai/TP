@@ -678,13 +678,17 @@ namespace TP.Model.Org1
                 worksheet.Cell("D" + 14).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 worksheet.Cell("D" + 14).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("D14:G14").Merge();
-                worksheet.Cell("B" + 15).Value = "                          " + valuesResourses[5];
-                worksheet.Cell("B" + 15).Style.Font.FontSize = 11;
-                worksheet.Cell("B" + 15).Style.Font.Underline = XLFontUnderlineValues.Single;
-                worksheet.Cell("B" + 15).Style.Font.Bold = true;
-                worksheet.Cell("B" + 15).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                worksheet.Cell("B" + 15).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                worksheet.Range("B15:G15").Merge();
+                worksheet.Cell("E" + 15).Value = "                          " + valuesResourses[5];
+                worksheet.Cell("E" + 15).Style.Font.FontSize = 11;
+                worksheet.Cell("E" + 15).Style.Font.Underline = XLFontUnderlineValues.Single;
+                worksheet.Cell("E" + 15).Style.Font.Bold = true;
+                worksheet.Cell("E" + 15).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                worksheet.Cell("E" + 15).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Range("E15:G15").Merge();
+
+                // вставка в D15 картинки
+                worksheet.AddPicture().MoveTo(worksheet.Cell("D" + 15));
+
                 worksheet.Cell("B" + 16).Value = Resources.Protocol14;
                 worksheet.Cell("B" + 16).Style.Font.FontSize = 8;
                 worksheet.Cell("B" + 16).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
