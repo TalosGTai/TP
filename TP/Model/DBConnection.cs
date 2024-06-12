@@ -1729,13 +1729,12 @@ namespace TP.Model
                             //если понадобится картинку получать
                             //var x = imageStamp == null ? null : (Bitmap)((new ImageConverter()).ConvertFrom(imageStamp));
 
-                            byte[] myByteArray = new byte[10];
                             MemoryStream stream1 = new MemoryStream();
                             MemoryStream stream2 = new MemoryStream();
                             if (imageStamp != null)
                                 stream1.Write(imageStamp, 0, imageStamp.Length);
                             if (imageSignature != null)
-                                stream1.Write(imageSignature, 0, imageSignature.Length);
+                                stream2.Write(imageSignature, 0, imageSignature.Length);
 
                             return (stream1, stream2);
                         }
