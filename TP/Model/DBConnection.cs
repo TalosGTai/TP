@@ -1644,7 +1644,7 @@ namespace TP.Model
             query += $"idorg{idOrg}images int NOT NULL AUTO_INCREMENT,";
             query += "imageStamp longblob null,";
             query += "imageSignature longblob NULL,";
-            query += $"PRIMARY KEY (idorg{idOrg}image))";
+            query += $"PRIMARY KEY (idorg{idOrg}images))";
 
             try
             {
