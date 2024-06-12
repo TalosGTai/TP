@@ -271,7 +271,7 @@ namespace TP.Model.Org1
                 foreach (var el in paragraphs)
                 {
                     //исключаем пустые параграфы, если их более одного подряд
-                    if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)))
+                    if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)) && !el.InnerText.Contains("М.П."))
                     {
                         if (el.InnerText.Contains("Результаты испытаний") && !flagForTable && !isHeaderProtocolIspinatii)
                         {
@@ -284,6 +284,14 @@ namespace TP.Model.Org1
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
+                            var pp = new Paragraph(new Run(new Text("М.П.")));
+                            Justification justification1 = new Justification() { Val = JustificationValues.Right };
+                            pp.ParagraphProperties = new ParagraphProperties()
+                            {
+                                Justification = justification1
+                            };
+                            body.AppendChild(pp);
+
                             isTitulPage = false;
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             //paragraphItems.Add(p);
@@ -301,6 +309,17 @@ namespace TP.Model.Org1
                             if (prev !=null && prev.Contains(Resources.Protocol19))
                             {
                                 isNeedAligement = true;
+                            }
+                            if (el.InnerText.Contains("УТВЕРЖДАЮ"))
+                            {
+                                var txt = new Paragraph(new Run(new Text()));
+                                body.AppendChild(txt);
+                                
+                                Text t = new Text($"                                                                                     {el.InnerText}");
+                                t.Space = SpaceProcessingModeValues.Preserve;
+
+                                cloneNode = new Paragraph(new Run(t));
+
                             }
                             //Перестаем выравнивать по ширине, если дошли до строки "Конец протокола..."
                             if (el.InnerText.Contains("Конец"))
@@ -321,11 +340,15 @@ namespace TP.Model.Org1
                                 body.AppendChild(p);
                             }
                             
-                            if (isTitulPage) //&& !string.IsNullOrEmpty(prev)
+                            if (isTitulPage && !string.IsNullOrEmpty(prev))
                             {
                                 if (!string.IsNullOrEmpty(el.InnerText))
                                 {
                                     SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0", After = "0" };
+                                    if (cloneNode.ParagraphProperties == null)
+                                    {
+                                        cloneNode.ParagraphProperties = new ParagraphProperties();
+                                    }
                                     cloneNode.ParagraphProperties.Append(spacing);
                                     body.AppendChild(cloneNode);
                                 }
@@ -392,12 +415,30 @@ namespace TP.Model.Org1
                         if ((prev != null && prev.Contains("Результаты испытаний (")))
                         {
                             Table t = new Table();
+
+                            // Then we just create a new row and a few cells and we give them a width
+                            //var tr = new TableRow();
+                            //var tc1 = new TableCell();
+                            //var tc2 = new TableCell();
+                            //tc1.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
+                            //tc2.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
+                            //table.Append(tr);
+
                             var oxl = tbl.ChildElements;
                             TableProperties props = new TableProperties();
                             TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
+                            TableLayout tl = new TableLayout() { Type = TableLayoutValues.Fixed };
+                            props.TableLayout = tl;
                             props.Append(th);
-                            
                             t.Append(props);
+
+                            //var columns = tbl.Descendants<Column>();
+                            var cells = tbl.Descendants<TableCell>();
+                            foreach (TableCell cell in cells) {
+                                cell.TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }; // .Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
+                                //tc2.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
+                            }
+
                             for (int i = 3; i < oxl.Count; i++)
                             {
                                 //!oxl[i].InnerText.Contains("Evaluation Only") && 
