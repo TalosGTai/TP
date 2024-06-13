@@ -1729,7 +1729,6 @@ namespace TP.Model
                             //если понадобится картинку получать
                             //var x = imageStamp == null ? null : (Bitmap)((new ImageConverter()).ConvertFrom(imageStamp));
 
-                            byte[] myByteArray = new byte[10];
                             MemoryStream stream1 = new MemoryStream();
                             MemoryStream stream2 = new MemoryStream();
                             if (imageStamp != null)

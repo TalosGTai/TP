@@ -20,7 +20,12 @@ using Application = Microsoft.Office.Interop.Word.Application;
 using System.Text;
 using Header = DocumentFormat.OpenXml.Wordprocessing.Header;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
-using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using A = DocumentFormat.OpenXml.Drawing;
+using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
+using DocumentFormat.OpenXml.Office2010.Word.Drawing;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace TP.Model.Org1
 {
@@ -201,13 +206,20 @@ namespace TP.Model.Org1
                 DocumentWord myDoc = wordApp.Documents.Open(filename);
                 myDoc.PageSetup.TopMargin = 0;
                 myDoc.PageSetup.BottomMargin = 0;
+                //InlineShape img = myDoc.InlineShapes[0];
+
+                //InlineShape autoScaledInlineShape = myDoc.InlineShapes.AddPicture("");
+                //float scaledWidth = autoScaledInlineShape.Width;
                 try
-                {     
+                {
+                    
                     if (myDoc.Paragraphs.Count > 0)
                     {
+
                         foreach (ParagraphWord p in myDoc.Paragraphs)
                         {
                             p.Range.Font.Name = FONT;
+                            
                         }
                         foreach (Microsoft.Office.Interop.Word.Table t in myDoc.Tables)
                         {
@@ -270,6 +282,19 @@ namespace TP.Model.Org1
                 bool isHeaderProtocolIspinatii = false;
                 foreach (var el in paragraphs)
                 {
+                    if (el.InnerXml.Contains("pic:"))
+                    {
+                        if (!string.IsNullOrEmpty(el.InnerText) && !el.InnerText.Contains("М.П."))
+                        {
+                            var node = (Paragraph)el.CloneNode(true);
+                            node.ChildElements[1].ChildElements[2].Remove();
+                            //var pp = new Paragraph(new Run(new Text($"{el.InnerText}")));
+                            body.AppendChild(node);
+                        }
+
+                        prev = el.InnerText;
+                        continue;
+                    }
                     //исключаем пустые параграфы, если их более одного подряд
                     if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)) && !el.InnerText.Contains("М.П."))
                     {
@@ -318,7 +343,14 @@ namespace TP.Model.Org1
                                 Text t = new Text($"                                                                                     {el.InnerText}");
                                 t.Space = SpaceProcessingModeValues.Preserve;
 
-                                cloneNode = new Paragraph(new Run(t));
+
+                                RunProperties run1Properties = new RunProperties();
+                                run1Properties.Append(new Bold());
+                                var run = new Run(t);
+                                run.RunProperties = run1Properties;
+
+
+                                cloneNode = new Paragraph(run);
 
                             }
                             //Перестаем выравнивать по ширине, если дошли до строки "Конец протокола..."
@@ -356,12 +388,24 @@ namespace TP.Model.Org1
                             else if (!string.IsNullOrEmpty(prev) && prev.Contains("Список применяемого оборудования"))
                             {
                                 var equipList = _equipments.Split('\n').Where(s => s != "").ToList();
-                                
+
                                 for (int i=0; i<equipList.Count; i++)
                                 {
+                                    RunProperties runProperties1 = new RunProperties();
+                                    FontSize fontSize1 = new FontSize() { Val = "20" };
+                                    runProperties1.Append(fontSize1);
+                                    var paragraph = new Paragraph();
+                                    var run = new Run();
+                                    var text = new Text(equipList[i]);
+
+                                    run.Append(runProperties1);
+                                    run.Append(text);
+
+                                    paragraph.Append(run);
+
                                     if (i == equipList.Count - 1)
                                     {
-                                        var txt = new Paragraph(new Run(new Text(equipList[i])));
+                                        var txt = paragraph;
                                         SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0"};
                                         ParagraphProperties paragraphProperties = new ParagraphProperties();
                                         paragraphProperties.Append(spacing);
@@ -370,7 +414,7 @@ namespace TP.Model.Org1
                                     }
                                     else
                                     {
-                                        var txt = new Paragraph(new Run(new Text(equipList[i])));
+                                        var txt = paragraph;
                                         SpacingBetweenLines spacing = new SpacingBetweenLines() { LineRule = LineSpacingRuleValues.Auto, Before = "0", After = "0" };
                                         ParagraphProperties paragraphProperties = new ParagraphProperties();
                                         paragraphProperties.Append(spacing);
@@ -475,15 +519,15 @@ namespace TP.Model.Org1
 
             Paragraph paragraph1 = new Paragraph() { };
             Run run1 = new Run();
-            Text text1 = new Text();
-            text1.Text = ColontitulText;
+            Text colonText = new Text();
+            colonText.Text = ColontitulText;
 
             var runProp = new RunProperties();
             var test = new Italic() { };
             runProp.Append(test);
             run1.PrependChild(runProp);
 
-            run1.Append(text1);
+            run1.Append(colonText);
             paragraph1.Append(run1);
             header1.Append(paragraph1);
             headerPart1.Header = header1;
