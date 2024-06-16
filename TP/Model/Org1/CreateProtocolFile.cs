@@ -26,6 +26,7 @@ using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 using DocumentFormat.OpenXml.Office2010.Word.Drawing;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace TP.Model.Org1
 {
@@ -280,19 +281,52 @@ namespace TP.Model.Org1
                 bool isNeedAligement = false;
                 bool isTitulPage = true;
                 bool isHeaderProtocolIspinatii = false;
+
+
+                var images = doc.MainDocumentPart.Document.Body.Descendants<Drawing>().ToArray();
+                Drawing signatureImg = images[0];
+                Drawing stampImg = images[1];
+
+                signatureImg.Anchor.SimplePos = true;
+                signatureImg.Anchor.SimplePos.Value = true;
+                var pos1 = new SimplePosition();
+                pos1.X = 5500000;
+                pos1.Y = 4200000;
+                signatureImg.Anchor.SimplePosition = pos1;
+                
+                stampImg.Anchor.SimplePos = true;
+                stampImg.Anchor.SimplePos.Value = true;
+                var pos2 = new SimplePosition();
+                pos2.X = 6500000;
+                pos2.Y = 5500000;
+                stampImg.Anchor.SimplePosition = pos2;
+
+                Paragraph paragraph232 = new Paragraph();
+                ParagraphProperties paragraphProperties220 = new ParagraphProperties();
+                SectionProperties sectionProperties1 = new SectionProperties();
+                SectionType sectionType1 = new SectionType() { Val = SectionMarkValues.NextPage };
+                sectionProperties1.Append(sectionType1);
+                paragraphProperties220.Append(sectionProperties1);
+                paragraph232.Append(paragraphProperties220);
+
                 foreach (var el in paragraphs)
                 {
                     if (el.InnerXml.Contains("pic:"))
                     {
                         if (!string.IsNullOrEmpty(el.InnerText) && !el.InnerText.Contains("М.П."))
                         {
-                            var node = (Paragraph)el.CloneNode(true);
-                            node.ChildElements[1].ChildElements[2].Remove();
-                            //var pp = new Paragraph(new Run(new Text($"{el.InnerText}")));
-                            body.AppendChild(node);
-                        }
+                            var img = stampImg.CloneNode(true);
+                            var node1 = el.CloneNode(true);
+                            var p = new Text(node1.ChildElements[1].ChildElements[1].InnerText);
+                            node1.ChildElements[1].ChildElements[1].Remove();
+                            node1.ChildElements[1].AppendChild(p);
+                            node1.AppendChild(img);
+                            body.AppendChild(node1);
 
-                        prev = el.InnerText;
+                            prev = el.InnerText;
+                            continue;
+                        }
+                        prev = el.ChildElements[1].ChildElements[1].InnerText;
                         continue;
                     }
                     //исключаем пустые параграфы, если их более одного подряд
@@ -460,14 +494,6 @@ namespace TP.Model.Org1
                         {
                             Table t = new Table();
 
-                            // Then we just create a new row and a few cells and we give them a width
-                            //var tr = new TableRow();
-                            //var tc1 = new TableCell();
-                            //var tc2 = new TableCell();
-                            //tc1.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
-                            //tc2.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
-                            //table.Append(tr);
-
                             var oxl = tbl.ChildElements;
                             TableProperties props = new TableProperties();
                             TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
@@ -475,17 +501,13 @@ namespace TP.Model.Org1
                             props.TableLayout = tl;
                             props.Append(th);
                             t.Append(props);
-
-                            //var columns = tbl.Descendants<Column>();
                             var cells = tbl.Descendants<TableCell>();
                             foreach (TableCell cell in cells) {
-                                cell.TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }; // .Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
-                                //tc2.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" }));
+                                cell.TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" };
                             }
 
                             for (int i = 3; i < oxl.Count; i++)
                             {
-                                //!oxl[i].InnerText.Contains("Evaluation Only") && 
                                 if (!oxl[i].InnerText.Contains("Результаты испытаний ("))
                                 {
                                     OpenXmlElement child = oxl[i].CloneNode(true);
@@ -502,7 +524,6 @@ namespace TP.Model.Org1
                 //Очищаем весь файл
                 doc.MainDocumentPart.Document.Body.Remove();
                 doc.MainDocumentPart.Document.AppendChild(body);
-
                 ApplyHeader(doc);
                 doc.Save();
                 doc.Close();
