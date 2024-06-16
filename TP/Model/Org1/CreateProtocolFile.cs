@@ -21,12 +21,6 @@ using System.Text;
 using Header = DocumentFormat.OpenXml.Wordprocessing.Header;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 using DocumentFormat.OpenXml.Drawing.Wordprocessing;
-using A = DocumentFormat.OpenXml.Drawing;
-using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
-using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
-using DocumentFormat.OpenXml.Office2010.Word.Drawing;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.EMMA;
 
 namespace TP.Model.Org1
 {
@@ -207,13 +201,22 @@ namespace TP.Model.Org1
                 DocumentWord myDoc = wordApp.Documents.Open(filename);
                 myDoc.PageSetup.TopMargin = 0;
                 myDoc.PageSetup.BottomMargin = 0;
-                //InlineShape img = myDoc.InlineShapes[0];
-
-                //InlineShape autoScaledInlineShape = myDoc.InlineShapes.AddPicture("");
-                //float scaledWidth = autoScaledInlineShape.Width;
                 try
                 {
-                    
+                    myDoc.PageSetup.DifferentFirstPageHeaderFooter = -1; // особый колонтитул для первой страницы
+                    foreach (Section section in myDoc.Sections)
+                    {
+                        myDoc.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterFirstPage].Range.Text = " ";
+
+                        Range headerRange = section.Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                        headerRange.Fields.Add(headerRange, WdFieldType.wdFieldPage);
+                        headerRange.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                        headerRange.Font.ColorIndex = WdColorIndex.wdBlack;
+                        headerRange.Font.Size =11;
+                        headerRange.Text = ColontitulText + "\n";
+                        headerRange.Italic = 1;
+                    }
+
                     if (myDoc.Paragraphs.Count > 0)
                     {
 
@@ -250,7 +253,11 @@ namespace TP.Model.Org1
                     wordApp = null;
                 }
             }
-            catch (Exception ex) { Logger.LogError(ex); throw; }
+            catch (Exception ex) 
+            { 
+                Logger.LogError(ex); 
+                throw; 
+            }
         }
 
         /// <summary>
@@ -291,14 +298,14 @@ namespace TP.Model.Org1
                 signatureImg.Anchor.SimplePos.Value = true;
                 var pos1 = new SimplePosition();
                 pos1.X = 5500000;
-                pos1.Y = 4200000;
+                pos1.Y = 4280000;
                 signatureImg.Anchor.SimplePosition = pos1;
                 
                 stampImg.Anchor.SimplePos = true;
                 stampImg.Anchor.SimplePos.Value = true;
                 var pos2 = new SimplePosition();
-                pos2.X = 6500000;
-                pos2.Y = 5500000;
+                pos2.X = 6200000;
+                pos2.Y = 5580000;
                 stampImg.Anchor.SimplePosition = pos2;
 
                 Paragraph paragraph232 = new Paragraph();
@@ -524,13 +531,16 @@ namespace TP.Model.Org1
                 //Очищаем весь файл
                 doc.MainDocumentPart.Document.Body.Remove();
                 doc.MainDocumentPart.Document.AppendChild(body);
-                ApplyHeader(doc);
                 doc.Save();
                 doc.Close();
             }
-            catch (Exception ex) { Logger.LogError(ex); throw; }
+            catch (Exception ex) { 
+                Logger.LogError(ex); 
+                throw; 
+            }
         }
 
+        //Добавление колонтитулов на все страницы
         private void ApplyHeader(WordprocessingDocument doc)
         {
             MainDocumentPart mainDocPart = doc.MainDocumentPart;
