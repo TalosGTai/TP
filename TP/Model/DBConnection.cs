@@ -1736,7 +1736,7 @@ namespace TP.Model
                             if (imageSignature != null)
                                 stream2.Write(imageSignature, 0, imageSignature.Length);
 
-                            return (stream1, stream2);
+                            return (stream2, stream1);
                         }
                     }
 
