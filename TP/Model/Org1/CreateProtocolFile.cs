@@ -120,7 +120,7 @@ namespace TP.Model.Org1
                 worksheet.Style.Alignment.WrapText = true;
                 worksheet2.Style.Alignment.WrapText = true;
                 worksheet3.Style.Alignment.WrapText = true;
-                worksheet.Column(2).Width = 32;
+                worksheet.Column(2).Width = 14;
                 worksheet.Column(3).Width = 14;
                 worksheet.Column(4).Width = 14;
                 worksheet.Column(5).Width = 14;
@@ -277,7 +277,7 @@ namespace TP.Model.Org1
 
                 var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
                 //Получаем таблицу с испытаниями
-                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[4];
+                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
                         && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
@@ -300,21 +300,13 @@ namespace TP.Model.Org1
                 pos1.X = 5500000;
                 pos1.Y = 4280000;
                 signatureImg.Anchor.SimplePosition = pos1;
-                
+
                 stampImg.Anchor.SimplePos = true;
                 stampImg.Anchor.SimplePos.Value = true;
                 var pos2 = new SimplePosition();
                 pos2.X = 6200000;
                 pos2.Y = 5580000;
                 stampImg.Anchor.SimplePosition = pos2;
-
-                Paragraph paragraph232 = new Paragraph();
-                ParagraphProperties paragraphProperties220 = new ParagraphProperties();
-                SectionProperties sectionProperties1 = new SectionProperties();
-                SectionType sectionType1 = new SectionType() { Val = SectionMarkValues.NextPage };
-                sectionProperties1.Append(sectionType1);
-                paragraphProperties220.Append(sectionProperties1);
-                paragraph232.Append(paragraphProperties220);
 
                 foreach (var el in paragraphs)
                 {
