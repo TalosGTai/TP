@@ -239,7 +239,6 @@ namespace TP.Model.Org1
                         object missing = System.Reflection.Missing.Value;
                         WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
                         CountPages = myDoc.ComputeStatistics(stat, ref missing);
-                        CountPages--;
                         foreach (ParagraphWord p in myDoc.Paragraphs)
                         {
                             if (p.Range.Text.Contains("Число страниц"))
@@ -418,13 +417,6 @@ namespace TP.Model.Org1
                                 cloneNode.ParagraphProperties = new ParagraphProperties()
                                 {
                                     Justification = justification1
-                                };
-                            }
-                            if (el.InnerText.Contains("Список применяемого оборудования и средств измерений"))
-                            {
-                                cloneNode.ParagraphProperties = new ParagraphProperties()
-                                {
-                                    PageBreakBefore = new PageBreakBefore()
                                 };
                             }
                             
