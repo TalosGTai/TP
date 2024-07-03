@@ -214,7 +214,15 @@ namespace TP.Model.Org1
                         headerRange.Font.ColorIndex = WdColorIndex.wdBlack;
                         headerRange.Font.Size =11;
                         headerRange.Text = ColontitulText + "\n";
-                        headerRange.Italic = 1;
+                        headerRange.Bold = 1;
+
+
+                        myDoc.Sections[1].Footers[WdHeaderFooterIndex.wdHeaderFooterFirstPage].Range.Text = " ";
+                        Range footerRange = section.Footers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                        footerRange.Fields.Add(footerRange, WdFieldType.wdFieldPage);
+                        footerRange.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
+                        footerRange.Text = "";
+
                     }
 
                     if (myDoc.Paragraphs.Count > 0)
@@ -234,6 +242,7 @@ namespace TP.Model.Org1
                         object missing = System.Reflection.Missing.Value;
                         WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
                         CountPages = myDoc.ComputeStatistics(stat, ref missing);
+                        CountPages--;
                         foreach (ParagraphWord p in myDoc.Paragraphs)
                         {
                             if (p.Range.Text.Contains("Число страниц"))
@@ -308,13 +317,6 @@ namespace TP.Model.Org1
                 pos2.Y = 5580000;
                 stampImg.Anchor.SimplePosition = pos2;
 
-                Paragraph paragraph232 = new Paragraph();
-                ParagraphProperties paragraphProperties220 = new ParagraphProperties();
-                SectionProperties sectionProperties1 = new SectionProperties();
-                SectionType sectionType1 = new SectionType() { Val = SectionMarkValues.NextPage };
-                sectionProperties1.Append(sectionType1);
-                paragraphProperties220.Append(sectionProperties1);
-                paragraph232.Append(paragraphProperties220);
                 var countPic = 0;
                 foreach (var el in paragraphs)
                 {
@@ -368,31 +370,36 @@ namespace TP.Model.Org1
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             body.AppendChild(p);
+
                             flagForTable = true;
                             isHeaderProtocolIspinatii = true;
 
                             Justification justification1 = new Justification() { Val = JustificationValues.Center };
                             el.ParagraphProperties = new ParagraphProperties()
                             {
-                                Justification = justification1
+                                Justification = justification1,
+                                //PageBreakBefore = new PageBreakBefore()
                             };
 
                             body.AppendChild(el.CloneNode(true));
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
-                            var pp = new Paragraph(new Run(new Text("М.П.")));
+                            var pp = new Paragraph(new Run(new LastRenderedPageBreak(), new Text("М.П.")));
                             Justification justification1 = new Justification() { Val = JustificationValues.Right };
                             pp.ParagraphProperties = new ParagraphProperties()
                             {
                                 Justification = justification1
                             };
                             body.AppendChild(pp);
-
                             isTitulPage = false;
-                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                            //paragraphItems.Add(p);
-                            body.AppendChild(p);
+
+                            //var nextPageParagraph = new Paragraph(new Run());
+                            //nextPageParagraph.ParagraphProperties = new ParagraphProperties()
+                            //{
+                            //    PageBreakBefore = new PageBreakBefore()
+                            //};
+                            //body.AppendChild(nextPageParagraph);
                         }
                         if (el.InnerText.Contains("Внимание!"))
                         {
@@ -420,10 +427,16 @@ namespace TP.Model.Org1
                                 run1Properties.Append(new Bold());
                                 var run = new Run(t);
                                 run.RunProperties = run1Properties;
-
-
                                 cloneNode = new Paragraph(run);
 
+                            }
+                            if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
+                            {
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    PageBreakBefore = new PageBreakBefore(),
+                                    Justification = new Justification { Val = JustificationValues.Center}
+                                };
                             }
                             //Перестаем выравнивать по ширине, если дошли до строки "Конец протокола..."
                             if (el.InnerText.Contains("Конец"))
@@ -440,8 +453,12 @@ namespace TP.Model.Org1
                             }
                             if (el.InnerText.Contains("Список применяемого оборудования и средств измерений"))
                             {
-                                var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                                body.AppendChild(p);
+                                //var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
+                                //body.AppendChild(p);
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    PageBreakBefore = new PageBreakBefore()
+                                };
                             }
                             
                             if (isTitulPage && !string.IsNullOrEmpty(prev))
@@ -575,145 +592,6 @@ namespace TP.Model.Org1
             catch (Exception ex) { 
                 Logger.LogError(ex); 
                 throw; 
-            }
-        }
-
-        //Добавление колонтитулов на все страницы
-        private void ApplyHeader(WordprocessingDocument doc)
-        {
-            MainDocumentPart mainDocPart = doc.MainDocumentPart;
-
-            HeaderPart headerPart1 = mainDocPart.AddNewPart<HeaderPart>("r97");
-            Header header1 = new Header();
-
-            Paragraph paragraph1 = new Paragraph() { };
-            Run run1 = new Run();
-            Text colonText = new Text();
-            colonText.Text = ColontitulText;
-
-            var runProp = new RunProperties();
-            var test = new Italic() { };
-            runProp.Append(test);
-            run1.PrependChild(runProp);
-
-            run1.Append(colonText);
-            paragraph1.Append(run1);
-            header1.Append(paragraph1);
-            headerPart1.Header = header1;
-            SectionProperties sectionProperties1 = mainDocPart.Document.Body.Descendants<SectionProperties>().FirstOrDefault();
-            if (sectionProperties1 == null)
-            {
-                sectionProperties1 = new SectionProperties() { };
-                mainDocPart.Document.Body.Append(sectionProperties1);
-            }
-            HeaderReference headerReference1 = new HeaderReference() { Type = HeaderFooterValues.Default, Id = "r97" };
-            sectionProperties1.InsertAt(headerReference1, 0);
-        }
-
-        private void WritePageCount(string path)
-        {
-            Application wordApp = null;
-            DocumentWord myDoc = null;
-            try
-            {
-                //Считаем количество страниц в сформированном файле. Открыть нужно т.к. это значение динамическое и заполняется только при открытии Word
-                wordApp = new Application();
-                string filename = $"{Directory.GetCurrentDirectory()}\\" + path;
-                myDoc = wordApp.Documents.Open(filename);
-                var numberOfPages = myDoc.ComputeStatistics(WdStatistic.wdStatisticPages, false);
-
-                myDoc?.Close();
-                myDoc = null;
-                wordApp?.Quit();
-                wordApp = null;
-
-
-                using (var doc = WordprocessingDocument.Open(path, true))
-                {
-                    string line = Resources.Protocol19 + $" {numberOfPages}";
-                    var allDoc = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
-                    var oldChild = allDoc.First(el => el.InnerText.Contains(Resources.Protocol19));
-
-                    //var run = new Run();
-                    //var runFont = new RunFonts { Ascii = FONT };
-                    //var runText = new Text(line);
-                    //var runProp = new RunProperties();
-                    //runProp.Append(runFont);
-                    //runProp.Append(runText);
-                    //run.PrependChild(runProp);
-                    var newChild = new Paragraph(new Run(new DocumentFormat.OpenXml.Drawing.Text(line)));
-
-                    doc.MainDocumentPart.Document.Body.ReplaceChild(newChild, oldChild);
-                    doc.Save();
-                }
-
-
-
-
-
-                //using (SpreadsheetDocument workbook = SpreadsheetDocument.Open(path, true))
-                //{
-                //    WorkbookPart workbookPart = workbook.WorkbookPart;
-                //    WorksheetPart worksheetPart = workbookPart.WorksheetParts.FirstOrDefault();
-                //    Worksheet worksheet = worksheetPart.Worksheet;
-                //    HeaderFooter header_footer = worksheet.Descendants<HeaderFooter>().FirstOrDefault();
-
-                //    if (header_footer != null)
-                //    {
-                //        var header = header_footer.FirstChild;
-                //        if (header != null)
-                //        {
-                //            header.Remove();
-                //        }
-
-                //        var footer = header_footer.LastChild;
-                //        if (footer != null)
-                //        {
-                //            footer.Remove();
-                //        }
-
-                //        workbook.SaveAs(outputPath);
-                //    }
-                //}
-
-            }
-            finally
-            {
-               
-                
-            }
-        }
-
-        public void OpenWordprocessingDocumentPage(WordprocessingDocument wordDocument)
-        {
-            string filepath = @"C:\...\test.docx";
-            // Open a WordprocessingDocument based on a filepath.
-            Dictionary<int, string> pageviseContent = new Dictionary<int, string>();
-            int pageCount = 0;
-            // Assign a reference to the existing document body.  
-            Body body = wordDocument.MainDocumentPart.Document.Body;
-            if (wordDocument.ExtendedFilePropertiesPart.Properties.Pages.Text != null)
-            {
-                pageCount = Convert.ToInt32(wordDocument.ExtendedFilePropertiesPart.Properties.Pages.Text);
-            }
-            int i = 1;
-            StringBuilder pageContentBuilder = new StringBuilder();
-            foreach (var element in body.ChildElements)
-            {
-                if (element.InnerXml.IndexOf("<w:br w:type=\"page\" />", StringComparison.OrdinalIgnoreCase) < 0)
-                {
-                    pageContentBuilder.Append(element.InnerText);
-                }
-                else
-                {
-                    pageviseContent.Add(i, pageContentBuilder.ToString());
-                    i++;
-                    pageContentBuilder = new StringBuilder();
-                }
-                if (body.LastChild == element && pageContentBuilder.Length > 0)
-                {
-                    pageviseContent.Add(i, pageContentBuilder.ToString());
-                }
             }
         }
 
@@ -1168,5 +1046,185 @@ namespace TP.Model.Org1
             }
             catch (Exception ex) { Logger.LogError(ex); throw; }
         }
+
+        //Добавление колонтитулов на все страницы
+        //private void ApplyHeader(WordprocessingDocument doc)
+        //{
+        //    MainDocumentPart mainDocPart = doc.MainDocumentPart;
+
+        //    HeaderPart headerPart1 = mainDocPart.AddNewPart<HeaderPart>();
+        //    FooterPart footerPart = mainDocPart.AddNewPart<FooterPart>();
+
+        //    string headerPartId = mainDocPart.GetIdOfPart(headerPart1);
+        //    string footerPartId = mainDocPart.GetIdOfPart(footerPart);
+
+
+        //    Header header1 = new Header();
+        //    Footer footer = new Footer();
+
+        //    Paragraph paragraph1 = new Paragraph() { };
+        //    Paragraph paragraph2 = new Paragraph() { };
+        //    Run run1 = new Run();
+        //    Run run2 = new Run();
+        //    Text colonText = new Text();
+        //    Text colonText2 = new Text();
+        //    colonText.Text = ColontitulText;
+
+        //    var runProp = new RunProperties();
+        //    var test = new Italic() { };
+        //    runProp.Append(test);
+        //    run1.PrependChild(runProp);
+
+        //    run1.Append(colonText);
+        //    run2.Append(colonText2);
+        //    paragraph1.Append(run1);
+        //    paragraph2.Append(run2);
+        //    header1.Append(paragraph1);
+        //    footer.Append(paragraph2);
+        //    headerPart1.Header = header1;
+        //    footerPart.Footer = footer;
+
+        //    SectionProperties sectionProperties1 = mainDocPart.Document.Body.Descendants<SectionProperties>().FirstOrDefault();
+        //    if (sectionProperties1 == null)
+        //    {
+        //        sectionProperties1 = new SectionProperties() { };
+        //        mainDocPart.Document.Body.Append(sectionProperties1);
+        //    }
+        //    else { 
+
+        //    }
+        //    HeaderReference headerReference1 = new HeaderReference() { Type = HeaderFooterValues.Default, Id = headerPartId };
+        //    FooterReference footerReference = new FooterReference() { Type = HeaderFooterValues.Default, Id = footerPartId };
+
+        //    sectionProperties1.PrependChild<HeaderReference>(new HeaderReference() { Id = headerPartId });
+        //    sectionProperties1.PrependChild<FooterReference>(new FooterReference() { Id = footerPartId });
+
+
+        //    /*
+        //    GenerateHeaderPartContent(headerPart);
+        //    GenerateFooterPartContent(footerPart);
+
+        //    // Get SectionProperties and Replace HeaderReference and FooterRefernce with new Id
+        //    IEnumerable<SectionProperties> sections = mainDocumentPart.Document.Body.Elements<SectionProperties>();
+
+        //    foreach (var section in sections)
+        //    {
+        //        // Delete existing references to headers and footers
+        //        section.RemoveAllChildren<HeaderReference>();
+        //        section.RemoveAllChildren<FooterReference>();
+
+        //        // Create the new header and footer reference node
+        //        section.PrependChild<HeaderReference>(new HeaderReference() { Id = headerPartId });
+        //        section.PrependChild<FooterReference>(new FooterReference() { Id = footerPartId });
+        //    }
+        //    */
+        //}
+
+        //private void WritePageCount(string path)
+        //{
+        //    Application wordApp = null;
+        //    DocumentWord myDoc = null;
+        //    try
+        //    {
+        //        //Считаем количество страниц в сформированном файле. Открыть нужно т.к. это значение динамическое и заполняется только при открытии Word
+        //        wordApp = new Application();
+        //        string filename = $"{Directory.GetCurrentDirectory()}\\" + path;
+        //        myDoc = wordApp.Documents.Open(filename);
+        //        var numberOfPages = myDoc.ComputeStatistics(WdStatistic.wdStatisticPages, false);
+
+        //        myDoc?.Close();
+        //        myDoc = null;
+        //        wordApp?.Quit();
+        //        wordApp = null;
+
+
+        //        using (var doc = WordprocessingDocument.Open(path, true))
+        //        {
+        //            string line = Resources.Protocol19 + $" {numberOfPages}";
+        //            var allDoc = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
+        //            var oldChild = allDoc.First(el => el.InnerText.Contains(Resources.Protocol19));
+
+        //            //var run = new Run();
+        //            //var runFont = new RunFonts { Ascii = FONT };
+        //            //var runText = new Text(line);
+        //            //var runProp = new RunProperties();
+        //            //runProp.Append(runFont);
+        //            //runProp.Append(runText);
+        //            //run.PrependChild(runProp);
+        //            var newChild = new Paragraph(new Run(new DocumentFormat.OpenXml.Drawing.Text(line)));
+
+        //            doc.MainDocumentPart.Document.Body.ReplaceChild(newChild, oldChild);
+        //            doc.Save();
+        //        }
+
+
+
+
+
+        //        //using (SpreadsheetDocument workbook = SpreadsheetDocument.Open(path, true))
+        //        //{
+        //        //    WorkbookPart workbookPart = workbook.WorkbookPart;
+        //        //    WorksheetPart worksheetPart = workbookPart.WorksheetParts.FirstOrDefault();
+        //        //    Worksheet worksheet = worksheetPart.Worksheet;
+        //        //    HeaderFooter header_footer = worksheet.Descendants<HeaderFooter>().FirstOrDefault();
+
+        //        //    if (header_footer != null)
+        //        //    {
+        //        //        var header = header_footer.FirstChild;
+        //        //        if (header != null)
+        //        //        {
+        //        //            header.Remove();
+        //        //        }
+
+        //        //        var footer = header_footer.LastChild;
+        //        //        if (footer != null)
+        //        //        {
+        //        //            footer.Remove();
+        //        //        }
+
+        //        //        workbook.SaveAs(outputPath);
+        //        //    }
+        //        //}
+
+        //    }
+        //    finally
+        //    {
+
+
+        //    }
+        //}
+
+        //public void OpenWordprocessingDocumentPage(WordprocessingDocument wordDocument)
+        //{
+        //    string filepath = @"C:\...\test.docx";
+        //    // Open a WordprocessingDocument based on a filepath.
+        //    Dictionary<int, string> pageviseContent = new Dictionary<int, string>();
+        //    int pageCount = 0;
+        //    // Assign a reference to the existing document body.  
+        //    Body body = wordDocument.MainDocumentPart.Document.Body;
+        //    if (wordDocument.ExtendedFilePropertiesPart.Properties.Pages.Text != null)
+        //    {
+        //        pageCount = Convert.ToInt32(wordDocument.ExtendedFilePropertiesPart.Properties.Pages.Text);
+        //    }
+        //    int i = 1;
+        //    StringBuilder pageContentBuilder = new StringBuilder();
+        //    foreach (var element in body.ChildElements)
+        //    {
+        //        if (element.InnerXml.IndexOf("<w:br w:type=\"page\" />", StringComparison.OrdinalIgnoreCase) < 0)
+        //        {
+        //            pageContentBuilder.Append(element.InnerText);
+        //        }
+        //        else
+        //        {
+        //            pageviseContent.Add(i, pageContentBuilder.ToString());
+        //            i++;
+        //            pageContentBuilder = new StringBuilder();
+        //        }
+        //        if (body.LastChild == element && pageContentBuilder.Length > 0)
+        //        {
+        //            pageviseContent.Add(i, pageContentBuilder.ToString());
+        //        }
+        //    }
+        //}
     }
 }
