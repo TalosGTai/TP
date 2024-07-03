@@ -239,6 +239,7 @@ namespace TP.Model.Org1
                         object missing = System.Reflection.Missing.Value;
                         WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
                         CountPages = myDoc.ComputeStatistics(stat, ref missing);
+                        CountPages--;
                         foreach (ParagraphWord p in myDoc.Paragraphs)
                         {
                             if (p.Range.Text.Contains("Число страниц"))
@@ -343,7 +344,13 @@ namespace TP.Model.Org1
                             flagForTable = true;
                             isHeaderProtocolIspinatii = true;
 
-                            body.AppendChild(el.CloneNode(true));
+                            Paragraph clone = (Paragraph)el.CloneNode(true);
+                            clone.ParagraphProperties = new ParagraphProperties()
+                            {
+                                Justification = new Justification { Val = JustificationValues.Center }
+                            };
+
+                            body.AppendChild(clone);
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
@@ -356,9 +363,6 @@ namespace TP.Model.Org1
                             body.AppendChild(pp);
 
                             isTitulPage = false;
-                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                            //paragraphItems.Add(p);
-                            body.AppendChild(p);
                         }
                         if (el.InnerText.Contains("Внимание!"))
                         {
@@ -391,6 +395,14 @@ namespace TP.Model.Org1
                                 cloneNode = new Paragraph(run);
 
                             }
+                            if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
+                            {
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    PageBreakBefore = new PageBreakBefore(),
+                                    Justification = new Justification { Val = JustificationValues.Center }
+                                };
+                            }
                             //Перестаем выравнивать по ширине, если дошли до строки "Конец протокола..."
                             if (el.InnerText.Contains("Конец"))
                             {
@@ -406,8 +418,10 @@ namespace TP.Model.Org1
                             }
                             if (el.InnerText.Contains("Список применяемого оборудования и средств измерений"))
                             {
-                                var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                                body.AppendChild(p);
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    PageBreakBefore = new PageBreakBefore()
+                                };
                             }
                             
                             if (isTitulPage && !string.IsNullOrEmpty(prev))
