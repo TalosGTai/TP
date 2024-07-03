@@ -7,7 +7,6 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Linq;
 using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using RunProperties = DocumentFormat.OpenXml.Wordprocessing.RunProperties;
-using Italic = DocumentFormat.OpenXml.Wordprocessing.Italic;
 using DocumentFormat.OpenXml;
 using Break = DocumentFormat.OpenXml.Wordprocessing.Break;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
@@ -214,7 +213,13 @@ namespace TP.Model.Org1
                         headerRange.Font.ColorIndex = WdColorIndex.wdBlack;
                         headerRange.Font.Size =11;
                         headerRange.Text = ColontitulText + "\n";
-                        headerRange.Italic = 1;
+                        headerRange.Bold = 1;
+
+                        myDoc.Sections[1].Footers[WdHeaderFooterIndex.wdHeaderFooterFirstPage].Range.Text = " ";
+
+                        Range footerRange = section.Footers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                        footerRange.Fields.Add(footerRange, WdFieldType.wdFieldPage);
+                        footerRange.Text = "  ";
                     }
 
                     if (myDoc.Paragraphs.Count > 0)
@@ -234,6 +239,7 @@ namespace TP.Model.Org1
                         object missing = System.Reflection.Missing.Value;
                         WdStatistic stat = Microsoft.Office.Interop.Word.WdStatistic.wdStatisticPages;
                         CountPages = myDoc.ComputeStatistics(stat, ref missing);
+                        CountPages--;
                         foreach (ParagraphWord p in myDoc.Paragraphs)
                         {
                             if (p.Range.Text.Contains("Число страниц"))
@@ -277,7 +283,7 @@ namespace TP.Model.Org1
 
                 var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
                 //Получаем таблицу с испытаниями
-                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[4];
+                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
                         && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
@@ -300,22 +306,14 @@ namespace TP.Model.Org1
                 pos1.X = 5500000;
                 pos1.Y = 4280000;
                 signatureImg.Anchor.SimplePosition = pos1;
-                
+
                 stampImg.Anchor.SimplePos = true;
                 stampImg.Anchor.SimplePos.Value = true;
                 var pos2 = new SimplePosition();
                 pos2.X = 6200000;
                 pos2.Y = 5580000;
                 stampImg.Anchor.SimplePosition = pos2;
-
-                Paragraph paragraph232 = new Paragraph();
-                ParagraphProperties paragraphProperties220 = new ParagraphProperties();
-                SectionProperties sectionProperties1 = new SectionProperties();
-                SectionType sectionType1 = new SectionType() { Val = SectionMarkValues.NextPage };
-                sectionProperties1.Append(sectionType1);
-                paragraphProperties220.Append(sectionProperties1);
-                paragraph232.Append(paragraphProperties220);
-
+                bool isMp = false;
                 foreach (var el in paragraphs)
                 {
                     if (el.InnerXml.Contains("pic:"))
@@ -346,22 +344,29 @@ namespace TP.Model.Org1
                             flagForTable = true;
                             isHeaderProtocolIspinatii = true;
 
-                            body.AppendChild(el.CloneNode(true));
+                            Paragraph clone = (Paragraph)el.CloneNode(true);
+                            clone.ParagraphProperties = new ParagraphProperties()
+                            {
+                                Justification = new Justification { Val = JustificationValues.Center }
+                            };
+
+                            body.AppendChild(clone);
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
-                            var pp = new Paragraph(new Run(new Text("М.П.")));
-                            Justification justification1 = new Justification() { Val = JustificationValues.Right };
-                            pp.ParagraphProperties = new ParagraphProperties()
+                            if (!isMp)
                             {
-                                Justification = justification1
-                            };
-                            body.AppendChild(pp);
+                                var pp = new Paragraph(new Run(new Text("М.П.")));
+                                Justification justification1 = new Justification() { Val = JustificationValues.Right };
+                                pp.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    Justification = justification1
+                                };
+                                body.AppendChild(pp);
 
-                            isTitulPage = false;
-                            var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                            //paragraphItems.Add(p);
-                            body.AppendChild(p);
+                                isTitulPage = false;
+                                isMp = true;
+                            }
                         }
                         if (el.InnerText.Contains("Внимание!"))
                         {
@@ -381,7 +386,7 @@ namespace TP.Model.Org1
                                 var txt = new Paragraph(new Run(new Text()));
                                 body.AppendChild(txt);
                                 
-                                Text t = new Text($"                                                                                     {el.InnerText}");
+                                Text t = new Text($"                                                                       {el.InnerText}");
                                 t.Space = SpaceProcessingModeValues.Preserve;
 
 
@@ -393,6 +398,14 @@ namespace TP.Model.Org1
 
                                 cloneNode = new Paragraph(run);
 
+                            }
+                            if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
+                            {
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    PageBreakBefore = new PageBreakBefore(),
+                                    Justification = new Justification { Val = JustificationValues.Center }
+                                };
                             }
                             //Перестаем выравнивать по ширине, если дошли до строки "Конец протокола..."
                             if (el.InnerText.Contains("Конец"))
@@ -409,8 +422,10 @@ namespace TP.Model.Org1
                             }
                             if (el.InnerText.Contains("Список применяемого оборудования и средств измерений"))
                             {
-                                var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
-                                body.AppendChild(p);
+                                cloneNode.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    PageBreakBefore = new PageBreakBefore()
+                                };
                             }
                             
                             if (isTitulPage && !string.IsNullOrEmpty(prev))
