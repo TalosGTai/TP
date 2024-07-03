@@ -313,7 +313,7 @@ namespace TP.Model.Org1
                 pos2.X = 6200000;
                 pos2.Y = 5580000;
                 stampImg.Anchor.SimplePosition = pos2;
-
+                bool isMp = false;
                 foreach (var el in paragraphs)
                 {
                     if (el.InnerXml.Contains("pic:"))
@@ -354,15 +354,19 @@ namespace TP.Model.Org1
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
-                            var pp = new Paragraph(new Run(new Text("М.П.")));
-                            Justification justification1 = new Justification() { Val = JustificationValues.Right };
-                            pp.ParagraphProperties = new ParagraphProperties()
+                            if (!isMp)
                             {
-                                Justification = justification1
-                            };
-                            body.AppendChild(pp);
+                                var pp = new Paragraph(new Run(new Text("М.П.")));
+                                Justification justification1 = new Justification() { Val = JustificationValues.Right };
+                                pp.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    Justification = justification1
+                                };
+                                body.AppendChild(pp);
 
-                            isTitulPage = false;
+                                isTitulPage = false;
+                                isMp = true;
+                            }
                         }
                         if (el.InnerText.Contains("Внимание!"))
                         {
