@@ -382,7 +382,7 @@ namespace TP.Model.Org1
                                 var txt = new Paragraph(new Run(new Text()));
                                 body.AppendChild(txt);
                                 
-                                Text t = new Text($"                                                                                     {el.InnerText}");
+                                Text t = new Text($"                                                                       {el.InnerText}");
                                 t.Space = SpaceProcessingModeValues.Preserve;
 
 
@@ -753,7 +753,7 @@ namespace TP.Model.Org1
                 worksheet.Cell("A" + 9).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("A9:G9").Merge();
                 // правая часть (подписи)
-                worksheet.Cell("D" + 12).Value = "                     " + Resources.Protocol10;
+                worksheet.Cell("D" + 12).Value = "                                    " + Resources.Protocol10;
                 worksheet.Cell("D" + 12).Style.Font.FontSize = 10;
                 worksheet.Cell("D" + 12).Style.Font.Bold = true;
                 worksheet.Cell("D" + 12).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
