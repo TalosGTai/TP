@@ -336,7 +336,7 @@ namespace TP.Model.Org1
                     //исключаем пустые параграфы, если их более одного подряд
                     if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)) && !el.InnerText.Contains("М.П."))
                     {
-                        if (el.InnerText.Contains("Результаты испытаний") && !flagForTable && !isHeaderProtocolIspinatii)
+                        if (el.InnerText.Contains("Результаты (") && !flagForTable && !isHeaderProtocolIspinatii)
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             body.AppendChild(p);
@@ -504,7 +504,7 @@ namespace TP.Model.Org1
 
                         }
 
-                        if ((prev != null && prev.Contains("Результаты испытаний (")))
+                        if ((prev != null && prev.Contains("Результаты (")))
                         {
                             Table t = new Table();
 
@@ -529,7 +529,7 @@ namespace TP.Model.Org1
 
                             for (int i = 3; i < oxl.Count; i++)
                             {
-                                if (!oxl[i].InnerText.Contains("Результаты испытаний ("))
+                                if (!oxl[i].InnerText.Contains("Результаты ("))
                                 {
                                     OpenXmlElement child = oxl[i].CloneNode(true);
                                     t.AppendChild(child);
