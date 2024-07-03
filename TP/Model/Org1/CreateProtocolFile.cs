@@ -120,7 +120,7 @@ namespace TP.Model.Org1
                 worksheet.Style.Alignment.WrapText = true;
                 worksheet2.Style.Alignment.WrapText = true;
                 worksheet3.Style.Alignment.WrapText = true;
-                worksheet.Column(2).Width = 32;
+                worksheet.Column(2).Width = 14;
                 worksheet.Column(3).Width = 14;
                 worksheet.Column(4).Width = 14;
                 worksheet.Column(5).Width = 14;
@@ -742,19 +742,19 @@ namespace TP.Model.Org1
                 worksheet.Cell("D" + 12).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("D12:G12").Merge();
                 worksheet.Cell("D" + 13).Value = Resources.Protocol11 + "  ";
-                worksheet.Cell("D" + 13).Style.Font.FontSize = 11;
+                worksheet.Cell("D" + 13).Style.Font.FontSize = 10;
                 worksheet.Cell("D" + 13).Style.Font.Bold = true;
                 worksheet.Cell("D" + 13).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 worksheet.Cell("D" + 13).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("D13:G13").Merge();
                 worksheet.Cell("D" + 14).Value = Resources.Protocol12;
-                worksheet.Cell("D" + 14).Style.Font.FontSize = 11;
+                worksheet.Cell("D" + 14).Style.Font.FontSize = 10;
                 worksheet.Cell("D" + 14).Style.Font.Bold = true;
                 worksheet.Cell("D" + 14).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 worksheet.Cell("D" + 14).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 worksheet.Range("D14:G14").Merge();
                 worksheet.Cell("E" + 15).Value = "                          " + valuesResourses[5];
-                worksheet.Cell("E" + 15).Style.Font.FontSize = 11;
+                worksheet.Cell("E" + 15).Style.Font.FontSize = 10;
                 worksheet.Cell("E" + 15).Style.Font.Underline = XLFontUnderlineValues.Single;
                 worksheet.Cell("E" + 15).Style.Font.Bold = true;
                 worksheet.Cell("E" + 15).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
@@ -1084,7 +1084,7 @@ namespace TP.Model.Org1
                 idRow++;
                 for (int i = 0; i < _countAdditionals; i++)
                 {
-                    worksheet.Cell("A" + idRow).Value = i.ToString();
+                    worksheet.Cell("A" + idRow).Value = (i + 1).ToString();
                     worksheet.Cell("B" + idRow).Value = values[i].Item1[1];
                     worksheet.Cell("C" + idRow).Value = values[i].Item1[0];
                     worksheet.Cell("D" + idRow).Value = values[i].Item1[2];
