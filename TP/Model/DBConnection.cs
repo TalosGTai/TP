@@ -1703,6 +1703,10 @@ namespace TP.Model
 
         }
 
+        /// <summary>
+        /// Получение печати и подписи
+        /// </summary>
+        /// <returns>(печать, подпись) </returns>
         public (MemoryStream, MemoryStream) GetImage(int idOrg)
         {
             try
@@ -1736,7 +1740,7 @@ namespace TP.Model
                             if (imageSignature != null)
                                 stream2.Write(imageSignature, 0, imageSignature.Length);
 
-                            return (stream2, stream1);
+                            return (stream1, stream2);
                         }
                     }
 
