@@ -508,9 +508,16 @@ namespace TP.Model.Org1
                             props.TableLayout = tl;
                             props.Append(th);
                             t.Append(props);
-                            var cells = tbl.Descendants<TableCell>();
-                            foreach (TableCell cell in cells) {
-                                cell.TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "2000" };
+                            var cells = tbl.Descendants<TableCell>().ToArray();
+                            for (int i = 2; i < cells.Count(); i++)
+                            {
+                                var width = "2250";
+                                var cellNum = i % 5;
+                                if (cellNum == 2)
+                                {
+                                    width = "500";
+                                }
+                                cells[i].TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = $"{width}" };
                             }
 
                             for (int i = 3; i < oxl.Count; i++)
