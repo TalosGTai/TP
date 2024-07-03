@@ -315,12 +315,12 @@ namespace TP.Model.Org1
                 sectionProperties1.Append(sectionType1);
                 paragraphProperties220.Append(sectionProperties1);
                 paragraph232.Append(paragraphProperties220);
-
+                var countPic = 0;
                 foreach (var el in paragraphs)
                 {
                     if (el.InnerXml.Contains("pic:"))
                     {
-                        if (!string.IsNullOrEmpty(el.InnerText) && !el.InnerText.Contains("М.П."))
+                        if (!string.IsNullOrEmpty(el.InnerText) && !el.InnerText.Contains("М.П.") && countPic != 2)
                         {
                             var img = stampImg.CloneNode(true);
                             var node1 = el.CloneNode(true);
@@ -331,6 +331,7 @@ namespace TP.Model.Org1
                             body.AppendChild(node1);
 
                             prev = el.InnerText;
+                            countPic++;
                             continue;
                         }
                         prev = el.ChildElements[1].ChildElements[1].InnerText;
@@ -339,12 +340,42 @@ namespace TP.Model.Org1
                     //исключаем пустые параграфы, если их более одного подряд
                     if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)) && !el.InnerText.Contains("М.П."))
                     {
+                        if (el.InnerText.Contains("Общество с ограниченной ответственностью"))
+                        {
+                            var paragraph = new DocumentFormat.OpenXml.Wordprocessing.Paragraph();
+                            var run = new DocumentFormat.OpenXml.Wordprocessing.Run();
+                            var text = new DocumentFormat.OpenXml.Wordprocessing.Text(el.InnerText);
+
+                            RunProperties runProperties1 = new RunProperties();
+                            FontSize fontSize1 = new FontSize() { Val = "24" };
+                            runProperties1.Append(fontSize1);
+
+                            run.Append(runProperties1);
+                            run.Append(text);
+
+                            Justification justification1 = new Justification() { Val = JustificationValues.Center };
+                            paragraph.ParagraphProperties = new ParagraphProperties()
+                            {
+                                Justification = justification1
+                            };
+
+                            paragraph.Append(run);
+                            body.AppendChild(paragraph);
+
+                            continue;
+                        }
                         if (el.InnerText.Contains("Результаты испытаний") && !flagForTable && !isHeaderProtocolIspinatii)
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             body.AppendChild(p);
                             flagForTable = true;
                             isHeaderProtocolIspinatii = true;
+
+                            Justification justification1 = new Justification() { Val = JustificationValues.Center };
+                            el.ParagraphProperties = new ParagraphProperties()
+                            {
+                                Justification = justification1
+                            };
 
                             body.AppendChild(el.CloneNode(true));
                         }
