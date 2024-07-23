@@ -11,6 +11,7 @@ using System.Threading;
 using System.Globalization;
 using Ubiety.Dns.Core;
 using System.Text;
+using TP.View.Org1;
 
 namespace TP.View
 {
@@ -248,18 +249,22 @@ namespace TP.View
 
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
-            openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            _pathAdditionals = new List<string>();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                _isAdditionals = true;
-                foreach (string filename in openFileDialog.FileNames)
-                    _pathAdditionals.Add(filename);
-            }
-            Thread threadAdditionals = new Thread(CopyAdditionals);
-            threadAdditionals.Start();
+            Functions functions = new Functions();
+            functions.Frame.Content = new ChoiceAdditionalsPage();
+            // чтобы работало
+            // закоменченное раскоментить, а то что выше закомментить
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
+            //openFileDialog.Multiselect = true;
+            //openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+            //_pathAdditionals = new List<string>();
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+            //    _isAdditionals = true;
+            //    foreach (string filename in openFileDialog.FileNames)
+            //        _pathAdditionals.Add(filename);
+            //}
+            //Thread threadAdditionals = new Thread(CopyAdditionals);
+            //threadAdditionals.Start();
         }
 
         private void BtnDirection_Click(object sender, RoutedEventArgs e)

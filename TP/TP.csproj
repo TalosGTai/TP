@@ -241,6 +241,12 @@
     <Compile Include="View\Gosts.xaml.cs">
       <DependentUpon>Gosts.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Org1\AdditionalTemplateUserControl.xaml.cs">
+      <DependentUpon>AdditionalTemplateUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Org1\ChoiceAdditionalsPage.xaml.cs">
+      <DependentUpon>ChoiceAdditionalsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WaitScreen.xaml.cs">
       <DependentUpon>WaitScreen.xaml</DependentUpon>
     </Compile>
@@ -283,6 +289,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Gosts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Org1\AdditionalTemplateUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Org1\ChoiceAdditionalsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
