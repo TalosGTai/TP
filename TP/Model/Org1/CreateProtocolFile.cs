@@ -47,8 +47,7 @@ namespace TP.Model.Org1
 
         public CreateProtocolFile(Tuple<Dictionary<string, string>,
             Dictionary<string, string>> journal, int idOrg, int idProtocol,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals, string gosts, string equipments,
-            int countAdditionals)
+            List<List<Tuple<List<string>, Dictionary<int, List<string>>>>> tables, string gosts, string equipments)
         {
             try
             {
@@ -57,9 +56,8 @@ namespace TP.Model.Org1
                 _journal = journal;
                 _gosts = gosts;
                 _equipments = equipments;
-                _countAdditionals = countAdditionals;
                 //Создание excel файла
-                CreateProtocolXlsxFile(additionals);
+                CreateProtocolXlsxFile(tables);
                 var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
                 //Получаем docx файл
                 workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
@@ -89,8 +87,7 @@ namespace TP.Model.Org1
             }
         }
 
-
-        public void CreateProtocolXlsxFile(List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals)
+        public void CreateProtocolXlsxFile(List<List<Tuple<List<string>, Dictionary<int, List<string>>>>> tables)
         {
             try
             {
@@ -111,7 +108,7 @@ namespace TP.Model.Org1
 
                 worksheet = CreateChapter1(worksheet);
                 worksheet = CreateChapter2(worksheet);
-                worksheet2 = CreateTablesTests(worksheet2, additionals);
+                worksheet2 = CreateTablesTests(worksheet2, tables);
                 worksheet3 = CreateLastChapter(worksheet3);
                 worksheet.Style.Font.FontName = FONT;
                 worksheet2.Style.Font.FontName = FONT;
@@ -1057,7 +1054,8 @@ namespace TP.Model.Org1
             return worksheet;
         }
 
-        private IXLWorksheet CreateTablesTests(IXLWorksheet worksheet, List<Tuple<List<string>, Dictionary<int, List<string>>>> values)
+        private IXLWorksheet CreateTablesTests(IXLWorksheet worksheet, List<List<Tuple<List<string>,
+            Dictionary<int, List<string>>>>> values)
         {
             // 64 + 180 + 110 + 75 + 75 = 260 + 244 = 504 / 5 = 101
 
@@ -1093,19 +1091,25 @@ namespace TP.Model.Org1
                 worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 idRow++;
-                for (int i = 0; i < _countAdditionals; i++)
+                
+                for (int j = 0; j < values.Count; j++)
                 {
-                    worksheet.Cell("A" + idRow).Value = (i + 1).ToString();
-                    worksheet.Cell("B" + idRow).Value = values[i].Item1[1];
-                    worksheet.Cell("C" + idRow).Value = values[i].Item1[0];
-                    worksheet.Cell("D" + idRow).Value = values[i].Item1[2];
-                    worksheet.Cell("E" + idRow).Value = values[i].Item1[3];
-                    worksheet.Range($"A{idRow}:E{idRow}").Style.Font.FontSize = 10;
-                    worksheet.Range($"A{idRow}:E{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                    worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    for (int i = 0; i < values[j].Count; i++)
+                    {
+                        worksheet.Cell("A" + idRow).Value = (i + 1).ToString();
+                        worksheet.Cell("B" + idRow).Value = values[j][i].Item1[1];
+                        worksheet.Cell("C" + idRow).Value = values[j][i].Item1[0];
+                        worksheet.Cell("D" + idRow).Value = values[j][i].Item1[2];
+                        worksheet.Cell("E" + idRow).Value = values[j][i].Item1[3];
+                        worksheet.Range($"A{idRow}:E{idRow}").Style.Font.FontSize = 10;
+                        worksheet.Range($"A{idRow}:E{idRow}").Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Range($"A{idRow}:E{idRow}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                        idRow++;
+                    }
                     idRow++;
                 }
+                
                 idRow++;
 
                 return MergeColumns(worksheet, idRow);

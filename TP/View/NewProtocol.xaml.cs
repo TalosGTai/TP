@@ -29,6 +29,7 @@ namespace TP.View
         private bool _isAdditionals;
         private DocParser _direction;
         private List<string> _pathAdditionals;
+        private List<List<string>> _pathAdditionalsMulti;
         private Tuple<Dictionary<string, string>, Dictionary<string, string>> _directionDict;
         List<string> _list1;
         List<string> _list2;
@@ -54,8 +55,29 @@ namespace TP.View
             LabelProtocolNumber.Content = LabelProtocolNumber.Content + _idProtocol.ToString();
         }
 
+        public NewProtocol(int idOrg, int idJournal, int idProtocol, int idProduct, string direction, List<List<string>> additionals)
+        {
+            InitializeComponent();
+            _idOrg = idOrg;
+            _idProtocol = idProtocol;
+            _idProduct = idProduct;
+            _idJournal = idJournal;
+            _isDirection = false;
+            _isAdditionals = false;
+            _directionFileName = direction;
+            _pathAdditionalsMulti = additionals;
+            LabelProtocolNumber.Content += _idProtocol.ToString();
+        }
+
+        private void CheckFiles()
+        {
+            if (_directionFileName.Length > 0) _isDirection = true;
+            if (_pathAdditionalsMulti.Count > 0) _isAdditionals = true;
+        }
+
         private bool CheckProtocolReady()
         {
+            CheckFiles();
             if (!_isDirection)
             {
                 MessageBox.Show("Для начала выберите направление.");
@@ -132,15 +154,23 @@ namespace TP.View
                     HashSet<string> equipments = new HashSet<string>();
                     // множество всех номеров для оборудования
                     HashSet<string> numberEquipments = new HashSet<string>();
-                    List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
-                    for (int i = 0; i < _pathAdditionals.Count; i++)
+                    // для всех таблиц
+                    List<List<Tuple<List<string>, Dictionary<int, List<string>>>>> tables = new List<List<Tuple<List<string>, Dictionary<int, List<string>>>>>();
+                    // храним каждую таблицу
+                    for (int j = 0; j < _pathAdditionalsMulti.Count; j++)
                     {
-                        ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionals[i]);
-                        additionals.Add(excelParseAdditionals.Values);
-                        gosts = MergeHashSets(gosts, excelParseAdditionals.Gosts);
-                        equipments = MergeHashSets(equipments, excelParseAdditionals.Equipments);
-                        numberEquipments = MergeHashSets(numberEquipments, excelParseAdditionals.NumberEquipments);
+                        List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals = new List<Tuple<List<string>, Dictionary<int, List<string>>>>();
+                        for (int i = 0; i < _pathAdditionalsMulti[j].Count; i++)
+                        {
+                            ExcelParseAdditionals excelParseAdditionals = new ExcelParseAdditionals(_pathAdditionalsMulti[j][i]);
+                            additionals.Add(excelParseAdditionals.Values);
+                            gosts = MergeHashSets(gosts, excelParseAdditionals.Gosts);
+                            equipments = MergeHashSets(equipments, excelParseAdditionals.Equipments);
+                            numberEquipments = MergeHashSets(numberEquipments, excelParseAdditionals.NumberEquipments);
+                        }
+                        tables.Add(additionals);
                     }
+
                     List<string> additionalValues = UpdateJournal();
                     // Номер и Дата
                     // journal.Item1["O"] + " от " + journal.Item1["H"]; 
@@ -148,8 +178,10 @@ namespace TP.View
                         Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
 
                     // создание ожидания
-                    Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, additionals, gosts,
-                        equipments, additionalValues, numberEquipments, _pathAdditionals.Count));
+                    //Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, additionals, gosts,
+                    //    equipments, additionalValues, numberEquipments, _pathAdditionals.Count));
+                    Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, tables, gosts,
+                        equipments, additionalValues, numberEquipments));
                     threadCreatProtocol.Start();
                     WaitScreen waitScreen = new WaitScreen(threadCreatProtocol, 2, 1);
                     waitScreen.StartLoading();
@@ -171,20 +203,24 @@ namespace TP.View
         }
 
         private void ThreadCreateProtocol(Tuple<Dictionary<string, string>, Dictionary<string, string>> journal,
-            List<Tuple<List<string>, Dictionary<int, List<string>>>> additionals,
+            List<List<Tuple<List<string>, Dictionary<int, List<string>>>>> tables,
             HashSet<string> gosts, HashSet<string> equipments, List<string> additionalValues,
-            HashSet<string> numberEquipments, int countAdditionals)
+            HashSet<string> numberEquipments)
         {
             CreateProtocolFile createProtocolFile = new CreateProtocolFile(journal, 1, _idProtocol,
-                        additionals, GostsShortToLong(HashSetToString(gosts)), HashSetToString(equipments, HashSetToList(numberEquipments)),
-                        countAdditionals);
+                        tables, GostsShortToLong(HashSetToString(gosts)),
+                        HashSetToString(equipments, HashSetToList(numberEquipments)));
 
             string path = $"Организация{_idOrg}\\Протокол{_idProtocol}\\";
-            // замена приложений (рег. номер и дата)
-            for (int i = 0; i < _pathAdditionals.Count; i++)
+            // замена приложений (рег. номер и дата)\
+            // распараллелить
+            for (int j = 0; j < _pathAdditionalsMulti.Count; j++)
             {
-                ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionals[i]));
-                excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
+                for (int i = 0; i < _pathAdditionalsMulti[j].Count; i++)
+                {
+                    ExcelWorker excelWorker = new ExcelWorker(path + GetFileName(_pathAdditionalsMulti[j][i]));
+                    excelWorker.SaveAllWorksheets(additionalValues[0], additionalValues[1]);
+                }
             }
         }
 
@@ -236,8 +272,6 @@ namespace TP.View
                 {
                     fileName += path[i];
                 }
-
-                //fileName += GetFileExtension(path);
                 return fileName;
             }
             catch
@@ -250,21 +284,7 @@ namespace TP.View
         private void BtnAdditionals_Click(object sender, RoutedEventArgs e)
         {
             Functions functions = new Functions();
-            functions.Frame.Content = new ChoiceAdditionalsPage();
-            // чтобы работало
-            // закоменченное раскоментить, а то что выше закомментить
-            //OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.Multiselect = true;
-            //openFileDialog.Filter = "Excel (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            //_pathAdditionals = new List<string>();
-            //if (openFileDialog.ShowDialog() == true)
-            //{
-            //    _isAdditionals = true;
-            //    foreach (string filename in openFileDialog.FileNames)
-            //        _pathAdditionals.Add(filename);
-            //}
-            //Thread threadAdditionals = new Thread(CopyAdditionals);
-            //threadAdditionals.Start();
+            functions.Frame.Content = new ChoiceAdditionalsPage(_directionFileName, _idJournal, _idProtocol, _idProduct);
         }
 
         private void BtnDirection_Click(object sender, RoutedEventArgs e)
@@ -338,6 +358,11 @@ namespace TP.View
         {
             try
             {
+                if (_directionDict is null)
+                {
+                    _direction = new DocParser(_directionFileName);
+                    _directionDict = _direction.JournalParse;
+                }
                 // _idJournal + 1
                 // A = _idProtocol
                 DBConnection conn = new DBConnection();

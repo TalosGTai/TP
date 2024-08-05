@@ -16,13 +16,22 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="Black"/>
         </Style>
-        <Style TargetType="Button">
+        <Style TargetType="Button" x:Key="ControlButtons">
             <Setter Property="FontSize" Value="26"/>
             <Setter Property="FontFamily" Value="Times New Roman"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Margin" Value="15, 0, 15, 0"/>
+            <Setter Property="Padding" Value="15, 8, 15, 8"/>
+        </Style>
+        <Style TargetType="Button" x:Key="AddAdditionalButton">
+            <Setter Property="FontSize" Value="26"/>
+            <Setter Property="FontFamily" Value="Times New Roman"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Margin" Value="50, 10, 50, 10"/>
             <Setter Property="Padding" Value="15, 8, 15, 8"/>
         </Style>
     </Page.Resources>
@@ -52,16 +61,19 @@
                        ItemWidth="450"
                        ScrollViewer.CanContentScroll="True">
                 <Button x:Name="AddAdditionalButton"
-                        Content="Добавить"
+                        Style="{DynamicResource AddAdditionalButton}"
+                        Content="Добавить приложение"
                         Click="AddAdditionalButton_Click"/>
             </WrapPanel>
         </ScrollViewer>
         <Button x:Name="BackButton"
                 Content="Назад"
+                Style="{DynamicResource ControlButtons}"
                 Grid.Row="3" Grid.Column="0"
                 Click="BackButton_Click"/>
         <Button x:Name="ChoiceButton"
                 Content="Продолжить"
+                Style="{DynamicResource ControlButtons}"
                 Grid.Row="3" Grid.Column="2"
                 Grid.ColumnSpan="2"
                 Click="ChoiceButton_Click"/>
