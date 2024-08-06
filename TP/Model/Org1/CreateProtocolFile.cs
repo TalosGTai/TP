@@ -51,13 +51,16 @@ namespace TP.Model.Org1
         {
             try
             {
-                PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
-                PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+                //PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
+                PROTOCOL_EXCEL_PATH = @"D:\work\TP\TP\bin\Debug\Организация1\Протокол152\Протокол152.xlsx";
+
+                //PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+                PROTOCOL_WORD_PATH = @"D:\work\TP\TP\bin\Debug\Организация1\Протокол152.docx";
                 _journal = journal;
                 _gosts = gosts;
                 _equipments = equipments;
                 //Создание excel файла
-                CreateProtocolXlsxFile(tables);
+                //CreateProtocolXlsxFile(tables);
                 var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
                 //Получаем docx файл
                 workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);
@@ -193,7 +196,7 @@ namespace TP.Model.Org1
             try
             {
                 Application wordApp = new Application();
-                string filename = $"{Directory.GetCurrentDirectory()}\\" + path;
+                string filename = PROTOCOL_WORD_PATH; // $"{Directory.GetCurrentDirectory()}\\" + path;
                 DocumentWord myDoc = wordApp.Documents.Open(filename);
                 myDoc.PageSetup.TopMargin = 0;
                 myDoc.PageSetup.BottomMargin = 0;
@@ -231,6 +234,7 @@ namespace TP.Model.Org1
                         {
                             var wTable = t;
                             wTable.Range.Cells.HeightRule = WdRowHeightRule.wdRowHeightAuto;
+                           // wTable.Columns[1].Width = 500;
                         }
 
                         object missing = System.Reflection.Missing.Value;
@@ -274,12 +278,16 @@ namespace TP.Model.Org1
             {
                 List<Paragraph> paragraphItems = new List<Paragraph>();
                 string prev = null;
-                Table tbl;
                 var doc = WordprocessingDocument.Open(path, true);
-
                 var paragraphs = doc.MainDocumentPart.Document.Body.Descendants<Paragraph>();
+
                 //Получаем таблицу с испытаниями
-                tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
+                //tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
+                // from 2 to last - 1
+                var allTbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2); //.ToList();
+
+                var tbls = allTbls.Take(allTbls.ToList().Count - 1).ToArray();
+
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
                         && !el.InnerXml.Contains(@"<w:br w:type=""page"" />")).ToArray();
@@ -310,6 +318,11 @@ namespace TP.Model.Org1
                 pos2.Y = 5580000;
                 stampImg.Anchor.SimplePosition = pos2;
                 bool isMp = false;
+
+                var countWritenTables = 0;
+
+                //список названий перед таблицами начиная со второй (первая всегда печатается)
+                var tableNamesFrom2 = paragraphs.Where(p => p.InnerText.Contains("Результаты испытаний (")).Skip(1).ToArray();
                 foreach (var el in paragraphs)
                 {
                     if (el.InnerXml.Contains("pic:"))
@@ -333,7 +346,7 @@ namespace TP.Model.Org1
                     //исключаем пустые параграфы, если их более одного подряд
                     if (!(string.IsNullOrEmpty(el.InnerText) && string.IsNullOrEmpty(prev)) && !el.InnerText.Contains("М.П."))
                     {
-                        if (el.InnerText.Contains("Результаты испытани") && !flagForTable && !isHeaderProtocolIspinatii)
+                        if (el.InnerText.Contains("Результаты испытаний") && !flagForTable && !isHeaderProtocolIspinatii)
                         {
                             var p = new Paragraph(new Run(new Break() { Type = BreakValues.Page }));
                             body.AppendChild(p);
@@ -500,9 +513,10 @@ namespace TP.Model.Org1
                             }
 
                         }
-
-                        if ((prev != null && prev.Contains("Результаты испытани")))
+                        //Если встречаем Результаты испытаний (, то значит после этого будет таблица
+                        if (prev != null && prev.Contains("Результаты испытаний ("))
                         {
+                            Table tbl = tbls[countWritenTables];
                             Table t = new Table();
 
                             var oxl = tbl.ChildElements;
@@ -513,11 +527,12 @@ namespace TP.Model.Org1
                             props.Append(th);
                             t.Append(props);
                             var cells = tbl.Descendants<TableCell>().ToArray();
-                            for (int i = 2; i < cells.Count(); i++)
+                            var start = countWritenTables > 0 ? 1 : 2;
+                            for (int i = start; i < cells.Count(); i++)
                             {
                                 var width = "2250";
                                 var cellNum = i % 5;
-                                if (cellNum == 2)
+                                if (cellNum == start)
                                 {
                                     width = "500";
                                 }
@@ -526,14 +541,27 @@ namespace TP.Model.Org1
 
                             for (int i = 3; i < oxl.Count; i++)
                             {
-                                if (!oxl[i].InnerText.Contains("Результаты испытани"))
+                                if (!oxl[i].InnerText.Contains("Результаты испытаний ("))
                                 {
                                     OpenXmlElement child = oxl[i].CloneNode(true);
                                     t.AppendChild(child);
-                               }
+                                }
                             }
+
+                            if (countWritenTables > 0)
+                            {
+                                var tbName = tableNamesFrom2[countWritenTables - 1];
+                                Paragraph clone = (Paragraph)tbName.CloneNode(true);
+                                clone.ParagraphProperties = new ParagraphProperties()
+                                {
+                                    Justification = new Justification { Val = JustificationValues.Center }
+                                };
+                                body.AppendChild(clone);
+                            }
+
                             body.AppendChild(t);
-                            //flagForTable = false;
+
+                            countWritenTables++;
                         }
                     }
                     prev = el.InnerText;
