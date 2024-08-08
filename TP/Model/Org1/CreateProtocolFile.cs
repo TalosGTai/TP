@@ -51,11 +51,11 @@ namespace TP.Model.Org1
         {
             try
             {
-                //PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
-                PROTOCOL_EXCEL_PATH = @"D:\work\TP\TP\bin\Debug\Организация1\Протокол152\Протокол152.xlsx";
+                PROTOCOL_EXCEL_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.xlsx";
+                //PROTOCOL_EXCEL_PATH = @"D:\work\TP\TP\bin\Debug\Организация1\Протокол152\Протокол152.xlsx";
 
-                //PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
-                PROTOCOL_WORD_PATH = @"D:\work\TP\TP\bin\Debug\Организация1\Протокол152.docx";
+                PROTOCOL_WORD_PATH = $"Организация{idOrg}\\Протокол{idProtocol}\\Протокол{idProtocol}.docx";
+                //PROTOCOL_WORD_PATH = @"D:\work\TP\TP\bin\Debug\Организация1\Протокол152.docx";
                 _journal = journal;
                 _gosts = gosts;
                 _equipments = equipments;
@@ -283,8 +283,7 @@ namespace TP.Model.Org1
 
                 //Получаем таблицу с испытаниями
                 //tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
-                // from 2 to last - 1
-                var allTbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2); //.ToList();
+                var allTbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2);
 
                 var tbls = allTbls.Take(allTbls.ToList().Count - 1).ToArray();
 
@@ -319,7 +318,7 @@ namespace TP.Model.Org1
                 stampImg.Anchor.SimplePosition = pos2;
                 bool isMp = false;
 
-                var countWritenTables = 0;
+                bool isFillTable = false;
 
                 //список названий перед таблицами начиная со второй (первая всегда печатается)
                 var tableNamesFrom2 = paragraphs.Where(p => p.InnerText.Contains("Результаты испытаний (")).Skip(1).ToArray();
@@ -514,54 +513,76 @@ namespace TP.Model.Org1
 
                         }
                         //Если встречаем Результаты испытаний (, то значит после этого будет таблица
-                        if (prev != null && prev.Contains("Результаты испытаний ("))
+                        if (prev != null && prev.Contains("Результаты испытаний (") && !isFillTable)
                         {
-                            Table tbl = tbls[countWritenTables];
-                            Table t = new Table();
+                            var countWritenTables = 0;
+                            //хвост таблицы, который принадлежит уже следующей
+                            Table partNextTable = null;
 
-                            var oxl = tbl.ChildElements;
-                            TableProperties props = new TableProperties();
-                            TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
-                            TableLayout tl = new TableLayout() { Type = TableLayoutValues.Fixed };
-                            props.TableLayout = tl;
-                            props.Append(th);
-                            t.Append(props);
-                            var cells = tbl.Descendants<TableCell>().ToArray();
-                            var start = countWritenTables > 0 ? 1 : 2;
-                            for (int i = start; i < cells.Count(); i++)
+                            foreach (var oneTable in tbls)
                             {
-                                var width = "2250";
-                                var cellNum = i % 5;
-                                if (cellNum == start)
+                                Table oldTable = oneTable; //tbls[countWritenTables];
+                                Table newTable = new Table();
+
+
+                                var childElementsOldTable = oldTable.ChildElements;
+                                TableProperties props = new TableProperties();
+                                TableRowHeight th = new TableRowHeight { HeightType = HeightRuleValues.Auto };
+                                TableLayout tl = new TableLayout() { Type = TableLayoutValues.Fixed };
+                                props.TableLayout = tl;
+                                props.Append(th);
+
+                                if (partNextTable != null && partNextTable.ChildElements.Count > 0)
                                 {
-                                    width = "500";
+                                    for (int i = 0; i < partNextTable.ChildElements.Count(); i++)
+                                    {
+                                        //if (!partNextTable.ChildElements[i].InnerText.Contains("Результаты испытаний ("))
+                                        {
+                                            OpenXmlElement child = partNextTable.ChildElements[i].CloneNode(true);
+                                            newTable.AppendChild(child);
+                                        }
+                                    }
                                 }
-                                cells[i].TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = $"{width}" };
-                            }
 
-                            for (int i = 3; i < oxl.Count; i++)
-                            {
-                                if (!oxl[i].InnerText.Contains("Результаты испытаний ("))
+                                partNextTable = new Table();
+                                var indicateNextTableIndex = 0;
+                                bool isNext = false;
+                                for (int i = 3; i < childElementsOldTable.Count; i++)
                                 {
-                                    OpenXmlElement child = oxl[i].CloneNode(true);
-                                    t.AppendChild(child);
+                                    if (!childElementsOldTable[i].InnerText.Contains("Результаты испытаний (") && !isNext)
+                                    {
+                                        OpenXmlElement child = childElementsOldTable[i].CloneNode(true);
+                                        newTable.AppendChild(child);
+                                    }
+                                    else
+                                    {
+                                        indicateNextTableIndex = i;
+                                        if (indicateNextTableIndex > 3)
+                                        {
+                                            isNext = true;
+                                            OpenXmlElement child = childElementsOldTable[i].CloneNode(true);
+                                            partNextTable.AppendChild(child);
+                                        }
+                                    }
+
                                 }
-                            }
-
-                            if (countWritenTables > 0)
-                            {
-                                var tbName = tableNamesFrom2[countWritenTables - 1];
-                                Paragraph clone = (Paragraph)tbName.CloneNode(true);
-                                clone.ParagraphProperties = new ParagraphProperties()
+                                var cells = newTable.Descendants<TableCell>().ToArray();
+                                var start = countWritenTables > 0 ? 1 : 2;
+                                for (int i = 0; i < cells.Count(); i++)
                                 {
-                                    Justification = new Justification { Val = JustificationValues.Center }
-                                };
-                                body.AppendChild(clone);
+                                    var width = "2250";
+                                    var cellNum = i % 5;
+                                    if (cellNum == 0)
+                                    {
+                                        width = "500";
+                                    }
+                                    cells[i].TableCellProperties.TableCellWidth = new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = $"{width}" };
+                                }
+                                newTable.Append(props);
+                                body.AppendChild(newTable);
+                                countWritenTables++;
                             }
-
-                            body.AppendChild(t);
-
-                            countWritenTables++;
+                            isFillTable = true;
                         }
                     }
                     prev = el.InnerText;
