@@ -67,7 +67,8 @@
                 <MenuItem x:Name="ChoiceLab" Header="_Выберите организацию" Click="ChoiceLab_Click"/>
                 <MenuItem x:Name="Exit" Header="_Выход" Click="Exit_Click"/>
             </MenuItem>
-            <MenuItem x:Name="About" Header="_О программе" Click="About_Click"/>
+            <MenuItem x:Name="About" Header="_О программе" 
+                      Click="About_Click"/>
         </Menu>
         <DockPanel>
             <Grid DockPanel.Dock="Left" Grid.Column="0" Grid.Row="1"

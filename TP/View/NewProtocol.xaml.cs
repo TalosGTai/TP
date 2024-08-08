@@ -33,6 +33,7 @@ namespace TP.View
         private Tuple<Dictionary<string, string>, Dictionary<string, string>> _directionDict;
         List<string> _list1;
         List<string> _list2;
+        private List<int> _indexes;
 
         public NewProtocol()
         {
@@ -55,7 +56,8 @@ namespace TP.View
             LabelProtocolNumber.Content = LabelProtocolNumber.Content + _idProtocol.ToString();
         }
 
-        public NewProtocol(int idOrg, int idJournal, int idProtocol, int idProduct, string direction, List<List<string>> additionals)
+        public NewProtocol(int idOrg, int idJournal, int idProtocol, int idProduct,
+            string direction, List<List<string>> additionals)
         {
             InitializeComponent();
             _idOrg = idOrg;
@@ -67,6 +69,22 @@ namespace TP.View
             _directionFileName = direction;
             _pathAdditionalsMulti = additionals;
             LabelProtocolNumber.Content += _idProtocol.ToString();
+        }
+
+        public NewProtocol(int idOrg, int idJournal, int idProtocol, int idProduct,
+    string direction, List<List<string>> additionals, List<int> indexes)
+        {
+            InitializeComponent();
+            _idOrg = idOrg;
+            _idProtocol = idProtocol;
+            _idProduct = idProduct;
+            _idJournal = idJournal;
+            _isDirection = false;
+            _isAdditionals = false;
+            _directionFileName = direction;
+            _pathAdditionalsMulti = additionals;
+            LabelProtocolNumber.Content += _idProtocol.ToString();
+            _indexes = indexes;
         }
 
         private void CheckFiles()
@@ -177,9 +195,6 @@ namespace TP.View
                     Tuple<Dictionary<string, string>, Dictionary<string, string>> journal = new Tuple<Dictionary<string, string>,
                         Dictionary<string, string>>(ConvertListToDict(_list1), ConvertListToDict(_list2));
 
-                    // создание ожидания
-                    //Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, additionals, gosts,
-                    //    equipments, additionalValues, numberEquipments, _pathAdditionals.Count));
                     Thread threadCreatProtocol = new Thread(() => ThreadCreateProtocol(journal, tables, gosts,
                         equipments, additionalValues, numberEquipments));
                     threadCreatProtocol.Start();

@@ -60,7 +60,7 @@ namespace TP.Model.Org1
                 _gosts = gosts;
                 _equipments = equipments;
                 //Создание excel файла
-                //CreateProtocolXlsxFile(tables);
+                CreateProtocolXlsxFile(tables);
                 var workbookSave = new Aspose.Cells.Workbook(PROTOCOL_EXCEL_PATH);
                 //Получаем docx файл
                 workbookSave.Save(PROTOCOL_WORD_PATH, Aspose.Cells.SaveFormat.Docx);

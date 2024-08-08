@@ -138,7 +138,7 @@
                 HorizontalAlignment="Right"
                 Click="CreateProtocol_Click"/>
         <Button x:Name="OpenCurrentJournal"
-                Content="Открыть Журнал"
+                Content="Открыть журнал"
                 Grid.Row="8" Grid.Column="0"
                 Click="OpenCurrentJournal_Click"/>
         <Button x:Name="SaveJournals"
@@ -149,7 +149,7 @@
                   Grid.Column="0"
                   Grid.ColumnSpan="3" Grid.RowSpan="5"
                   CanUserAddRows="False"
-                  SelectionMode="Single"
+                  SelectionMode="Extended"
                   SelectionUnit="FullRow">
                 <DataGrid.Columns>
                 <DataGridTextColumn Header="№ п/п" Binding="{Binding NumberProduct, UpdateSourceTrigger=PropertyChanged}"/>

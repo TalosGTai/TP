@@ -28,6 +28,7 @@ namespace TP.View
         int _idList;
         string _currentDirectory;
         bool _firstStart;
+        private List<int> _selectedIndexes;
 
         public Org1Journals()
         {
@@ -38,6 +39,7 @@ namespace TP.View
             TableJournals.ItemsSource = _journalsList1;
             DataContext = this;
             _currentDirectory = Environment.CurrentDirectory;
+            _selectedIndexes = new List<int>();
         }
 
         public void CreateJournalsFoldersDB()
@@ -136,28 +138,17 @@ namespace TP.View
         private void SaveChanges(int idJournal)
         {
             string path = _currentDirectory + $"\\Организация1\\Журнал{idJournal + 1}.xlsx";
-            //var dialog = MessageBox.Show("Сохранить все изменения?", "Сохранение изменений", MessageBoxButton.YesNo);
-            //if (dialog == MessageBoxResult.Yes)
-            //    //Thread localJournal = new Thread();
-            //    //Thread dbJournal = new Thread();
-            //    //localJournal.Start();
-            //    //dbJournal.Start();
-            // журнал
+
             if (_journalsList.Count > 0)
             {
                 // локально
-                ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1, _journalsList[idJournal].Item2);
+                ExcelWorker excelWorker = new ExcelWorker(path, _journalsList[idJournal].Item1,
+                    _journalsList[idJournal].Item2);
                 excelWorker.SaveWorksheets();
                 // бд
                 DBConnection dBConnection = new DBConnection();
                 dBConnection.SaveTableJournalOrg1List1(1, _idJournal + 1, _journalsList[idJournal].Item1);
                 dBConnection.SaveTableJournalOrg1List2(1, _idJournal + 1, _journalsList[idJournal].Item2);
-
-                //_journalsList[0].Item1.OrderBy(c => {
-                //    var d = DateTime.Parse(c.DateReceiptSample);
-                //    return d;
-                //    });
-                //TableJournals.ItemsSource = _journalsList1;
 
                 MessageBox.Show("Все изменения успешно внесены", "Сохранение");
             }
@@ -186,14 +177,29 @@ namespace TP.View
 
         private void CreateProtocol_Click(object sender, RoutedEventArgs e)
         {
+            Functions functions = new Functions();
             int idProtocol = GetCountProtocols();
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
+            
             int id = TableJournals.SelectedIndex;
             if (id == -1) id = _journalsList[_idJournal].Item1.Count - 1;
             int idProduct = Convert.ToInt32(_journalsList[_idJournal].Item1[id].NumberProduct);
-            SaveChanges(_idJournal);
-            Functions functions = new Functions();
-            functions.Frame.Content = new NewProtocol(1, _idJournal, idProtocol, idProduct);
+
+            if (TableJournals.SelectedItems.Count == 1)
+            {
+                SaveChanges(_idJournal);
+                functions.Frame.Content = new NewProtocol(1, _idJournal, idProtocol, idProduct);
+            }
+            else
+            {
+                List<int> indexes = new List<int>();
+                
+                foreach (var item in TableJournals.SelectedItems)
+                {
+                    indexes.Add(TableJournals.Items.IndexOf(item));
+                }
+                functions.Frame.Content = new NewProtocol(1, _idJournal, idProtocol, idProduct);
+            }
         }
 
         public int GetCountProtocols()
@@ -242,7 +248,7 @@ namespace TP.View
         {
             List<Org1List1> t1 = new List<Org1List1>();
             List<Org1List2> t2 = new List<Org1List2>();
-
+            
             _idList = CmbBoxChoiceList.SelectedIndex + 1;
             _idJournal = CmbBoxChoiceJournal.SelectedIndex;
             _firstStart = false;
