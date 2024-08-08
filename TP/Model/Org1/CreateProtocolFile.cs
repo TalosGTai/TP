@@ -285,7 +285,7 @@ namespace TP.Model.Org1
                 //tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
                 var allTbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2);
 
-                var tbls = allTbls.Take(allTbls.ToList().Count - 1).ToArray();
+                var tbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2).ToList(); //allTbls.Take(allTbls.ToList().Count - 1).ToArray();
 
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
