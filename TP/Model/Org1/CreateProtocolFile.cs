@@ -196,7 +196,7 @@ namespace TP.Model.Org1
             try
             {
                 Application wordApp = new Application();
-                string filename = PROTOCOL_WORD_PATH; // $"{Directory.GetCurrentDirectory()}\\" + path;
+                string filename = $"{Directory.GetCurrentDirectory()}\\" + path;
                 DocumentWord myDoc = wordApp.Documents.Open(filename);
                 myDoc.PageSetup.TopMargin = 0;
                 myDoc.PageSetup.BottomMargin = 0;
@@ -283,9 +283,45 @@ namespace TP.Model.Org1
 
                 //Получаем таблицу с испытаниями
                 //tbl = doc.MainDocumentPart.Document.Body.Descendants<Table>().ToArray()[2];
-                var allTbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2);
+                var allTbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2).ToArray();
+                var childs = allTbls[0].ChildElements;
+                var next = false;
 
-                var tbls = doc.MainDocumentPart.Document.Body.Descendants<Table>().Skip(2).ToList(); //allTbls.Take(allTbls.ToList().Count - 1).ToArray();
+                var nextTableIndex = 0;
+
+
+                var splitList = allTbls[0].ChildElements.Aggregate(new List<List<OpenXmlElement>> { new List<OpenXmlElement>() },
+                                   (list, value) => {
+                                       list.Last().Add(value);
+                                       if (value.InnerText.Contains("Результаты испытаний ("))
+                                           list.Add(new List<OpenXmlElement>());
+                                       return list;
+                                   });
+
+                Table[] tbls = new Table[splitList.Count - 1];
+                for (int i = 0; i < splitList.Count; i++)
+                {
+                    var lastElem = splitList[i][splitList[i].Count - 1];
+                    if (i != splitList.Count - 1)
+                    {
+                        splitList[i + 1].Insert(0, lastElem);
+                        splitList[i].Remove(lastElem);
+                    }
+                   
+
+                    if (i > 0)
+                    {
+                        var tb = new Table();
+                        foreach (var spl in splitList[i]) {
+                            tb.AppendChild(spl.CloneNode(true)); 
+                        }
+                        tbls[i - 1] = tb;
+                    }
+                }
+               // splitList.Remove(splitList.First());
+
+
+               // var tbls = allTbls.Take(allTbls.ToList().Count - 1).ToArray();
 
                 //Исключаем копирайтинг строки
                 paragraphs = paragraphs.Where(el => !el.InnerXml.Contains(@"<w:color w:val=""FF0000"" />")
@@ -352,13 +388,13 @@ namespace TP.Model.Org1
                             flagForTable = true;
                             isHeaderProtocolIspinatii = true;
 
-                            Paragraph clone = (Paragraph)el.CloneNode(true);
-                            clone.ParagraphProperties = new ParagraphProperties()
-                            {
-                                Justification = new Justification { Val = JustificationValues.Center }
-                            };
+                            //Paragraph clone = (Paragraph)el.CloneNode(true);
+                            //clone.ParagraphProperties = new ParagraphProperties()
+                            //{
+                            //    Justification = new Justification { Val = JustificationValues.Center }
+                            //};
 
-                            body.AppendChild(clone);
+                            //body.AppendChild(clone);
                         }
                         if (el.InnerText.Contains("ПРОТОКОЛ ИСПЫТАНИЙ"))
                         {
@@ -545,25 +581,30 @@ namespace TP.Model.Org1
                                 }
 
                                 partNextTable = new Table();
-                                var indicateNextTableIndex = 0;
-                                bool isNext = false;
-                                for (int i = 3; i < childElementsOldTable.Count; i++)
+                                //var indicateNextTableIndex = 0;
+                                //bool isNext = false;
+                                for (int i = 0; i < childElementsOldTable.Count; i++)
                                 {
-                                    if (!childElementsOldTable[i].InnerText.Contains("Результаты испытаний (") && !isNext)
-                                    {
+                                   // if (!childElementsOldTable[i].InnerText.Contains("Результаты испытаний (") && !isNext)
+                                   // {
                                         OpenXmlElement child = childElementsOldTable[i].CloneNode(true);
+                                    //if (i != 0 && childElementsOldTable[i].InnerText.Contains("Результаты испытаний (") && childElementsOldTable[i-1].InnerText.Contains("Результаты испытаний ("))
+                                    //{
+
+                                    //}
+                                    //else                                        
                                         newTable.AppendChild(child);
-                                    }
-                                    else
-                                    {
-                                        indicateNextTableIndex = i;
-                                        if (indicateNextTableIndex > 3)
-                                        {
-                                            isNext = true;
-                                            OpenXmlElement child = childElementsOldTable[i].CloneNode(true);
-                                            partNextTable.AppendChild(child);
-                                        }
-                                    }
+                                   // }
+                                    //else
+                                    //{
+                                    //    indicateNextTableIndex = i;
+                                    //    if (indicateNextTableIndex > 3)
+                                    //    {
+                                    //        isNext = true;
+                                    //        OpenXmlElement child = childElementsOldTable[i].CloneNode(true);
+                                    //        partNextTable.AppendChild(child);
+                                    //    }
+                                    //}
 
                                 }
                                 var cells = newTable.Descendants<TableCell>().ToArray();
